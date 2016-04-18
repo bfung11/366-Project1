@@ -1,5 +1,5 @@
 public class EmployeeShift {
-   private int id;
+   private int employeeID;
    private String date; //TODO may need to change datatypes
-   private id shift;
+   private int shiftID;
 }
