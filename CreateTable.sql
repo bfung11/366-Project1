@@ -72,6 +72,7 @@ CREATE TABLE TechnicianTimeOff (
 CREATE TABLE Admins (
    id SERIAL PRIMARY KEY,
    email TEXT UNIQUE NOT NULL,
+   password TEXT NOT NULL,
    firstname TEXT,
    lastname TEXt NOT NULL,
    phone TEXT NOT NULL
@@ -95,4 +96,5 @@ DROP TABLE DoctorTimeOff;
 DROP TABLE DoctorPreferredShifts;
 DROP TABLE DoctorShifts;
 DROP TABLE Doctors;
+DROP TABLE Shifts;
 */
