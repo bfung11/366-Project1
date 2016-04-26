@@ -43,62 +43,7 @@ public class Scheduler {
       //read in preferred shifts
       doctorTimeOff = new ArrayList<EmployeeTimeOff>();
    }
-/*
-   public ArrayList<Day> autoschedule(Calendar startDate) {
-      ArrayList<Integer> validIDs = new ArrayList<>();
-      ArrayList<Integer> allIDs = new ArrayList<>();
-      ArrayList<Day> newWeek = new ArrayList<>();
-      
-      //Associate number of shifts a doctor can still work with their id
-      ArrayList<Integer> fourFree = new ArrayList<>();
-      ArrayList<Integer> threeFree = new ArrayList<>();
-      ArrayList<Integer> twoFree = new ArrayList<>();
-      ArrayList<Integer> oneFree = new ArrayList<>();
-      ArrayList<Integer> zeroFree = new ArrayList<>();
-      
-      int i;
-      boolean surgeryOK, overnightOK, otherOK;
-      boolean isValid = false;
-      
-      //Break point checks
-      surgeryOK = overnightOK = otherOK = false;
-      
-      //Get all doctor ids and assign to maximum number of shift availability
-      for (i = 0; i < doctors.size(); i++) {
-          allIDs.add(doctors.get(i).id);
-          fourFree.add(doctors.get(i).id);
-      }
-      
-      //Check that there is enough doctors
-      if (allIDs.size() != 9) {
-          System.out.println("Do not have 9 doctors...");
-          return null;
-      }
-      
-      //The default schedule
-      newWeek = makeDefaultSchedule(startDate, allIDs);
-      
-      
-      //TODO -- Check preferences
-      //When satisfying request, if they do not have lowest priority pref, also
-      //schedule them to the surgery + overnight shifts if possible.
-      
-      //TODO -- Schedule surgery shift
-      while (!otherOK) {
-          while (!overnightOK) {
-              while (!surgeryOK) {
-                  //Order doctors with least to most availability for surgery shifts
-                  
-                  for (i = 0; i < doctors.size(); i++) {
-                      
-                  }
-              }
-          }
-      }
-      //TODO -- Schedule overnight shift
-      //TODO -- Schedule rest
-   }
-*/   
+ 
    //Creates a default schedule assuming no preferences. Uses hardcoded shift
    //blocks to schedule doctors.
    //IDEA -- Generalize this process
