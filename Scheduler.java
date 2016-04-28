@@ -1,3 +1,11 @@
+/**
+ * Scheduler is used to schedule shifts.
+ * 
+ * @author Brian Fung
+ * @author Justin Zaman
+ * @author Kevin Yang
+ */
+
 import java.util.*;
 
 public class Scheduler {
