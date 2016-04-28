@@ -8,6 +8,8 @@
  * @author Kevin Yang
  */
 
+import java.util.*;
+
 public class Day {
    private Calendar date;
    private DayShift earlyMorningShift;

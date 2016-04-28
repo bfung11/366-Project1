@@ -4,7 +4,7 @@ public class Shift {
    private Calendar fromTime; //TODO may need to change datatypes
    private Calendar toTime; //TODO may need to change datatypes
 
-   private getID() {
+   private int getID() {
       return id;
    }
 }
