@@ -23,7 +23,7 @@ public class Day {
    public Day(Calendar date) {
       this.date = date;
 
-      if (iSunday()) {
+      if (isSunday()) {
          sundayShift = new DayShift();
       }
       else {
