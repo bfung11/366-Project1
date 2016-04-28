@@ -1,7 +1,17 @@
 public class EmployeeTimeOff {
-   private String employeeID;
-   private String fromDate;
-   private String fromTime;
-   private String toDate;
-   private String toTime;
+   private int employeeID;
+   private Calendar fromDate;
+   private Calendar toDate;
+
+   private int getEmployeeID() {
+      return employeeID;
+   }
+
+   private Calendar getFromDate() {
+      return fromDate;
+   }
+
+   private Calendar getToDate() {
+      return toDate;
+   }
 }

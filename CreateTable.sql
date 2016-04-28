@@ -14,6 +14,7 @@ CREATE TABLE Doctors (
    phone TEXT NOT NULL
 );
 
+-- DoctorShifts connects a doctor to a shift and a date
 CREATE TABLE DoctorShifts (
    id INTEGER REFERENCES Doctors(id),
    date DATE NOT NULL,
@@ -46,6 +47,7 @@ CREATE TABLE Technicians (
    phone TEXT NOT NULL
 );
 
+-- TechnicianShifts connects a doctor to a shift and a date
 CREATE TABLE TechnicianShifts (
    id INTEGER REFERENCES Technicians(id),
    date DATE NOT NULL,
