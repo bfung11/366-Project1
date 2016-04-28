@@ -1,3 +1,5 @@
+import java.util.*;
+
 public class Scheduler {
    private final static int MAX_CALENDAR_DAYS = 28;
    private final static int MILLISECONDS_TO_DAYS = 1000 * 60 * 60 * 24;
@@ -149,8 +151,6 @@ public class Scheduler {
       ArrayList<Integer> twoFree = new ArrayList<>();
       ArrayList<Integer> oneFree = new ArrayList<>();
       ArrayList<Integer> zeroFree = new ArrayList<>();
-      
-      
       
       //Get all doctor ids and assign to maximum number of shift availability
       for (i = 0; i < doctors.size(); i++) {
