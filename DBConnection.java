@@ -14,10 +14,10 @@ import java.sql.Statement;
  *
  * @author Kevin Yang
  */
-public class ConnectToDB {
-    
-    // Constructor for ConnectToDB
-    public ConnectToDB() {
+public class DBConnection {
+
+
+    public DBConnection() {
         try {
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
@@ -27,7 +27,10 @@ public class ConnectToDB {
             return;
         }
     }
-    
+
+   /* 
+    * 
+    */
     // Connect to DB
     private Connection getConnection() {
         java.sql.Connection connection = null;
