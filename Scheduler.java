@@ -1,3 +1,5 @@
+import java.util.*;
+
 public class Scheduler {
    private final static int MAX_CALENDAR_DAYS = 28;
    private final static int MILLISECONDS_TO_DAYS = 1000 * 60 * 60 * 24;
@@ -11,7 +13,6 @@ public class Scheduler {
    // look out 3 weeks in advance
 
    public Scheduler(Calendar startingDate) {
-      Calendar date = startingDate;
       calendar = new ArrayList<Day>(MAX_CALENDAR_DAYS);
       shifts = new ArrayList<Shift>();
       //TODO read in shifts
@@ -28,38 +29,40 @@ public class Scheduler {
          //TODO add timeoff for multiple days
       }
 
-      addCalendarDays();
-      readDoctoShiftsFromDatabase();
+      addCalendarDays(startingDate);
+      readDoctoShiftsFromDatabase(startingDate);
    }
 
   /*
    * Adds enough 28 days to the calendar
    */ 
-   private void addCalendarDays() {
+   private void addCalendarDays(Calendar startingDate) {
+      Calendar date = startingDate;
+
       for (int i = 0; i < MAX_CALENDAR_DAYS; ++i) {
          calendar.add(new Day(date));
-         date.add(DAY_OF_MONTH, 1);
+         date.add(date.DAY_OF_MONTH, 1);
       }
    }
 
-   private void readDoctoShiftsFromDatabase() {
+   private void readDoctoShiftsFromDatabase(Calendar startingDate) {
       for (int i = 0; i < doctorShifts.size(); ++i) {
          EmployeeShift employeeShift = doctorShifts.get(i); //TODO assuming it has been read successfully
          Calendar shiftDate = employeeShift.getDate();
          //subtract shiftDate from startingDate to get index for calendar
          long newTime = shiftDate.getTimeInMillis() 
                          - startingDate.getTimeInMillis();
-         int index = newTime / MILLISECONDS_TO_DAYS;
+         int index = (int) newTime / MILLISECONDS_TO_DAYS;
          //use index in to get calendar day
          Day day = calendar.get(index);
          int shiftID = employeeShift.getShiftID();
          Shift shift;
-         for (int i = 0; i < shifts.size(); ++i) {
-            if (shifts.get(i).getID() == shiftID) {
-               shift = shifts.get(i);
+         for (int j = 0; j < shifts.size(); ++j) {
+            if (shifts.get(j).getID() == shiftID) {
+               shift = shifts.get(j);
             }
          }
-         Day.setShift(shift);
+         day.setShift(shift);
       }
    }
 
@@ -149,8 +152,6 @@ public class Scheduler {
       ArrayList<Integer> twoFree = new ArrayList<>();
       ArrayList<Integer> oneFree = new ArrayList<>();
       ArrayList<Integer> zeroFree = new ArrayList<>();
-      
-      
       
       //Get all doctor ids and assign to maximum number of shift availability
       for (i = 0; i < doctors.size(); i++) {

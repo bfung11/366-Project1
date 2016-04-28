@@ -8,56 +8,58 @@
  * @author Kevin Yang
  */
 
+import java.util.*;
+
 public class Day {
    private Calendar date;
-   private DayShift earlyMorningShift;
-   private DayShift morningShift;
-   private DayShift lateMorningShift;
-   private DayShift surgeryShift;
-   private DayShift overnightShift;
-   private DayShift sundayShift;
+   private ShiftInDay earlyMorningShift;
+   private ShiftInDay morningShift;
+   private ShiftInDay lateMorningShift;
+   private ShiftInDay surgeryShift;
+   private ShiftInDay overnightShift;
+   private ShiftInDay sundayShift;
    private ArrayList<EmployeeTimeOff> doctorTimeOff;
 
    public Day(Calendar date) {
       this.date = date;
 
-      if (iSunday()) {
-         sundayShift = new DayShift();
+      if (isSunday()) {
+         sundayShift = new ShiftInDay();
       }
       else {
-         earlyMorningShift = new DayShift();
-         morningShift = new DayShift();
-         lateMorningShift = new DayShift();
-         surgeryShift = new DayShift();
+         earlyMorningShift = new ShiftInDay();
+         morningShift = new ShiftInDay();
+         lateMorningShift = new ShiftInDay();
+         surgeryShift = new ShiftInDay();
       }
 
-      overnightShift = new DayShift();
+      overnightShift = new ShiftInDay();
       doctorTimeOff = new ArrayList<EmployeeTimeOff>();
    }
 
    public boolean isSunday() {
-      return date.get(Calendar.DAY_OF_WEEK) == Calendar.Sunday;
+      return date.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY;
    }
 
    public void setShift(Shift shift) {
       switch(shift.getName()) {
          case "Early Morning Shift":
-            earlyMorningShift = shift;
+            earlyMorningShift.setShift(shift);
             break;
          case "Morning Shift":
-            morningShift = shift;
+            morningShift.setShift(shift);
             break;
          case "Late Morning Shift":
-            lateMorningShift = shift;
+            lateMorningShift.setShift(shift);
             break;
          case "Surgery Shift":
-            surgeryShift = shift;
+            surgeryShift.setShift(shift);
             break; 
          case "Overnight Shift":
-            overnightShift = shift;
+            overnightShift.setShift(shift);
             break;
          case "Sunday Shift":
-            sundayShift = shift;
+            sundayShift.setShift(shift);
             break;
          default:
             System.out.println("Not a valid shift");
@@ -65,7 +67,7 @@ public class Day {
       }
    }
 
-   public void getShift(Shift shift) {
+   public ShiftInDay getShift(Shift shift) {
       switch(shift.getName()) {
          case "Early Morning Shift":
             return earlyMorningShift;
@@ -83,6 +85,8 @@ public class Day {
             System.out.println("Not a valid shift");
             break;
       }
+   
+      return null;
    }
 
    public void addDoctorTimeOff(EmployeeTimeOff timeoff) {
