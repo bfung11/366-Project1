@@ -12,28 +12,28 @@ import java.util.*;
 
 public class Day {
    private Calendar date;
-   private DayShift earlyMorningShift;
-   private DayShift morningShift;
-   private DayShift lateMorningShift;
-   private DayShift surgeryShift;
-   private DayShift overnightShift;
-   private DayShift sundayShift;
+   private ShiftInDay earlyMorningShift;
+   private ShiftInDay morningShift;
+   private ShiftInDay lateMorningShift;
+   private ShiftInDay surgeryShift;
+   private ShiftInDay overnightShift;
+   private ShiftInDay sundayShift;
    private ArrayList<EmployeeTimeOff> doctorTimeOff;
 
    public Day(Calendar date) {
       this.date = date;
 
       if (isSunday()) {
-         sundayShift = new DayShift();
+         sundayShift = new ShiftInDay();
       }
       else {
-         earlyMorningShift = new DayShift();
-         morningShift = new DayShift();
-         lateMorningShift = new DayShift();
-         surgeryShift = new DayShift();
+         earlyMorningShift = new ShiftInDay();
+         morningShift = new ShiftInDay();
+         lateMorningShift = new ShiftInDay();
+         surgeryShift = new ShiftInDay();
       }
 
-      overnightShift = new DayShift();
+      overnightShift = new ShiftInDay();
       doctorTimeOff = new ArrayList<EmployeeTimeOff>();
    }
 
@@ -67,7 +67,7 @@ public class Day {
       }
    }
 
-   public DayShift getShift(Shift shift) {
+   public ShiftInDay getShift(Shift shift) {
       switch(shift.getName()) {
          case "Early Morning Shift":
             return earlyMorningShift;
