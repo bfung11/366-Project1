@@ -38,7 +38,7 @@ public class Day {
    }
 
    public boolean isSunday() {
-      return date.get(Calendar.DAY_OF_WEEK) == Calendar.Sunday;
+      return date.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY;
    }
 
    public void setShift(Shift shift) {
@@ -67,7 +67,7 @@ public class Day {
       }
    }
 
-   public void getShift(Shift shift) {
+   public DayShift getShift(Shift shift) {
       switch(shift.getName()) {
          case "Early Morning Shift":
             return earlyMorningShift;

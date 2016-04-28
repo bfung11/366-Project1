@@ -1,5 +1,5 @@
 /**
- * DayShift is used for the calendar in the scheduler. It holds only the ids
+ * ShiftInDay is used for the calendar in the scheduler. It holds only the ids
  * of the doctors and technicians working for that shift.
  * 
  * @author Brian Fung
@@ -7,7 +7,7 @@
  * @author Kevin Yang
  */
 
-public class DayShift {
+public class ShiftInDay {
    private final static int NO_EMPLOYEE = -1;
 
    private int doctorID_1;
@@ -15,7 +15,7 @@ public class DayShift {
    private int technicianID_1;
    private int technicianID_2;
 
-   public DayShift() {
+   public ShiftInDay() {
       doctorID_1 = NO_EMPLOYEE;
       doctorID_2 = NO_EMPLOYEE;
       technicianID_1 = NO_EMPLOYEE;
