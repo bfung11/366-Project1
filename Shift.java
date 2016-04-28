@@ -1,9 +1,16 @@
+import java.util.*;
+
 public class Shift {
-   // time to;
-   // time from;
-   private int doctorID_1;
-   private int doctorID_2;
-   private int technician_1;
-   private int technician_2;
-   private int shiftID;
+   private int id;
+   private String name;
+   private Calendar fromTime; //TODO may need to change datatypes
+   private Calendar toTime; //TODO may need to change datatypes
+
+   public int getID() {
+      return id;
+   }
+
+   public String getName() {
+      return name;
+   }
 }

@@ -1,49 +1,74 @@
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-
+import java.util.*;
 
 public class Scheduler {
    private final static int MAX_CALENDAR_DAYS = 28;
-   private final static int DAYS_OF_WEEK = 7; //ADDED
-   private final static int MAX_SHIFTS_PER_WEEK = 4; //ADDED
+   private final static int MILLISECONDS_TO_DAYS = 1000 * 60 * 60 * 24;
 
    private ArrayList<Day> calendar;
+   private ArrayList<Shift> shifts;
    private ArrayList<Employee> doctors;
    private ArrayList<EmployeeShift> doctorShifts;
    private ArrayList<EmployeePreferredShift> doctorPreferredShifts;
    private ArrayList<EmployeeTimeOff> doctorTimeOff;
    // look out 3 weeks in advance
 
-   //Assumes starting date is a Sunday
    public Scheduler(Calendar startingDate) {
-      Calendar date = startingDate;
       calendar = new ArrayList<Day>(MAX_CALENDAR_DAYS);
-      for (int i = 0; i < MAX_CALENDAR_DAYS; ++i) {
-         calendar.add(new Day(date));
-         date.add(DAY_OF_MONTH, 1);
-      }
+      shifts = new ArrayList<Shift>();
+      //TODO read in shifts
       doctors = new ArrayList<Employee>();
       doctorShifts = new ArrayList<EmployeeShift>();
       //TODO read in EmployeeShift
 
-      //adds doctor shifts from the database into the calendar
-      for (int i = 0; i < doctorShifts.size(); ++i) {
-         EmployeeShift shift = doctorShifts.get(i); //TODO assuming it has been read successfully
-         Calendar shiftDate = shift.getDate();
-         calendar
-         //subtract shiftDate from startingDate to get num
-         //use num in calendar.get(num);
-         int index = calendar.indexOf(shiftDate);
-         //TODO add it into calendar
-      }
 
       doctorPreferredShifts = new ArrayList<EmployeePreferredShift>();
-      //read in preferred shifts
+      //TODO read in preferred shifts
       doctorTimeOff = new ArrayList<EmployeeTimeOff>();
+      //TODO read in timeoff
+      for (int i = 0; i < doctorTimeOff.size(); ++i) {
+         //TODO add timeoff for multiple days
+      }
+
+      addCalendarDays(startingDate);
+      readDoctoShiftsFromDatabase(startingDate);
    }
- 
+
+  /*
+   * Adds enough 28 days to the calendar
+   */ 
+   private void addCalendarDays(Calendar startingDate) {
+      Calendar date = startingDate;
+
+      for (int i = 0; i < MAX_CALENDAR_DAYS; ++i) {
+         calendar.add(new Day(date));
+         date.add(date.DAY_OF_MONTH, 1);
+      }
+   }
+
+   private void readDoctoShiftsFromDatabase(Calendar startingDate) {
+      for (int i = 0; i < doctorShifts.size(); ++i) {
+         EmployeeShift employeeShift = doctorShifts.get(i); //TODO assuming it has been read successfully
+         Calendar shiftDate = employeeShift.getDate();
+         //subtract shiftDate from startingDate to get index for calendar
+         long newTime = shiftDate.getTimeInMillis() 
+                         - startingDate.getTimeInMillis();
+         int index = (int) newTime / MILLISECONDS_TO_DAYS;
+         //use index in to get calendar day
+         Day day = calendar.get(index);
+         int shiftID = employeeShift.getShiftID();
+         Shift shift;
+         for (int j = 0; j < shifts.size(); ++j) {
+            if (shifts.get(j).getID() == shiftID) {
+               shift = shifts.get(j);
+            }
+         }
+         day.setShift(shift);
+      }
+   }
+
+   //TODO read in shifts
+   //TODO check preferences
+   //TODO calendar
    //Creates a default schedule assuming no preferences. Uses hardcoded shift
    //blocks to schedule doctors.
    //IDEA -- Generalize this process
@@ -51,14 +76,13 @@ public class Scheduler {
       int i;
       Day day;
       ArrayList<Day> newWeek = new ArrayList<>();
-      
+
       //Initialize days of week
       for (i = 0; i < 7; i++) {
           newWeek.set(i, new Day(startDate));
           startDate.add(Calendar.DATE, 1);
       }
-      
-      
+
       //IDEA: Create shift sets with a whole 4 shift schedule that contains overnight and surgery
       //and assign doctors to shift sets. Will have 2 doctors free to take the rest of the slots
       
@@ -68,7 +92,7 @@ public class Scheduler {
       //Schedule Monday
       newWeek.get(1) = scheduleDay(newWeek.get(1), docIDs.get(7), docIDs.get(4), docIDs.get(5),
               docIDs.get(6), docIDs.get(1));
-      
+
       //Schedule Tuesday
       newWeek.get(2) = scheduleDay(newWeek.get(2), docIDs.get(4), docIDs.get(5), docIDs.get(6),
               docIDs.get(0), docIDs.get(2));
@@ -76,22 +100,22 @@ public class Scheduler {
       //Schedule Wednesday
       newWeek.get(3) = scheduleDay(newWeek.get(3), docIDs.get(5), docIDs.get(6), docIDs.get(0),
               docIDs.get(1), docIDs.get(3));
-      
+
       //Schedule Thursday
       newWeek.get(4) = scheduleDay(newWeek.get(4), docIDs.get(7), docIDs.get(0), docIDs.get(1),
               docIDs.get(2), docIDs.get(4));
-      
+
       //Schedule Friday
       newWeek.get(5) = scheduleDay(newWeek.get(5), docIDs.get(8), docIDs.get(1), docIDs.get(2),
               docIDs.get(3), docIDs.get(5));
-      
+
       //Schedule Saturday
       newWeek.get(6) = scheduleDay(newWeek.get(6), docIDs.get(8), docIDs.get(2), docIDs.get(3),
               docIDs.get(4), docIDs.get(6));
-      
+
       return newWeek;
    }
-   
+
    /* Schedules an entire day. Takes day to schedule, fills it, and returns.
     * Pass null for early morning shift to indicate Sunday.
     */
@@ -128,8 +152,6 @@ public class Scheduler {
       ArrayList<Integer> twoFree = new ArrayList<>();
       ArrayList<Integer> oneFree = new ArrayList<>();
       ArrayList<Integer> zeroFree = new ArrayList<>();
-      
-      
       
       //Get all doctor ids and assign to maximum number of shift availability
       for (i = 0; i < doctors.size(); i++) {
@@ -220,4 +242,3 @@ public class Scheduler {
    //TODO check preferences
    //TODO calendar
 */
-
