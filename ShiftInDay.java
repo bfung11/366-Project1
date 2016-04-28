@@ -27,8 +27,8 @@ public class ShiftInDay {
       shiftID = shift.getID();
    }
 
-   public void getShift() {
-      return shiftID();
+   public int getShift() {
+      return shiftID;
    }
 
    public void setFirstDoctor(int id) {
