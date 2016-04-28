@@ -39,27 +39,53 @@ public class Day {
       return date.get(Calendar.DAY_OF_WEEK) == Calendar.Sunday;
    }
 
-   public DayShift getEarlyMorningShift() {
-      return earlyMorningShift;
+   public void setShift(Shift shift) {
+      switch(shift.getName()) {
+         case "Early Morning Shift":
+            earlyMorningShift = shift;
+            break;
+         case "Morning Shift":
+            morningShift = shift;
+            break;
+         case "Late Morning Shift":
+            lateMorningShift = shift;
+            break;
+         case "Surgery Shift":
+            surgeryShift = shift;
+            break; 
+         case "Overnight Shift":
+            overnightShift = shift;
+            break;
+         case "Sunday Shift":
+            sundayShift = shift;
+            break;
+         default:
+            System.out.println("Not a valid shift");
+            break;
+      }
    }
 
-   public DayShift getMorningShift() {
-      return morningShift;
+   public void getShift(Shift shift) {
+      switch(shift.getName()) {
+         case "Early Morning Shift":
+            return earlyMorningShift;
+         case "Morning Shift":
+            return morningShift;
+         case "Late Morning Shift":
+            return lateMorningShift;
+         case "Surgery Shift":
+            return surgeryShift;
+         case "Overnight Shift":
+            return overnightShift;
+         case "Sunday Shift":
+            return sundayShift;
+         default:
+            System.out.println("Not a valid shift");
+            break;
+      }
    }
 
-   public DayShift getLateMorningShift() {
-      return lateMorningShift;
-   }
-
-   public DayShift getSurgeryShift() {
-      return surgeryShift;
-   }
-
-   public DayShift getOvernightShift() {
-      return overnightShift;
-   }
-
-   public DayShift getSundayShift() {
-      return sundayShift;
+   public void addDoctorTimeOff(EmployeeTimeOff timeoff) {
+      doctorTimeOff.add(timeoff);
    }
 }
