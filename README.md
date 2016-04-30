@@ -16,7 +16,10 @@ A full stack program that schedules doctors
 - accept all license agreements and click next until finished
 - go back to project and click “Run”
 
-
 If using the professor’s account:
 - username: lubo
 - password: secret
+
+If using the our account:
+- username: admin
+- password: admin
