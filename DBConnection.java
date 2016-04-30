@@ -48,7 +48,7 @@ public class DBConnection {
     
     
     // Executes query string and returns the result.
-    public ResultSet execQuery (String query) throws SQLException {
+    public ResultSet execQuery(String query) throws SQLException {
         Connection con = this.getConnection();
 
         if (con == null) {
