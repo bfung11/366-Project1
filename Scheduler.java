@@ -26,25 +26,20 @@ public class Scheduler {
       //TODO read in shifts
       doctors = new ArrayList<Employee>();
       doctorShifts = new ArrayList<EmployeeShift>();
-      //TODO read in EmployeeShift
-
-
       doctorPreferredShifts = new ArrayList<EmployeePreferredShift>();
-      //TODO read in preferred shifts
       doctorTimeOff = new ArrayList<EmployeeTimeOff>();
-      //TODO read in timeoff
       for (int i = 0; i < doctorTimeOff.size(); ++i) {
          //TODO add timeoff for multiple days
       }
 
-      addCalendarDays(startingDate);
-      readDoctoShiftsFromDatabase(startingDate);
+      addDaysToCalendar(startingDate);
+      readDoctorShiftsFromDatabase(startingDate);
    }
 
   /*
    * Adds enough 28 days to the calendar
    */ 
-   private void addCalendarDays(Calendar startingDate) {
+   private void addDaysToCalendar(Calendar startingDate) {
       Calendar date = startingDate;
 
       for (int i = 0; i < MAX_CALENDAR_DAYS; ++i) {
@@ -53,7 +48,12 @@ public class Scheduler {
       }
    }
 
-   private void readDoctoShiftsFromDatabase(Calendar startingDate) {
+   private void readDoctorShiftsFromDatabase(Calendar startingDate) {
+      DBConnection con = new DBConnection();
+      ResultSet set = con.execQuery("SELECT *" +
+                                    "FROM DoctorShifts");
+      
+
       for (int i = 0; i < doctorShifts.size(); ++i) {
          EmployeeShift employeeShift = doctorShifts.get(i); //TODO assuming it has been read successfully
          Calendar shiftDate = employeeShift.getDate();
@@ -72,6 +72,10 @@ public class Scheduler {
          }
          day.setShift(shift);
       }
+   }
+
+   private void readDoctorPreferredShifts() {
+
    }
 
    //TODO read in shifts
