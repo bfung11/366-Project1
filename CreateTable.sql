@@ -1,6 +1,5 @@
 CREATE TABLE Shifts (
-   id SERIAL PRIMARY KEY,
-   name TEXT NOT NULL,
+   name TEXT PRIMARY KEY,
    fromTime TIME NOT NULL,
    toTime TIME NOT NULL
 );
@@ -18,15 +17,15 @@ CREATE TABLE Doctors (
 CREATE TABLE DoctorShifts (
    id INTEGER REFERENCES Doctors(id),
    date DATE NOT NULL,
-   shift INTEGER REFERENCES Shifts(id),
+   shift TEXT REFERENCES Shifts(name),
    PRIMARY KEY (id, date)
 );
 
 CREATE TABLE DoctorPreferredShifts (
    doctorID INTEGER REFERENCES Doctors(id),
    date DATE NOT NULL,
-   shiftID INTEGER REFERENCES Shifts(id),
-   PRIMARY KEY (doctorID, date, shiftID)
+   shift TEXT REFERENCES Shifts(name),
+   PRIMARY KEY (doctorID, date, shift)
 );
 
 CREATE TABLE DoctorTimeOff (
@@ -51,15 +50,15 @@ CREATE TABLE Technicians (
 CREATE TABLE TechnicianShifts (
    id INTEGER REFERENCES Technicians(id),
    date DATE NOT NULL,
-   shift INTEGER REFERENCES Shifts(id),
+   shift TEXT REFERENCES Shifts(name),
    PRIMARY KEY (id, date)
 );
 
 CREATE TABLE TechnicianPreferredShifts (
    technicianID INTEGER REFERENCES Technicians(id),
    date DATE NOT NULL,
-   shiftID INTEGER REFERENCES Shifts(id),
-   PRIMARY KEY (technicianID, date, shiftID)
+   shift TEXT REFERENCES Shifts(name),
+   PRIMARY KEY (technicianID, date, shift)
 );
 
 CREATE TABLE TechnicianTimeOff (
