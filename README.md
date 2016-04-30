@@ -2,7 +2,7 @@
 A full stack program that schedules doctors
 
 
-## How to connect to the database * 
+## How to connect to the database
 
 **In terminal:**
 - ssh to <unix server>.csc.calpoly.edu
