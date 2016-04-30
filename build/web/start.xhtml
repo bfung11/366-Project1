@@ -20,11 +20,19 @@
 
             <ui:define name="box">
                 <h:form>
-                    What do you want to do? 
-                    <h:selectOneMenu value="#{selector.choice}">
-                        <f:selectItems value="#{selector.choices}"/>
+                    Doctors:
+                    <h:selectOneMenu value="#{selector.choiceDoc}">
+                        <f:selectItems value="#{selector.dchoices}"/>
                     </h:selectOneMenu>
-                    <h:commandButton value = "Go" action="#{selector.transition()}"/>
+                    <h:commandButton value = "Go" action="#{selector.doctorList()}"/>
+                </h:form>
+                
+                <h:form>
+                    Technicians:
+                    <h:selectOneMenu value="#{selector.choiceTech}">
+                        <f:selectItems value="#{selector.tchoices}"/>
+                    </h:selectOneMenu>
+                    <h:commandButton value = "Go" action="#{selector.techList()}"/>
                 </h:form>
             </ui:define>
 

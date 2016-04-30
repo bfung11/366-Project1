@@ -18,34 +18,67 @@ import javax.faces.bean.SessionScoped;
 @SessionScoped
 public class Selector implements Serializable {
 
-    private String[] choices = {"Create New Customer", "List All Customers", "Find Customer", "Delete Customer"};
-    private String choice;
+    private String[] docChoices = {"Create New Doctor", "List All Customers", "Find Customer", "Delete Customer"};
+    private String[] techChoices = {"Create New Doctor", "List All Customers", "Find Customer", "Delete Customer"};
+    private String choiceDoc;
+    private String choiceTech;
 
-    public String[] getChoices() {
-        return choices;
+    public String[] getDchoices() {
+        return this.docChoices;
     }
 
-    public void setChoices(String[] choices) {
-        this.choices = choices;
+    public void setDchoices(String[] choices) {
+        this.docChoices = choices;
     }
 
-    public String getChoice() {
-        return choice;
+    public String[] getTchoices() {
+        return this.techChoices;
     }
 
-    public void setChoice(String choice) {
-        this.choice = choice;
+    public void setTchoices(String[] choices) {
+        this.techChoices = choices;
+    }
+    
+    public String getChoiceDoc() {
+        return this.choiceDoc;
     }
 
-    public String transition() {
-        switch (choice) {
-            case "Create New Customer":
+    public void setChoiceDoc(String choice) {
+        this.choiceDoc = choice;
+    }
+    
+    public String getChoiceTech() {
+        return this.choiceTech;
+    }
+
+    public void setChoiceTech(String choice) {
+        this.choiceTech = choice;
+    }
+
+    public String doctorList() {
+        switch (this.choiceDoc) {
+            case "Create New Doctor":
                 return "newCustomer";
-            case "List All Customers":
+            case "List All Doctors":
                 return "listCustomers";
-            case "Find Customer":
+            case "Find Doctor":
                 return "findCustomer";
-            case "Delete Customer":
+            case "Delete Doctor":
+                return "deleteCustomer";
+            default:
+                return null;
+        }
+    }
+    
+    public String techList() {
+        switch (this.choiceTech) {
+            case "Create New Technician":
+                return "newCustomer";
+            case "List All Technicians":
+                return "listCustomers";
+            case "Find Technician":
+                return "findCustomer";
+            case "Delete Technician":
                 return "deleteCustomer";
             default:
                 return null;

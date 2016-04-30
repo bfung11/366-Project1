@@ -1,7 +1,6 @@
 
 import java.io.Serializable;
 import java.sql.SQLException;
-
 import javax.annotation.ManagedBean;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.SessionScoped;
@@ -10,23 +9,29 @@ import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
 import javax.inject.Named;
-
+import javax.servlet.http.HttpSession;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
+ * Used Lubomir Stanchev's code as a basis for this code.
  */
+
 /**
  *
- * @author stanchev
+ * @author Kevin Yang
+ * @author Brian Fung
+ * @author Justin Zaman
+ * @author Lubomir Stanchev
  */
+
 @Named(value = "login")
 @SessionScoped
 @ManagedBean
 public class Login implements Serializable {
 
-    private String login;
+    private String username;
     private String password;
     private UIInput loginUI;
 
@@ -38,12 +43,13 @@ public class Login implements Serializable {
         this.loginUI = loginUI;
     }
 
-    public String getLogin() {
-        return login;
+    // Changing getUsername to getBlah will make XHTML from login.username to login.blah
+    public String getUsername() {
+        return username;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
@@ -54,20 +60,30 @@ public class Login implements Serializable {
         this.password = password;
     }
 
-    public void validate(FacesContext context, UIComponent component, Object value)
-            throws ValidatorException, SQLException {
-        login = loginUI.getLocalValue().toString();
-        password = value.toString();
+    public void validate(
+            FacesContext context, 
+            UIComponent component, 
+            Object value
+    ) throws ValidatorException, SQLException {
+        this.username = loginUI.getLocalValue().toString();
+        this.password = value.toString();
 
-        if (!((login.equals("lubo") && password.equals("secret")))) {
-            FacesMessage errorMessage = new FacesMessage("Wrong login/password");
+        // TODO: check if user and password matches input
+        if (!((this.username.equals("admin") && this.password.equals("admin")))) {
+            FacesMessage errorMessage = new FacesMessage("Wrong username or password!");
             throw new ValidatorException(errorMessage);
         }
     }
 
     public String go() {
-        Util.invalidateUserSession();
+        this.invalidateUserSession();
         return "success";
+    }
+    
+    public void invalidateUserSession() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
+        session.invalidate();
     }
 
 }
