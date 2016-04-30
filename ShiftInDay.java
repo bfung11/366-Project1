@@ -35,7 +35,7 @@ public class ShiftInDay {
       doctorID_1 = id;
    }
 
-   public int getFirstDoctor(int id) {
+   public int getFirstDoctor() {
       return doctorID_1;
    }
 
@@ -43,7 +43,7 @@ public class ShiftInDay {
       doctorID_2 = id;
    }
 
-   public int getSecondDoctor(int id) {
+   public int getSecondDoctor() {
       return doctorID_2;
    }
 
@@ -51,7 +51,7 @@ public class ShiftInDay {
       technicianID_1 = id;
    }
 
-   public int getFirstTechnician(int id) {
+   public int getFirstTechnician() {
       return technicianID_1;
    }
 
@@ -59,7 +59,7 @@ public class ShiftInDay {
       technicianID_2 = id;
    }
    
-   public int getSecondTechnician(int id) {
+   public int getSecondTechnician() {
       return technicianID_2;
    }
 }

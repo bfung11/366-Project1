@@ -89,6 +89,28 @@ public class Day {
       return null;
    }
 
+   public ShiftInDay getShift(String shiftName) {
+      switch(shiftName) {
+         case "Early Morning Shift":
+            return earlyMorningShift;
+         case "Morning Shift":
+            return morningShift;
+         case "Late Morning Shift":
+            return lateMorningShift;
+         case "Surgery Shift":
+            return surgeryShift;
+         case "Overnight Shift":
+            return overnightShift;
+         case "Sunday Shift":
+            return sundayShift;
+         default:
+            System.out.println(shiftName + " is not a valid shift");
+            break;
+      }
+   
+      return null;
+   }
+   
    public void addDoctorTimeOff(EmployeeTimeOff timeoff) {
       doctorTimeOff.add(timeoff);
    }
