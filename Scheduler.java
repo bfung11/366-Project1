@@ -64,7 +64,7 @@ public class Scheduler {
          //use index in to get calendar day
          Day day = calendar.get(index);
          int shiftID = employeeShift.getShiftID();
-         Shift shift;
+         Shift shift = null;
          for (int j = 0; j < shifts.size(); ++j) {
             if (shifts.get(j).getID() == shiftID) {
                shift = shifts.get(j);
@@ -95,31 +95,38 @@ public class Scheduler {
       //and assign doctors to shift sets. Will have 2 doctors free to take the rest of the slots
       
       //Schedule Sunday
-      newWeek.get(0) = scheduleDay(newWeek.get(0), null, docIDs.get(3), null, null, null, docIDs.get(0));
+      day = scheduleDay(newWeek.get(0), null, docIDs.get(3), null, null, docIDs.get(0));
+      newWeek.set(0, day);
       
       //Schedule Monday
-      newWeek.get(1) = scheduleDay(newWeek.get(1), docIDs.get(7), docIDs.get(4), docIDs.get(5),
+      day = scheduleDay(newWeek.get(1), docIDs.get(7), docIDs.get(4), docIDs.get(5),
               docIDs.get(6), docIDs.get(1));
-
+      newWeek.set(1, day);
+      
       //Schedule Tuesday
-      newWeek.get(2) = scheduleDay(newWeek.get(2), docIDs.get(4), docIDs.get(5), docIDs.get(6),
+      day = scheduleDay(newWeek.get(2), docIDs.get(4), docIDs.get(5), docIDs.get(6),
               docIDs.get(0), docIDs.get(2));
+      newWeek.set(2, day);
       
       //Schedule Wednesday
-      newWeek.get(3) = scheduleDay(newWeek.get(3), docIDs.get(5), docIDs.get(6), docIDs.get(0),
+      day = scheduleDay(newWeek.get(3), docIDs.get(5), docIDs.get(6), docIDs.get(0),
               docIDs.get(1), docIDs.get(3));
+      newWeek.set(3, day);
 
       //Schedule Thursday
-      newWeek.get(4) = scheduleDay(newWeek.get(4), docIDs.get(7), docIDs.get(0), docIDs.get(1),
+      day = scheduleDay(newWeek.get(4), docIDs.get(7), docIDs.get(0), docIDs.get(1),
               docIDs.get(2), docIDs.get(4));
+      newWeek.set(4, day);
 
       //Schedule Friday
-      newWeek.get(5) = scheduleDay(newWeek.get(5), docIDs.get(8), docIDs.get(1), docIDs.get(2),
+      day = scheduleDay(newWeek.get(5), docIDs.get(8), docIDs.get(1), docIDs.get(2),
               docIDs.get(3), docIDs.get(5));
+      newWeek.set(5, day);
 
       //Schedule Saturday
-      newWeek.get(6) = scheduleDay(newWeek.get(6), docIDs.get(8), docIDs.get(2), docIDs.get(3),
+      day = scheduleDay(newWeek.get(6), docIDs.get(8), docIDs.get(2), docIDs.get(3),
               docIDs.get(4), docIDs.get(6));
+      newWeek.set(6, day);
 
       return newWeek;
    }
@@ -131,19 +138,37 @@ public class Scheduler {
            Integer sShift, Integer oShift) {
       //Schedule Sunday
       if (emShift == null) {
-         day.setSundayShift(mShift);
-         day.setOvernightShift(oShift);
+         assignDoctorToShift(day, mShift, "Sunday Shift");
+         assignDoctorToShift(day, oShift, "Overnight Shift");
       }
       //Schedule other days
       else {
-         day.setEMShift(emShift);
-         day.setMShift(mShift);
-         day.setLMShift(lmShift);
-         day.setSurgeryShift(sShift);
-         day.setOvernightShift(oShift);
+         assignDoctorToShift(day, emShift, "Early Morning Shift");
+         assignDoctorToShift(day, mShift, "Morning Shift");
+         assignDoctorToShift(day, lmShift, "Late Morning Shift");
+         assignDoctorToShift(day, sShift, "Sunday Shift");
+         assignDoctorToShift(day, oShift, "Overnight Shift");
       }
       
       return day;
+   }
+   
+   private void assignDoctorToShift(Day day, Integer docID, String shiftName) {
+      ShiftInDay oldShift;
+      
+      oldShift = day.getShift(shiftName);
+      
+      if (oldShift.getFirstDoctor() > 0) {
+         if (oldShift.getSecondDoctor() > 0) {
+            System.out.println("Shift is full already.");
+         }
+         else {
+            oldShift.setSecondDoctor(docID);
+         }
+      }
+      else {
+         oldShift.setFirstDoctor(docID);
+      }
    }
 
    //Need to specify some way to change a schedule
@@ -162,9 +187,9 @@ public class Scheduler {
       ArrayList<Integer> zeroFree = new ArrayList<>();
       
       //Get all doctor ids and assign to maximum number of shift availability
-      for (i = 0; i < doctors.size(); i++) {
-          allIDs.add(doctors.get(i));
-          fourFree.add(doctors.get(i));
+      for (i = 0; i < docIDs.size(); i++) {
+          allIDs.add(docIDs.get(i));
+          fourFree.add(docIDs.get(i));
       }
       
       //Check that there is enough doctors
@@ -182,6 +207,7 @@ public class Scheduler {
       //Brute force???
       
       //TODO -- Return result
+      return schedule;
       
    }
    //TODO read in shifts
