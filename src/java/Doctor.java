@@ -1,9 +1,9 @@
 public class Doctor extends Employee {
    public Doctor() {
-      super("doctor");
+      super(Employee.DOCTOR);
    }
 
-   public Integer getID() {
+   public int getID() {
       return super.getID();
    }
 
@@ -25,5 +25,9 @@ public class Doctor extends Employee {
 
    public String getPhoneNumber() {
       return super.getPhoneNumber();
+   }
+
+   public int getTimeOff() {
+      return super.getTimeOff();
    }
 }

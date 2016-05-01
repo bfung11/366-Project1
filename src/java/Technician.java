@@ -1,9 +1,9 @@
 public class Technician extends Employee {
    public Technician() {
-      super("technician");
+      super(Employee.TECHNICIAN);
    }
 
-   public Integer getID() {
+   public int getID() {
       return super.getID();
    }
 
@@ -25,5 +25,9 @@ public class Technician extends Employee {
 
    public String getPhoneNumber() {
       return super.getPhoneNumber();
+   }
+
+   public int getTimeOff() {
+      return super.getTimeOff();
    }
 }
