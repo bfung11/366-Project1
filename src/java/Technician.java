@@ -1,6 +1,6 @@
-public class Doctor extends Employee {
-   public Doctor() {
-      super(Employee.DOCTOR);
+public class Technician extends Employee {
+   public Technician() {
+      super(Employee.TECHNICIAN);
    }
 
    public int getID() {

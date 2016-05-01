@@ -5,8 +5,8 @@ A full stack program that schedules doctors
 ## How to connect to the database
 
 **In terminal:**
-- ssh to <unix server>.csc.calpoly.edu
-- type “psql -h cslvm74.csc.calpoly.edu -p 5432 -U <username>”
+- ssh to \<unix server\>.csc.calpoly.edu
+- type “psql -h cslvm74.csc.calpoly.edu -p 5432 -U \<username\>”
 
 **In NetBeans:**
 - download glassfish 

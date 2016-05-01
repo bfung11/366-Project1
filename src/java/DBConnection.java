@@ -32,7 +32,7 @@ public class DBConnection {
     * 
     */
     // Connect to DB
-    private Connection getConnection() {
+    public Connection getConnection() {
         java.sql.Connection connection = null;
         try {
             connection = DriverManager.getConnection(
