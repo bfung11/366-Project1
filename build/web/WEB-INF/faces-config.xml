@@ -37,26 +37,42 @@
             /start.xhtml
         </from-view-id>
         <navigation-case>
-            <from-outcome>newCustomer</from-outcome>
-            <to-view-id>newCustomer.xhtml</to-view-id>
+            <from-outcome>newDoctor</from-outcome>
+            <to-view-id>newDoctor.xhtml</to-view-id>
         </navigation-case>
         <navigation-case>
-            <from-outcome>listCustomers</from-outcome>
-            <to-view-id>showAllCustomers.xhtml</to-view-id>
+            <from-outcome>listDoctors</from-outcome>
+            <to-view-id>allDoctors.xhtml</to-view-id>
         </navigation-case>
         <navigation-case>
-            <from-outcome>findCustomer</from-outcome>
-            <to-view-id>findCustomer.xhtml</to-view-id>
+            <from-outcome>findDoctor</from-outcome>
+            <to-view-id>findDoctor.xhtml</to-view-id>
         </navigation-case>
         <navigation-case>
-            <from-outcome>deleteCustomer</from-outcome>
-            <to-view-id>deleteCustomer.xhtml</to-view-id>
+            <from-outcome>deleteDoctor</from-outcome>
+            <to-view-id>deleteDoctor.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>newTechnician</from-outcome>
+            <to-view-id>newTechnician.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>listTechnicians</from-outcome>
+            <to-view-id>allTechnicians.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>findTechnician</from-outcome>
+            <to-view-id>findTechnician.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>deleteTechnician</from-outcome>
+            <to-view-id>deleteTechnician.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
     
     <navigation-rule>
         <from-view-id>
-            /newCustomer.xhtml
+            /newDoctor.xhtml
         </from-view-id>
         <navigation-case>
             <from-outcome>main</from-outcome>
@@ -66,7 +82,17 @@
     
     <navigation-rule>
         <from-view-id>
-            /findCustomer.xhtml
+            /newTechnician.xhtml
+        </from-view-id>
+        <navigation-case>
+            <from-outcome>main</from-outcome>
+            <to-view-id>start.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>
+            /findDoctor.xhtml
         </from-view-id>
         <navigation-case>
             <from-outcome>showCustomer</from-outcome>
@@ -76,7 +102,17 @@
     
     <navigation-rule>
         <from-view-id>
-            /deleteCustomer.xhtml
+            /findTechnician.xhtml
+        </from-view-id>
+        <navigation-case>
+            <from-outcome>showCustomer</from-outcome>
+            <to-view-id>displayCustomer.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>
+            /deleteDoctor.xhtml
         </from-view-id>
         <navigation-case>
             <from-outcome>main</from-outcome>
@@ -84,6 +120,15 @@
         </navigation-case>
     </navigation-rule>
     
+    <navigation-rule>
+        <from-view-id>
+            /deleteTechnician.xhtml
+        </from-view-id>
+        <navigation-case>
+            <from-outcome>main</from-outcome>
+            <to-view-id>start.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
     
     
     

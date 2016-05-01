@@ -18,8 +18,8 @@ import javax.faces.bean.SessionScoped;
 @SessionScoped
 public class Selector implements Serializable {
 
-    private String[] docChoices = {"Create New Doctor", "List All Customers", "Find Customer", "Delete Customer"};
-    private String[] techChoices = {"Create New Doctor", "List All Customers", "Find Customer", "Delete Customer"};
+    private String[] docChoices = {"Create New Doctor", "List All Doctors", "Find Doctor", "Delete Doctor"};
+    private String[] techChoices = {"Create New Technician", "List All Technicians", "Find Technician", "Delete Technician"};
     private String choiceDoc;
     private String choiceTech;
 
@@ -58,13 +58,13 @@ public class Selector implements Serializable {
     public String doctorList() {
         switch (this.choiceDoc) {
             case "Create New Doctor":
-                return "newCustomer";
+                return "newDoctor";
             case "List All Doctors":
-                return "listCustomers";
+                return "listDoctors";
             case "Find Doctor":
-                return "findCustomer";
+                return "findDoctor";
             case "Delete Doctor":
-                return "deleteCustomer";
+                return "deleteDoctor";
             default:
                 return null;
         }
@@ -73,13 +73,13 @@ public class Selector implements Serializable {
     public String techList() {
         switch (this.choiceTech) {
             case "Create New Technician":
-                return "newCustomer";
+                return "newTechnician";
             case "List All Technicians":
-                return "listCustomers";
+                return "listTechnicians";
             case "Find Technician":
-                return "findCustomer";
+                return "findTechnician";
             case "Delete Technician":
-                return "deleteCustomer";
+                return "deleteTechnician";
             default:
                 return null;
         }

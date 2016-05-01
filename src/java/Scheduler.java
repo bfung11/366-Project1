@@ -11,6 +11,9 @@ import java.util.*;
 public class Scheduler {
    private final static int MAX_CALENDAR_DAYS = 28;
    private final static int MILLISECONDS_TO_DAYS = 1000 * 60 * 60 * 24;
+   private final static int DAYS_PER_WEEK = 7;
+   private final static int MAX_SHIFTS_PER_WEEK = 4;
+   private final static int INVALID = -1;
 
    private ArrayList<Day> calendar;
    private ArrayList<Shift> shifts;
@@ -175,108 +178,130 @@ public class Scheduler {
       }
    }
 
-   //Need to specify some way to change a schedule
-   //WARNING: Still a work in progress
-   public ArrayList<Day> schedule(ArrayList<Day> schedule, ArrayList<Integer> docIDs) {
+   //Grants request for a day off for a doctor if possible
+   public boolean requestDayOff(ArrayList<Day> schedule, ArrayList<Integer> docIDs,
+           Integer requestingDoc, Day requestedDay) {
       int i;
+      int j;
+      int docID;
+      int temp;
+      int indexOfDay = 0;
+      boolean isWorking = false;
+      boolean isReplaced = false;
+      boolean isSunday = requestedDay.isSunday();
+      Day day;
+      Day yesterday = null;
+      ShiftInDay shift;
+      Shift newShift;
       ArrayList<Integer> validIDs = new ArrayList<>();
       ArrayList<Integer> allIDs = new ArrayList<>();
       ArrayList<Day> newWeek = new ArrayList<>();
+      Map<Integer, Integer> freeDays = new HashMap<>();
+      String shiftType = null;
+      String[] shiftNames = {"Early Morning Shift", "Morning Shift", "Late "
+              + "Morning Shift", "Surgery Shift", "Overnight Shift"};
       
-      //Associate number of shifts a doctor can still work with their id
-      ArrayList<Integer> fourFree = new ArrayList<>();
-      ArrayList<Integer> threeFree = new ArrayList<>();
-      ArrayList<Integer> twoFree = new ArrayList<>();
-      ArrayList<Integer> oneFree = new ArrayList<>();
-      ArrayList<Integer> zeroFree = new ArrayList<>();
+      //Store which doctors are working when
+      Set[] dailyDocs = new Set[DAYS_PER_WEEK];
+      for (i = 0; i < DAYS_PER_WEEK; i++) {
+         dailyDocs[i] = new HashSet<>();
+      }
       
+      //Store which doctors are working overnight shifts from Sun-Sat [0-6]
+      Integer[] overnightDocs = new Integer[DAYS_PER_WEEK];
+              
       //Get all doctor ids and assign to maximum number of shift availability
       for (i = 0; i < docIDs.size(); i++) {
           allIDs.add(docIDs.get(i));
-          fourFree.add(docIDs.get(i));
+          freeDays.put(docIDs.get(i), MAX_SHIFTS_PER_WEEK);
       }
       
       //Check that there is enough doctors
       if (allIDs.size() != 9) {
           System.out.println("Do not have 9 doctors...");
-          return null;
+          return false;
       }
       
-      //TODO -- Go through current schedule and move doctors to lists. If there
-      //are multiple doctors on a shift, remove 1 and put them in a free list
-      //Try to satisfy latest request by switching doctor with request with a
-      //free doctor
+      /* Helps with finding free doctors to fill up a shift
+       * Go through current schedule and finds out which doctors work what days
+       * and overnight shifts as well as remove doctors from extra shifts.
+       * This frees them up to possibly take the shift that is being lost
+       */
+      for (i = 0; i < DAYS_PER_WEEK; i++) {
+         day = schedule.get(i);
+         if (day == requestedDay && !isSunday)
+            yesterday = schedule.get(i - 1);
+         for (j = 0; j < shiftNames.length; j++) {
+            shift = day.getShift(shiftNames[j]);
+            docID = shift.getFirstDoctor();
+            if (day == requestedDay && docID == requestingDoc) {
+               isWorking = true;
+               indexOfDay = i;
+               shiftType = shiftNames[j];
+            }
+            if (docID >= 0) {
+               dailyDocs[i].add(docID);
+               temp = freeDays.get(docID);
+               freeDays.put(docID, temp - 1);
+               if (shiftNames[j].equals("Overnight Shift")) {
+                  overnightDocs[i] = docID;
+               }
+            }
+            docID = shift.getSecondDoctor();
+            if (docID >= 0) {
+               shift.setSecondDoctor(INVALID);
+            }
+         }
+      }
       
-      //TODO -- Case above fails
-      //Brute force???
+      //Case where doctor is already not working on the requested day
+      if (!isWorking)
+         return true;
+         
+      //Try to slot in free doctor into slot
+      for (Map.Entry<Integer, Integer> entry : freeDays.entrySet()) {
+         //If doctor has free days 
+         if (entry.getValue() > 0) {
+            //If doctor does not already work today
+            if (!requestedDay.checkDoctorWorking(entry.getKey())) {
+               //If doctor did not work overnight yesterday
+               if (yesterday == null || !yesterday.checkOvernightDoctor(entry.getKey())) {
+                  //Set doctor in shift
+                  shift = schedule.get(indexOfDay).getShift(shiftType);
+                  shift.setFirstDoctor(entry.getKey());
+                  isReplaced = true;
+                  freeDays.put(entry.getKey(), entry.getValue() - 1);
+                  freeDays.put(requestingDoc, 1);
+                  break;
+               }
+            }
+         }
+      }
       
-      //TODO -- Return result
-      return schedule;
+      //Could not replace doctor
+      if (!isReplaced) {
+         //System.out.println("Request could not be granted.");
+         return false;
+      }
+
+      //TODO -- Assign free doctors to second shifts
+      /*
+      for (Map.Entry<Integer, Integer> entry : freeDays.entrySet()) {
+         //If doctor has free days 
+         if (entry.getValue() > 0) {
+            
+            freeDays.put(entry.getKey(), entry.getValue() - 1);
+         }
+      }*/
+
+      //Success if got here
+      return true;
       
    }
-   //TODO read in shifts
-   //TODO check preferences
-   //TODO calendar
+   
+   //TODO -- Grants request for doctor's preferred work time if possible
+   public boolean requestWorkTime(ArrayList<Day> schedule, ArrayList<Integer> docIDs,
+           Integer requestingDoc, Day requestedDay, String shiftName) {
+      return false;
+   }
 }
-
-
-/*
-//Need to specify some way to change a schedule
-   public ArrayList<Day> schedule(ArrayList<Day> schedule, ArrayList<Integer> docIDs) {
-      ArrayList<Integer> validIDs = new ArrayList<>();
-      ArrayList<Integer> allIDs = new ArrayList<>();
-      ArrayList<Day> newWeek = new ArrayList<>();
-      
-      //Associate number of shifts a doctor can still work with their id
-      ArrayList<Integer> fourFree = new ArrayList<>();
-      ArrayList<Integer> threeFree = new ArrayList<>();
-      ArrayList<Integer> twoFree = new ArrayList<>();
-      ArrayList<Integer> oneFree = new ArrayList<>();
-      ArrayList<Integer> zeroFree = new ArrayList<>();
-      
-      int i;
-      boolean surgeryOK, overnightOK, otherOK;
-      boolean isValid = false;
-      
-      //Break point checks
-      surgeryOK = overnightOK = otherOK = false;
-      
-      //Get all doctor ids and assign to maximum number of shift availability
-      for (i = 0; i < doctors.size(); i++) {
-          allIDs.add(doctors.get(i).id);
-          fourFree.add(doctors.get(i).id);
-      }
-      
-      //Check that there is enough doctors
-      if (allIDs.size() != 9) {
-          System.out.println("Do not have 9 doctors...");
-          return null;
-      }
-      
-      //The default schedule
-      newWeek = makeDefaultSchedule(startDate, allIDs);
-      
-      
-      //TODO -- Check preferences
-      //When satisfying request, if they do not have lowest priority pref, also
-      //schedule them to the surgery + overnight shifts if possible.
-      
-      //TODO -- Schedule surgery shift
-      while (!otherOK) {
-          while (!overnightOK) {
-              while (!surgeryOK) {
-                  //Order doctors with least to most availability for surgery shifts
-                  
-                  for (i = 0; i < doctors.size(); i++) {
-                      
-                  }
-              }
-          }
-      }
-      //TODO -- Schedule overnight shift
-      //TODO -- Schedule rest
-   }
-   //TODO read in shifts
-   //TODO check preferences
-   //TODO calendar
-*/
