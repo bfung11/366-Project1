@@ -114,4 +114,46 @@ public class Day {
    public void addDoctorTimeOff(EmployeeTimeOff timeoff) {
       doctorTimeOff.add(timeoff);
    }
+   
+   public boolean checkDoctorWorking(Integer docID) {
+      if (earlyMorningShift.getFirstDoctor() == docID)
+         return true;
+      if (earlyMorningShift.getSecondDoctor() == docID)
+         return true;
+      
+      if (morningShift.getFirstDoctor() == docID)
+         return true;
+      if (morningShift.getSecondDoctor() == docID)
+         return true;
+      
+      if (lateMorningShift.getFirstDoctor() == docID)
+         return true;
+      if (lateMorningShift.getSecondDoctor() == docID)
+         return true;
+      
+      if (surgeryShift.getFirstDoctor() == docID)
+         return true;
+      if (surgeryShift.getSecondDoctor() == docID)
+         return true;
+      
+      if (overnightShift.getFirstDoctor() == docID)
+         return true;
+      if (overnightShift.getSecondDoctor() == docID)
+         return true;
+      
+      if (sundayShift.getFirstDoctor() == docID)
+         return true;
+      if (sundayShift.getSecondDoctor() == docID)
+         return true;
+      
+      return false;
+   }
+   
+   public boolean checkOvernightDoctor(Integer docID) {
+      if (overnightShift.getFirstDoctor() == docID)
+         return true;
+      if (overnightShift.getSecondDoctor() == docID)
+         return true;
+      return false;
+   }
 }
