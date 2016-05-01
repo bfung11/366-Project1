@@ -16,7 +16,6 @@ import java.sql.Statement;
  */
 public class DBConnection {
 
-
     public DBConnection() {
         try {
             Class.forName("org.postgresql.Driver");
@@ -36,8 +35,8 @@ public class DBConnection {
         java.sql.Connection connection = null;
         try {
             connection = DriverManager.getConnection(
-                    "jdbc:postgresql://127.0.0.1:5432/test", "postgres",
-                    "password");
+                    "jdbc:postgresql://cslvm74.csc.calpoly.edu:5432/bfung", "postgres",
+                    "");
         } catch (SQLException e) {
             System.out.println("Connection Failed! Check output console");
             e.printStackTrace();
@@ -78,4 +77,26 @@ public class DBConnection {
         con.commit();
         con.close();
     }
+
+   /*
+    * This main is to test the connection class to make sure it connects to 
+    * the DB
+    */
+   /*
+    public static void main (String[] args) {
+        DBConnection dbcon = new DBConnection();
+        Connection con = dbcon.getConnection();
+        System.out.println(con);
+        
+        try {
+        ResultSet result = dbcon.execQuery("select * from Doctors");
+        if (result.next() != false) {
+            System.out.println(result.getInt("id"));
+        }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }        
+    }
+    */
 }

@@ -88,15 +88,10 @@ public class Employee {
       catch (Exception e) {
          e.printStackTrace();
       }
-
    }
 
-   public boolean isDoctor() {
-       return this.type == DOCTOR;
-   }
-   
-   public boolean isTechnician() {
-       return this.type == TECHNICIAN;
+   public int getType() {
+      return type;
    }
    
    public int getID() {
