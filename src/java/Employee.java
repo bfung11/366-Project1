@@ -18,6 +18,8 @@ import java.util.Date;
 import java.util.TimeZone;
 
 
+import java.util.*;
+
 @Named(value = "employee")
 @SessionScoped
 @ManagedBean
@@ -26,6 +28,7 @@ public class Employee {
 
    public final static int DOCTOR = 1;
    public final static int TECHNICIAN = 2;
+   public final static int ADMINISTRATOR = 3;
 
    private final static String ID_TABLENAME = "id";
    private final static String EMAIL_TABLENAME = "email";
@@ -50,10 +53,7 @@ public class Employee {
       this.type = type;
    }
 
-   // public Employee getEmployee() {
-   // }
-
-   public int getType(String username) {
+   public Employee(String username) {
       try {
          connection = new DBConnection();
          Connection con = connection.getConnection();
@@ -65,32 +65,30 @@ public class Employee {
             connection.execQuery(query);
          type = DOCTOR;
 
-         if (result.next() == null) {
-            String tablename = "Technicians";
-            String query = "select * from " + tablename + 
-                           "where username = " + username;
+         if (result.next() == false) {
+            tablename = "Technicians";
+            query = "select * from " + tablename + 
+                    "where username = " + username;
 
-            ResultSet result =
-               connection.execQuery(query);
+            result = connection.execQuery(query);
             type = TECHNICIAN;
             result.next(); // result starts out before the first row
          }
+
+         id = result.getInt(ID_TABLENAME);
+         email = result.getString(EMAIL_TABLENAME);
+         password = result.getString(PASSWORD_TABLENAME);
+         firstname = result.getString(FIRSTNAME_TABLENAME);
+         lastname = result.getString(LASTNAME_TABLENAME);
+         phone = result.getString(PHONE_TABLENAME);
+         timeoff = result.getInt(TIMEOFF_TABLENAME);
+
+         con.close();
       } 
       catch (Exception e) {
          e.printStackTrace();
       }
 
-      id = result.getInt(ID_TABLENAME);
-      email = result.getString(EMAIL_TABLENAME);
-      password = result.getString(PASSWORD_TABLENAME);
-      firstname = result.getString(FIRSTNAME_TABLENAME);
-      lastname = result.getString(LASTNAME_TABLENAME);
-      phone = result.getString(PHONE_TABLENAME);
-      timeoff = result.getInt(TIMEOFF_TABLENAME);
-
-      con.close();
-
-      return type;
    }
 
    public boolean isDoctor() {
@@ -138,7 +136,7 @@ public class Employee {
 
          String tablename = "DoctorShifts";
          if (type == TECHNICIAN) {
-            tablename = "TechnicianShifts"
+            tablename = "TechnicianShifts";
          }
 
          String query = "select * from " + tablename + 
@@ -146,10 +144,12 @@ public class Employee {
          ResultSet result =
             connection.execQuery(query);
 
-         while(result.next() != null) {            
+         while(result.next() == false) {  
+            Calendar cal = new GregorianCalendar();
+            cal.setTime(result.getDate(DATE_TABLENAME));         
             EmployeeShift es = 
                new EmployeeShift(result.getInt(ID_TABLENAME),
-                                 result.getDate(DATE_TABLENAME),
+                                 cal,
                                  result.getInt(SHIFTID_TABLENAME));
             list.add(es);
          }
@@ -188,5 +188,7 @@ public class Employee {
 
    }
 
-   public void getListOfTechnicians
+   public void getListOfTechnicians() {
+
+   }
 }
