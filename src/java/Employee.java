@@ -71,6 +71,14 @@ public class Employee {
       }
    }
 
+   public boolean isDoctor() {
+       return this.type == DOCTOR;
+   }
+   
+   public boolean isTechnician() {
+       return this.type == TECHNICIAN;
+   }
+   
    public int getID() {
       return id;
    }
