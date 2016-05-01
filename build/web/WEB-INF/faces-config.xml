@@ -28,8 +28,16 @@
             /index.xhtml
         </from-view-id>
         <navigation-case>
-            <from-outcome>success</from-outcome>
-            <to-view-id>start.xhtml</to-view-id>
+            <from-outcome>startDoc</from-outcome>
+            <to-view-id>startD.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>startTech</from-outcome>
+            <to-view-id>startT.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>startAdmin</from-outcome>
+            <to-view-id>startA.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule> 
     <navigation-rule>

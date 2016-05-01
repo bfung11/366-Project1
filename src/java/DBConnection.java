@@ -16,7 +16,6 @@ import java.sql.Statement;
  */
 public class DBConnection {
 
-
     public DBConnection() {
         try {
             Class.forName("org.postgresql.Driver");
@@ -36,8 +35,8 @@ public class DBConnection {
         java.sql.Connection connection = null;
         try {
             connection = DriverManager.getConnection(
-                    "jdbc:postgresql://127.0.0.1:5432/test", "postgres",
-                    "password");
+                    "jdbc:postgresql://cslvm74.csc.calpoly.edu:5432/bfung", "postgres",
+                    "");
         } catch (SQLException e) {
             System.out.println("Connection Failed! Check output console");
             e.printStackTrace();
@@ -77,5 +76,32 @@ public class DBConnection {
         statement.close();
         con.commit();
         con.close();
+    }
+    
+    public static void main (String[] args) {
+        DBConnection dbcon = new DBConnection();
+        Connection con = dbcon.getConnection();
+        System.out.println(con);
+        
+        try {
+            
+            dbcon.execUpdate("delete from Doctors where id = 14");
+
+            dbcon.execUpdate("insert into Doctors("
+                + "email, "
+                + "password, "
+                + "firstname, "
+                + "lastname, "
+                + "phone"
+                + ") values('blah@gmail.com', 'abc', 'Bob', 'Johnny', '123')");
+            ResultSet result = dbcon.execQuery("select * from Doctors where lastname = 'Johnny'");
+            if (result.next() != false) {
+                System.out.println(result.getString("lastname"));
+            }
+            
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }        
     }
 }

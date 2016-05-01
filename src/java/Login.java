@@ -77,7 +77,18 @@ public class Login implements Serializable {
 
     public String go() {
         this.invalidateUserSession();
-        return "success";
+        
+        Employee empl = EmployeeFactory.createEmployee(this.username);
+        switch(empl.getType()) {
+            case 1:
+               return "startDoc";
+            case 2:
+                return "startTech";
+            case 3:
+                return "startAdmin";
+            default:
+                return "startError";
+        }
     }
     
     public void invalidateUserSession() {
