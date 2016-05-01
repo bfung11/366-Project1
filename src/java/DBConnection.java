@@ -78,13 +78,17 @@ public class DBConnection {
         con.close();
     }
     
+   /*
+    * This main is to test the connection class to make sure it connects to 
+    * the DB
+    */
+   /*
     public static void main (String[] args) {
         DBConnection dbcon = new DBConnection();
         Connection con = dbcon.getConnection();
         System.out.println(con);
         
-        try {
-            
+        try {            
             dbcon.execUpdate("delete from Doctors where id = 14");
 
             dbcon.execUpdate("insert into Doctors("
@@ -98,10 +102,14 @@ public class DBConnection {
             if (result.next() != false) {
                 System.out.println(result.getString("lastname"));
             }
-            
+                    ResultSet result = dbcon.execQuery("select * from Doctors");
+        if (result.next() != false) {
+            System.out.println(result.getInt("id"));
+        }
         }
         catch (Exception e) {
             e.printStackTrace();
         }        
     }
+    */
 }

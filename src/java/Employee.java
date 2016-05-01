@@ -18,14 +18,17 @@ import java.util.Date;
 import java.util.TimeZone;
 
 
+import java.util.*;
+
 @Named(value = "employee")
 @SessionScoped
 @ManagedBean
 public class Employee {
    DBConnection connection;
 
-   public static int DOCTOR = 1;
-   public static int TECHNICIAN = 2;
+   public final static int DOCTOR = 1;
+   public final static int TECHNICIAN = 2;
+   public final static int ADMINISTRATOR = 3;
 
    private final static String ID_TABLENAME = "id";
    private final static String EMAIL_TABLENAME = "email";
@@ -34,6 +37,8 @@ public class Employee {
    private final static String LASTNAME_TABLENAME = "lastname";
    private final static String PHONE_TABLENAME = "phone";
    private final static String TIMEOFF_TABLENAME = "timeoff";
+   private final static String DATE_TABLENAME = "date";
+   private final static String SHIFTID_TABLENAME = "shift";
 
    private int id;
    private String email;
@@ -44,20 +49,32 @@ public class Employee {
    private int timeoff; /* counted in hours */
    private int type;
 
-
    public Employee(int type) {
       this.type = type;
-      connection = new DBConnection();
-      Connection con = connection.getConnection();
+   }
 
-      String tablename = "Doctors";
-      if (type == TECHNICIAN) {
-         tablename = "Technicians";
-      }
-
+   public Employee(String username) {
       try {
-         ResultSet result = 
-            connection.execQuery("select max(id) from " + tablename);
+         connection = new DBConnection();
+         Connection con = connection.getConnection();
+
+         String tablename = "Doctors";
+         String query = "select * from " + tablename + 
+                        "where username = " + username;
+         ResultSet result =
+            connection.execQuery(query);
+         type = DOCTOR;
+
+         if (result.next() == false) {
+            tablename = "Technicians";
+            query = "select * from " + tablename + 
+                    "where username = " + username;
+
+            result = connection.execQuery(query);
+            type = TECHNICIAN;
+            result.next(); // result starts out before the first row
+         }
+
          id = result.getInt(ID_TABLENAME);
          email = result.getString(EMAIL_TABLENAME);
          password = result.getString(PASSWORD_TABLENAME);
@@ -65,18 +82,16 @@ public class Employee {
          lastname = result.getString(LASTNAME_TABLENAME);
          phone = result.getString(PHONE_TABLENAME);
          timeoff = result.getInt(TIMEOFF_TABLENAME);
-      }
-      catch(Exception e) {
+
+         con.close();
+      } 
+      catch (Exception e) {
          e.printStackTrace();
       }
    }
 
-   public boolean isDoctor() {
-       return this.type == DOCTOR;
-   }
-   
-   public boolean isTechnician() {
-       return this.type == TECHNICIAN;
+   public int getType() {
+      return type;
    }
    
    public int getID() {
@@ -105,5 +120,70 @@ public class Employee {
 
    public int getTimeOff() {
       return timeoff;
+   }
+
+   public ArrayList<EmployeeShift> getSchedule() {
+      ArrayList<EmployeeShift> list = new ArrayList<EmployeeShift>();
+
+      try {
+         connection = new DBConnection();
+         Connection con = connection.getConnection();
+
+         String tablename = "DoctorShifts";
+         if (type == TECHNICIAN) {
+            tablename = "TechnicianShifts";
+         }
+
+         String query = "select * from " + tablename + 
+                        "where id = " + this.id;
+         ResultSet result =
+            connection.execQuery(query);
+
+         while(result.next() == false) {  
+            Calendar cal = new GregorianCalendar();
+            cal.setTime(result.getDate(DATE_TABLENAME));         
+            EmployeeShift es = 
+               new EmployeeShift(result.getInt(ID_TABLENAME),
+                                 cal,
+                                 result.getInt(SHIFTID_TABLENAME));
+            list.add(es);
+         }
+
+      }
+      catch (Exception e) {
+         e.printStackTrace();
+      }
+
+      return list;
+   }
+
+   public boolean canChoosePreferredShift() {
+      // generate schedule and then find out
+      return false;
+   }
+
+   // TODO : can choose preferred times
+   public void choosePreferredTimes() {
+
+   }
+
+   public void chooseTimeOff() {
+
+   }
+
+   public void addDoctor() {
+
+   }
+
+   public void addTechnician() {
+
+   }
+
+   public void getListofDoctors() {
+
+   }
+
+   public void getListOfTechnicians() {
+
    }
 }

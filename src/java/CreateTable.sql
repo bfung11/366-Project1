@@ -10,7 +10,8 @@ CREATE TABLE Doctors (
    password TEXT NOT NULL,
    firstname TEXT,
    lastname TEXT NOT NULL,
-   phone TEXT NOT NULL
+   phone TEXT NOT NULL,
+   timeoff INTEGER
 );
 
 -- DoctorShifts connects a doctor to a shift and a date
@@ -43,7 +44,8 @@ CREATE TABLE Technicians (
    password TEXT NOT NULL,
    firstname TEXT,
    lastname TEXt NOT NULL,
-   phone TEXT NOT NULL
+   phone TEXT NOT NULL,
+   timeoff INTEGER
 );
 
 -- TechnicianShifts connects a doctor to a shift and a date
