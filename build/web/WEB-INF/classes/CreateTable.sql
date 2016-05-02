@@ -11,7 +11,8 @@ CREATE TABLE Doctors (
    firstname TEXT,
    lastname TEXT NOT NULL,
    phone TEXT NOT NULL,
-   timeoff INTEGER
+   vacationDaysLeft INTEGER DEFAULT 8,
+   sickDaysLeft INTEGER DEFAULT 4
 );
 
 -- DoctorShifts connects a doctor to a shift and a date
@@ -35,6 +36,7 @@ CREATE TABLE DoctorTimeOff (
    fromTime TIME NOT NULL,
    toDate DATE NOT NULL,
    toTime TIME NOT NULL,
+   timeOffType TEXT NOT NULL,
    PRIMARY KEY (id, fromDate, fromTime, toDate, toTime)
 );
 
@@ -45,7 +47,8 @@ CREATE TABLE Technicians (
    firstname TEXT,
    lastname TEXt NOT NULL,
    phone TEXT NOT NULL,
-   timeoff INTEGER
+   vacationDaysLeft INTEGER DEFAULT 8,
+   sickDaysLeft INTEGER DEFAULT 4
 );
 
 -- TechnicianShifts connects a doctor to a shift and a date
@@ -69,6 +72,7 @@ CREATE TABLE TechnicianTimeOff (
    fromTime TIME NOT NULL,
    toDate DATE NOT NULL,
    toTime TIME NOT NULL,
+   timeOffType TEXT NOT NULL,
    PRIMARY KEY (id, fromDate, fromTime, toDate, toTime)
 );
 

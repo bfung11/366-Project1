@@ -81,8 +81,16 @@
             /newDoctor.xhtml
         </from-view-id>
         <navigation-case>
-            <from-outcome>main</from-outcome>
-            <to-view-id>start.xhtml</to-view-id>
+            <from-outcome>mainAdministrator</from-outcome>
+            <to-view-id>startA.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>mainTechnician</from-outcome>
+            <to-view-id>startT.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>mainDoctor</from-outcome>
+            <to-view-id>startD.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
     
