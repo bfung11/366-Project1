@@ -77,7 +77,7 @@ public class DBConnection {
         con.commit();
         con.close();
     }
-
+    
    /*
     * This main is to test the connection class to make sure it connects to 
     * the DB
@@ -88,8 +88,21 @@ public class DBConnection {
         Connection con = dbcon.getConnection();
         System.out.println(con);
         
-        try {
-        ResultSet result = dbcon.execQuery("select * from Doctors");
+        try {            
+            dbcon.execUpdate("delete from Doctors where id = 14");
+
+            dbcon.execUpdate("insert into Doctors("
+                + "email, "
+                + "password, "
+                + "firstname, "
+                + "lastname, "
+                + "phone"
+                + ") values('blah@gmail.com', 'abc', 'Bob', 'Johnny', '123')");
+            ResultSet result = dbcon.execQuery("select * from Doctors where lastname = 'Johnny'");
+            if (result.next() != false) {
+                System.out.println(result.getString("lastname"));
+            }
+                    ResultSet result = dbcon.execQuery("select * from Doctors");
         if (result.next() != false) {
             System.out.println(result.getInt("id"));
         }

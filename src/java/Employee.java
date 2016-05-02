@@ -78,7 +78,7 @@ public class Employee {
                result.next(); // result starts out before the first row
             } 
          }
-
+         
          id = result.getInt(ID_TABLENAME);
          email = result.getString(EMAIL_TABLENAME);
          password = result.getString(PASSWORD_TABLENAME);
