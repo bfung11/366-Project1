@@ -14,6 +14,16 @@ public class Doctor extends Employee {
       super.createEmployee("Doctors");
       return "mainAdministrator";
    }
+
+   public String doesIdExist() {
+      super.doesIdExist("Doctors");
+      return "mainAdministrator";
+   }
+
+   public String deleteDoctor() {
+      super.deleteEmployee("Doctors");
+      return "mainAdministrator";
+   }
    
 /*public String createCustomer() throws SQLException, ParseException {
 DBConnection dbcon = new DBConnection();

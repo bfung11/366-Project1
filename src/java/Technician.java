@@ -11,4 +11,9 @@ public class Technician extends Employee {
       super.createEmployee("Technicians");
       return "mainAdministrator";
    }
+
+   public String deleteTechnician() {
+      super.deleteEmployee("Technician");
+      return "mainAdministrator";
+   }
 }
