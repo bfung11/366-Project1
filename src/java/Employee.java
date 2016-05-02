@@ -195,8 +195,9 @@ public class Employee {
    private ArrayList<String> getEmployeeSchedule() {
       ArrayList<String> mySchedule = new ArrayList<>();
       int i;
-      String tableName1;
-      String tableName2;
+      String thisEmpShifts;
+      String otherEmpShifts;
+      String otherEmpInfo;
       String resultLine;
       
       try {
@@ -204,22 +205,30 @@ public class Employee {
          Connection con = connection.getConnection();
 
          // get tablename
-         tableName1 = "DoctorShifts";
-         tableName2 = "TechnicianShifts";
+         thisEmpShifts = "DoctorShifts";
+         otherEmpShifts = "TechnicianShifts";
+         otherEmpInfo = "Technicians";
          if (type == TECHNICIAN) {
-            tableName1 = "TechnicianShifts";
+            thisEmpShifts = "TechnicianShifts";
+            otherEmpShifts = "DoctorShifts";
+            otherEmpInfo = "Doctors";
           }
 
-         String query = "select * from " + tableName1 + " where id = " + this.id;
+         String query = "select DoctorShifts.date, fromTime, toTime, " + otherEmpInfo
+                 + ".name from DoctorShifts, TechnicianShifts, Shifts, " + otherEmpInfo 
+                 + " where " + thisEmpShifts + ".id = " + this.id + " and " + otherEmpInfo
+                 + ".id = " + otherEmpShifts + ".id and DoctorShifts.date = "
+                 + "TechnicianShifts.date and DoctorShifts.shift = Shifts.name";
          ResultSet result =
             connection.execQuery(query);
 
-         // add shifts to a list
+         // add shifts to a list in date, fromTime, toTime, name of coworker format
          while(result.next()) {  
             resultLine = "";
-            resultLine = resultLine + Integer.toString(result.getInt(1));
-            resultLine = resultLine + " " + result.getDate(2);
-            resultLine = resultLine + " " + result.getString(3);
+            resultLine = resultLine + result.getDate(1);
+            resultLine = resultLine + " " + result.getTime(2);
+            resultLine = resultLine + " " + result.getTime(3);
+            resultLine = resultLine + " " + result.getString(4);
             mySchedule.add(resultLine);
          }
       }
