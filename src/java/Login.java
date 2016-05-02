@@ -77,16 +77,17 @@ public class Login implements Serializable {
 
     public String go() {
         this.invalidateUserSession();
-        
+        System.out.println("username " + this.username);
         Employee empl = EmployeeFactory.createEmployee(this.username);
         switch(empl.getType()) {
-            case 1:
+            case Employee.DOCTOR:
                return "startDoc";
-            case 2:
+            case Employee.TECHNICIAN:
                 return "startTech";
-            case 3:
+            case Employee.ADMINISTRATOR:
                 return "startAdmin";
             default:
+                System.out.println("thisisatype " + (empl == null));
                 return "startError";
         }
     }
