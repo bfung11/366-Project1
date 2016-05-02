@@ -72,7 +72,11 @@ public class Employee {
 
             result = connection.execQuery(query);
             type = TECHNICIAN;
-            result.next(); // result starts out before the first row
+
+            if (result.next() == false) {
+               type = ADMINISTRATOR;
+               result.next(); // result starts out before the first row
+            } 
          }
 
          id = result.getInt(ID_TABLENAME);
@@ -122,40 +126,55 @@ public class Employee {
       return timeoff;
    }
 
-   public ArrayList<EmployeeShift> getSchedule() {
-      ArrayList<EmployeeShift> list = new ArrayList<EmployeeShift>();
+   // public getSchedule() {
+   //    ArrayList<EmployeeShift> list = getEmployeeSchedule();
+   //    getEmployeeNames()
+   //    //formatSchedule()
+   // }
 
-      try {
-         connection = new DBConnection();
-         Connection con = connection.getConnection();
+   // private ArrayList<EmployeeShift> getEmployeeSchedule() {
+   //    ArrayList<EmployeeShift> list = new ArrayList<EmployeeShift>();
 
-         String tablename = "DoctorShifts";
-         if (type == TECHNICIAN) {
-            tablename = "TechnicianShifts";
-         }
+   //    try {
+   //       connection = new DBConnection();
+   //       Connection con = connection.getConnection();
 
-         String query = "select * from " + tablename + 
-                        "where id = " + this.id;
-         ResultSet result =
-            connection.execQuery(query);
+   //       // get tablename
+   //       String tablename = "DoctorShifts";
+   //       if (type == TECHNICIAN) {
+   //          tablename = "TechnicianShifts";
+   //       }
 
-         while(result.next() == false) {  
-            Calendar cal = new GregorianCalendar();
-            cal.setTime(result.getDate(DATE_TABLENAME));         
-            EmployeeShift es = 
-               new EmployeeShift(result.getInt(ID_TABLENAME),
-                                 cal,
-                                 result.getInt(SHIFTID_TABLENAME));
-            list.add(es);
-         }
+   //       String query = "select * from " + tablename + 
+   //                      "where id = " + this.id;
+   //       ResultSet result =
+   //          connection.execQuery(query);
 
-      }
-      catch (Exception e) {
-         e.printStackTrace();
-      }
+   //       // add shifts to a list
+   //       while(result.next() == false) {  
+   //          Calendar cal = new GregorianCalendar();
+   //          cal.setTime(result.getDate(DATE_TABLENAME));         
+   //          EmployeeShift es = 
+   //             new EmployeeShift(result.getInt(ID_TABLENAME),
+   //                               cal,
+   //                               result.getInt(SHIFTID_TABLENAME));
+   //          list.add(es);
+   //       }
+   //    }
+   //    catch (Exception e) {
+   //       e.printStackTrace();
+   //    }
 
-      return list;
-   }
+   //    return list;
+   // }
+
+   // private String getEmployeeNames() {
+
+   // }
+
+   // private String formatSchedule() {
+
+   // }
 
    public boolean canChoosePreferredShift() {
       // generate schedule and then find out
