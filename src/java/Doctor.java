@@ -1,5 +1,6 @@
 import java.sql.*;
 import java.text.ParseException;
+import java.util.*;
 
 public class Doctor extends Employee {
    public Doctor() {
@@ -24,7 +25,10 @@ public class Doctor extends Employee {
       super.deleteEmployee("Doctors");
       return "mainAdministrator";
    }
-   
+
+   public List<Employee> getDoctorList() {
+      return super.getEmployeeList("Doctors");
+   }   
 /*public String createCustomer() throws SQLException, ParseException {
 DBConnection dbcon = new DBConnection();
 Connection con = dbcon.getConnection();
