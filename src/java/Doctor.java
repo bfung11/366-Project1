@@ -1,9 +1,15 @@
+import java.sql.*;
+
 public class Doctor extends Employee {
    public Doctor() {
       super(Employee.DOCTOR);
    }
 
-   public int getID() {
+   public Doctor(String username) {
+      super(username);
+   }
+
+   public int getDoctorID() {
       return super.getID();
    }
 
@@ -29,5 +35,12 @@ public class Doctor extends Employee {
 
    public int getTimeOff() {
       return super.getTimeOff();
+   }
+
+   public String testConnection() {
+      DBConnection connection = new DBConnection();
+      Connection con = connection.getConnection();
+
+      return "Hello Doctor!";
    }
 }

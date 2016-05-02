@@ -3,6 +3,10 @@ public class Technician extends Employee {
       super(Employee.TECHNICIAN);
    }
 
+   public Technician(String username) {
+      super(username);
+   }
+
    public int getID() {
       return super.getID();
    }

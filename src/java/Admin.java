@@ -3,6 +3,10 @@ public class Admin extends Employee {
       super(Employee.ADMINISTRATOR);
    }
 
+   public Admin(String username) {
+      super(username);
+   }
+
    public int getID() {
       return super.getID();
    }
