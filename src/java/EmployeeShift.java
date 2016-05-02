@@ -3,12 +3,12 @@ import java.util.*;
 public class EmployeeShift {
    private int employeeID;
    private Calendar date; //TODO may need to change datatypes
-   private int shiftID;
+   private String shift;
 
-   public EmployeeShift(int employeeID, Calendar date, int shiftID) {
+   public EmployeeShift(int employeeID, Calendar date, String shift) {
       this.employeeID = employeeID;
       this.date = date;
-      this.shiftID = shiftID;
+      this.shift = shift;
    }
 
    public int getEmployeeID() {
@@ -19,7 +19,7 @@ public class EmployeeShift {
       return date;
    }
 
-   public int getShiftID() {
-      return shiftID;
+   public String getShift() {
+      return shift;
    }
 }

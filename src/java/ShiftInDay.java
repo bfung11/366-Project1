@@ -10,7 +10,7 @@
 public class ShiftInDay {
    private final static int NO_EMPLOYEE = -1;
 
-   private int shiftID;
+   private String shift;
    private int doctorID_1;
    private int doctorID_2;
    private int technicianID_1;
@@ -24,11 +24,11 @@ public class ShiftInDay {
    }
 
    public void setShift(Shift shift) {
-      shiftID = shift.getID();
+      this.shift = shift.getName();
    }
 
-   public int getShift() {
-      return shiftID;
+   public String getShift() {
+      return shift;
    }
 
    public void setFirstDoctor(int id) {
