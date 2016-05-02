@@ -11,7 +11,7 @@ CREATE TABLE Doctors (
    password TEXT NOT NULL,
    firstname TEXT,
    lastname TEXT NOT NULL,
-   phone TEXT NOT NULL,
+   phonenumber TEXT NOT NULL,
    vacationDaysLeft INTEGER DEFAULT 8,
    sickDaysLeft INTEGER DEFAULT 4
 );
@@ -48,7 +48,7 @@ CREATE TABLE Technicians (
    password TEXT NOT NULL,
    firstname TEXT,
    lastname TEXt NOT NULL,
-   phone TEXT NOT NULL,
+   phonenumber TEXT NOT NULL,
    vacationDaysLeft INTEGER DEFAULT 8,
    sickDaysLeft INTEGER DEFAULT 4
 );
@@ -85,7 +85,7 @@ CREATE TABLE Admins (
    password TEXT NOT NULL,
    firstname TEXT,
    lastname TEXt NOT NULL,
-   phone TEXT NOT NULL
+   phonenumber TEXT NOT NULL
 );
 
 /*

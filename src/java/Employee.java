@@ -173,14 +173,16 @@ public class Employee {
 
    public void createEmployee(String tablename) {
       try {
-         String query = "INSERT INTO " + tablename + " " +
-                        "VALUES (" + email + ", "
-                                   + username + ", "
-                                   + password + ", "
-                                   + firstname + ", "
-                                   + lastname + ", "
-                                   + phonenumber + ")";
-         connection.execUpdate(query);
+         String query = "INSERT INTO " + tablename +
+                        "(email, username, password, firstname, lastname, phonenumber) " +
+                        "VALUES (" + "'" + email + "', "
+                                   + "'" + username + "', "
+                                   + "'" + password + "', "
+                                   + "'" + firstname + "', "
+                                   + "'" + lastname + "', "
+                                   + "'" + phonenumber + "')";
+         DBConnection con = new DBConnection();
+         con.execUpdate(query);
       }
       catch (Exception e) {
          e.printStackTrace();
