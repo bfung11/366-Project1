@@ -56,19 +56,20 @@ public class Employee {
    public Employee(String username) {
       try {
          connection = new DBConnection();
-         Connection con = connection.getConnection();
 
          String tablename = "Doctors";
-         String query = "select * from " + tablename + 
-                        "where username = " + username;
+         String query = "select * from " + tablename + " " +
+                        "where username = '" + username + "'";
          ResultSet result =
             connection.execQuery(query);
+         System.out.println("in here? 1");
          type = DOCTOR;
+         System.out.println("in here? 2");
 
          if (result.next() == false) {
             tablename = "Technicians";
-            query = "select * from " + tablename + 
-                    "where username = " + username;
+            query = "select * from " + tablename + " " +
+                    "where username = '" + username + "'";
 
             result = connection.execQuery(query);
             type = TECHNICIAN;
@@ -78,7 +79,8 @@ public class Employee {
                result.next(); // result starts out before the first row
             } 
          }
-         
+
+         System.out.println("Employee type " + type);
          id = result.getInt(ID_TABLENAME);
          email = result.getString(EMAIL_TABLENAME);
          password = result.getString(PASSWORD_TABLENAME);
@@ -86,8 +88,6 @@ public class Employee {
          lastname = result.getString(LASTNAME_TABLENAME);
          phone = result.getString(PHONE_TABLENAME);
          timeoff = result.getInt(TIMEOFF_TABLENAME);
-
-         con.close();
       } 
       catch (Exception e) {
          e.printStackTrace();
