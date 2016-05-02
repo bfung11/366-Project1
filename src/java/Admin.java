@@ -30,8 +30,4 @@ public class Admin extends Employee {
    public String getPhoneNumber() {
       return super.getPhoneNumber();
    }
-
-   public int getTimeOff() {
-      return super.getTimeOff();
-   }
 }
