@@ -23,3 +23,7 @@ If using the professor’s account:
 If using the our account:
 - username: admin
 - password: admin
+
+## Debugging
+
+**If you cannot run because of errors pointing at javax, sometimes you need to just restart NetBeans. 
