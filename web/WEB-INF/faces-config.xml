@@ -111,8 +111,8 @@
             /newTechnician.xhtml
         </from-view-id>
         <navigation-case>
-            <from-outcome>main</from-outcome>
-            <to-view-id>start.xhtml</to-view-id>
+            <from-outcome>mainAdministrator</from-outcome>
+            <to-view-id>startA.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
     

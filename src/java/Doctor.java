@@ -28,28 +28,5 @@ public class Doctor extends Employee {
 
    public List<Employee> getDoctorList() {
       return super.getEmployeeList("Doctors");
-   }   
-/*public String createCustomer() throws SQLException, ParseException {
-DBConnection dbcon = new DBConnection();
-Connection con = dbcon.getConnection();
-
-if (con == null) {
-throw new SQLException("Can't get database connection");
-}
-con.setAutoCommit(false);
-
-Statement statement = con.createStatement();
-
-PreparedStatement preparedStatement = con.prepareStatement("Insert into Doctors(email, password, ) values(?,?,?,?)");
-preparedStatement.setInt(1, customerID);
-preparedStatement.setString(2, name);
-preparedStatement.setString(3, address);
-preparedStatement.setDate(4, new java.sql.Date(created_date.getTime()));
-preparedStatement.executeUpdate();
-statement.close();
-con.commit();
-con.close();
-Util.invalidateUserSession();
-return "main";
-}*/
+   }
 }
