@@ -110,9 +110,29 @@ public class Employee {
    public int getType() {
       return type;
    }
-   
-   public int getID() {
+
+   public void setId(int id) {
+      this.id = id;
+   }
+
+   public int getId() {
       return id;
+   }
+
+   public boolean doesIdExist(String tablename) {
+      try {
+         DBConnection con = new DBConnection();
+         String query = "select * from " + tablename + " " +
+                        "where id = " + id;
+         ResultSet result = con.execQuery(query);
+
+         return result.next();
+      }
+      catch (Exception e) {
+         e.printStackTrace();
+      }
+
+      return false;
    }
 
    public void setEmail(String email) {
@@ -181,6 +201,18 @@ public class Employee {
                                    + "'" + firstname + "', "
                                    + "'" + lastname + "', "
                                    + "'" + phonenumber + "')";
+         DBConnection con = new DBConnection();
+         con.execUpdate(query);
+      }
+      catch (Exception e) {
+         e.printStackTrace();
+      }
+   }
+
+   public void deleteEmployee(String tablename) {
+      try {
+         String query = "DELETE from " + tablename + " " +
+                        "WHERE id = " + id;
          DBConnection con = new DBConnection();
          con.execUpdate(query);
       }
