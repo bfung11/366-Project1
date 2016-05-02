@@ -6,9 +6,12 @@
  * @author Kevin Yang
  */
 
+import java.sql.ResultSet;
 import java.util.*;
 
 public class Scheduler {
+   DBConnection connection;
+   
    private final static int MAX_CALENDAR_DAYS = 28;
    private final static int MILLISECONDS_TO_DAYS = 1000 * 60 * 60 * 24;
    private final static int DAYS_PER_WEEK = 7;
@@ -187,7 +190,7 @@ public class Scheduler {
 
    //Grants request for a day off for a doctor if possible
    public boolean requestDayOff(ArrayList<Integer> docIDs, Integer requestingDoc,
-           Calendar requestedDay) {
+           Calendar requestedDay, String table) {
       int i;
       int j;
       int docID;
@@ -197,6 +200,7 @@ public class Scheduler {
       boolean isWorking = false;
       boolean isReplaced = false;
       boolean isSunday = false; 
+      Integer replacementID = 0;
       Day day;
       Day yesterday = null;
       Calendar lowCompDate;
@@ -296,6 +300,7 @@ public class Scheduler {
                   shift = calendar.get(indexOfDay).getShift(shiftType);
                   shift.setFirstDoctor(entry.getKey());
                   isReplaced = true;
+                  replacementID = entry.getKey();
                   freeDays.put(entry.getKey(), entry.getValue() - 1);
                   freeDays.put(requestingDoc, 1);
                   break;
@@ -319,6 +324,9 @@ public class Scheduler {
             freeDays.put(entry.getKey(), entry.getValue() - 1);
          }
       }*/
+      
+      //Call function to push schedule changes to db
+      pushSchedule(replacementID, requestingDoc, requestedDay, table);
 
       //Success if got here
       return true;
@@ -333,5 +341,24 @@ public class Scheduler {
 
    public ArrayList<Day> getSchedule() {
       return calendar;
+   }
+   
+   //Updates assigned shift from oldID to newID
+   private void pushSchedule(Integer newID, Integer oldID, Calendar requestedDay, 
+           String table) {
+      
+      try {
+         connection = new DBConnection();
+
+         String query = "UPDATE " + table + " " + 
+                        "SET id = " + newID + " " + 
+                        "WHERE id = " + oldID + " " + 
+                        "AND date = " + requestedDay;
+             
+         connection.execUpdate(query);
+      }
+      catch (Exception e) {
+         e.printStackTrace();
+      }
    }
 }

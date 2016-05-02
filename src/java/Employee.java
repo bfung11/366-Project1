@@ -60,6 +60,7 @@ public class Employee {
    
    private Scheduler schedule;
    private Calendar startDate;
+   private ArrayList<Integer> coworkerIDs;
 
    public Employee(int type) {
       this.type = type;
@@ -337,7 +338,12 @@ public class Employee {
    }
 
    public boolean canTakeVacation(String username, EmployeeShift shift) {
-      return hasVacationDays(); // TODO : && generateSchedule()
+      if (hasVacationDays()) {
+         getCoworkerIDs();
+         return schedule.requestDayOff(coworkerIDs, id, shift.getDate(), 
+                 getTableName("Shifts"));
+      }
+      return hasVacationDays();
    }
 
    private boolean hasVacationDays() {
@@ -345,7 +351,12 @@ public class Employee {
    }
 
    public boolean canTakeSickDay(Employee employee, EmployeeShift shift) {
-      return hasSickDays(); // TODO : && generateSchedule()
+      if (hasSickDays()) {
+         getCoworkerIDs();
+         return schedule.requestDayOff(coworkerIDs, id, shift.getDate(), 
+                 getTableName("Shifts"));
+      }
+      return hasSickDays();
    }
 
    private boolean hasSickDays() {
@@ -383,6 +394,34 @@ public class Employee {
       }
       catch (Exception e) {
 
+      }
+   }
+   
+   private void getCoworkerIDs() {
+      String table;
+      coworkerIDs = new ArrayList<>();
+      
+      try {
+         connection = new DBConnection();
+         Connection con = connection.getConnection();
+
+         // get tablename
+         table = "Doctors";
+         if (type == TECHNICIAN) {
+            table = "Technicians";
+          }
+
+         String query = "select id from " + table;
+         ResultSet result =
+            connection.execQuery(query);
+
+         // add shifts to a list in date, fromTime, toTime, name of coworker format
+         while(result.next()) {  
+            coworkerIDs.add(result.getInt(1));
+         }
+      }
+      catch (Exception e) {
+         e.printStackTrace();
       }
    }
 
