@@ -12,12 +12,7 @@
         <managed-bean-name>util</managed-bean-name>
         <managed-bean-class>Util</managed-bean-class>
         <managed-bean-scope>session</managed-bean-scope>
-    </managed-bean>
-    <managed-bean>
-        <managed-bean-name>customer</managed-bean-name>
-        <managed-bean-class>Customer</managed-bean-class>
-        <managed-bean-scope>session</managed-bean-scope>
-    </managed-bean>    
+    </managed-bean>  
     <managed-bean>
         <managed-bean-name>login</managed-bean-name>
         <managed-bean-class>Login</managed-bean-class>
@@ -42,39 +37,42 @@
     </navigation-rule> 
     <navigation-rule>
         <from-view-id>
-            /start.xhtml
+            /startA.xhtml
         </from-view-id>
+        
+        <navigation-case>
+            <from-outcome>listDoctors</from-outcome>
+            <to-view-id>listDoctors.xhtml</to-view-id>
+        </navigation-case>
         <navigation-case>
             <from-outcome>newDoctor</from-outcome>
             <to-view-id>newDoctor.xhtml</to-view-id>
-        </navigation-case>
-        <navigation-case>
-            <from-outcome>listDoctors</from-outcome>
-            <to-view-id>allDoctors.xhtml</to-view-id>
-        </navigation-case>
-        <navigation-case>
-            <from-outcome>findDoctor</from-outcome>
-            <to-view-id>findDoctor.xhtml</to-view-id>
         </navigation-case>
         <navigation-case>
             <from-outcome>deleteDoctor</from-outcome>
             <to-view-id>deleteDoctor.xhtml</to-view-id>
         </navigation-case>
         <navigation-case>
+            <from-outcome>changeDocPassword</from-outcome>
+            <to-view-id>changeDocPw.xhtml</to-view-id>
+        </navigation-case>
+        
+        
+        <navigation-case>
+            <from-outcome>listTechnicians</from-outcome>
+            <to-view-id>listTechnicians.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
             <from-outcome>newTechnician</from-outcome>
             <to-view-id>newTechnician.xhtml</to-view-id>
         </navigation-case>
         <navigation-case>
-            <from-outcome>listTechnicians</from-outcome>
-            <to-view-id>allTechnicians.xhtml</to-view-id>
-        </navigation-case>
-        <navigation-case>
-            <from-outcome>findTechnician</from-outcome>
-            <to-view-id>findTechnician.xhtml</to-view-id>
-        </navigation-case>
-        <navigation-case>
             <from-outcome>deleteTechnician</from-outcome>
             <to-view-id>deleteTechnician.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>changeTechPassword</from-outcome>
+            <to-view-id>changeTechPw.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
     

@@ -15,16 +15,16 @@
             </ui:define>
 
             <ui:define name="header">
-                Main Page
+                Technician Page
             </ui:define>
 
             <ui:define name="box">
                 <h:form>
                     What do you want to do?
-                    <h:selectOneMenu value="#{selector.choiceDoc}">
-                        <f:selectItems value="#{selector.dchoices}"/>
+                    <h:selectOneMenu value="#{selector.choiceTech}">
+                        <f:selectItems value="#{selector.TChoices}"/>
                     </h:selectOneMenu>
-                    <h:commandButton value = "Go" action="#{selector.doctorList()}"/>
+                    <h:commandButton value = "Go" action="#{selector.techList()}"/>
                 </h:form>
             </ui:define>
 

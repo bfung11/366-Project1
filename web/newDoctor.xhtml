@@ -3,44 +3,40 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
-    <title>New Customer</title>
+    <title>New Doctor</title>
     <h:head>
         <link href="css/stylesheet.css" rel="stylesheet" type="text/css" />
-        <h1>New Customer</h1>
+        <h1>New Doctor</h1>
     </h:head>
     <h:body>
         <h:form>
             <h:panelGrid columns="3">
-                Customer Id: <h:inputText value="#{customer.customerID}" required ="true"
-                                      requiredMessage="Your must enter Customer ID"
-                                      validator="#{customer.validateCustomerID}"
-                                      converterMessage="Customer ID must be an integer"
-                                      id="userId"/>
-                <h:message for="userId" style="color:red;margin:8px;"/>
-
-                Name: <h:inputText value="#{customer.name}" required ="true"
-                                   requiredMessage="Your must enter Customer Name"
+                Last Name: <h:inputText value="#{doctor.lastname}" required ="true"
+                                   requiredMessage="Your must enter a"
+                                   id="useLast"/>
+                <h:message for="userLast" style="color:red;margin:8px;"/>
+                
+                
+                Username: <h:inputText value="#{doctor.username}" required ="true"
+                                   requiredMessage="Your must enter a"
                                    id="userName"/>
                 <h:message for="userName" style="color:red;margin:8px;"/>
 
-                Address: <h:inputText value="#{customer.address}" required ="true"
-                                      requiredMessage="Your must enter Customer Address"
+                Password: <h:inputText value="#{doctor.password}" required ="true"
+                                      requiredMessage="Your must enter a password!"
                                       validatorMessage="Address must be at least five characters"
-                                      id="userAddress">
+                                      id="userPassword">
                     <f:validateLength minimum="5"/>
                 </h:inputText>
-                <h:message for="userAddress" style="color:red;margin:8px;"/>
-
-                Date: <h:inputText value="#{customer.created_date}" required ="true"
-                                   requiredMessage="Date Required"
-                                   converterMessage="Illegal date (should be mm/dd/yyyy)"
-                                   id="userDate">
-                <f:convertDateTime pattern="MM/dd/yyyy"/>
-                </h:inputText>
-                <h:message for="userDate" style="color:red;margin:8px;"/>
+                <h:message for="userPassword" style="color:red;margin:8px;"/>
+                
+                Phone Number: <h:inputText value="#{doctor.phone}" required ="true"
+                                   requiredMessage="Your must enter a"
+                                   id="userPhone"/>
+                <h:message for="userEmail" style="color:red;margin:8px;"/>
             </h:panelGrid>
             <h:panelGrid>
-                <h:commandButton value="Go" action="#{customer.createCustomer}"/>
+                <h:commandButton value="Go" action="#{doctor.createDoctor}"/>
             </h:panelGrid>
         </h:form>
     </h:body>

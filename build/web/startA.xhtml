@@ -11,28 +11,28 @@
         <ui:composition template="./template.xhtml">
 
             <ui:define name="title">
-                Welcome to my Customer Application
+                Admin Page
             </ui:define>
 
             <ui:define name="header">
-                Main Page
+                Admin Page
             </ui:define>
 
             <ui:define name="box">
                 <h:form>
                     Doctors:
-                    <h:selectOneMenu value="#{selector.choiceDoc}">
-                        <f:selectItems value="#{selector.dchoices}"/>
+                    <h:selectOneMenu value="#{selector.choiceAdminDoc}">
+                        <f:selectItems value="#{selector.ADChoices}"/>
                     </h:selectOneMenu>
-                    <h:commandButton value = "Go" action="#{selector.doctorList()}"/>
+                    <h:commandButton value = "Go" action="#{selector.doctorAdminList()}"/>
                 </h:form>
                 
                 <h:form>
                     Technicians:
-                    <h:selectOneMenu value="#{selector.choiceTech}">
-                        <f:selectItems value="#{selector.tchoices}"/>
+                    <h:selectOneMenu value="#{selector.choiceAdminTech}">
+                        <f:selectItems value="#{selector.ATChoices}"/>
                     </h:selectOneMenu>
-                    <h:commandButton value = "Go" action="#{selector.techList()}"/>
+                    <h:commandButton value = "Go" action="#{selector.techAdminList()}"/>
                 </h:form>
             </ui:define>
 
