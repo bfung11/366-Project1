@@ -54,29 +54,29 @@ public class Scheduler {
    }
 
    private void readDoctorShiftsFromDatabase(Calendar startingDate) {
-      DBConnection con = new DBConnection();
-      // ResultSet set = con.execQuery("SELECT *" +
-      //                               "FROM DoctorShifts");
+      // DBConnection con = new DBConnection();
+      // // ResultSet set = con.execQuery("SELECT *" +
+      // //                               "FROM DoctorShifts");
       
 
-      for (int i = 0; i < doctorShifts.size(); ++i) {
-         EmployeeShift employeeShift = doctorShifts.get(i); //TODO assuming it has been read successfully
-         Calendar shiftDate = employeeShift.getDate();
-         //subtract shiftDate from startingDate to get index for calendar
-         long newTime = shiftDate.getTimeInMillis() 
-                         - startingDate.getTimeInMillis();
-         int index = (int) newTime / MILLISECONDS_TO_DAYS;
-         //use index in to get calendar day
-         Day day = calendar.get(index);
-         int shiftID = employeeShift.getShiftID();
-         Shift shift = null;
-         for (int j = 0; j < shifts.size(); ++j) {
-            if (shifts.get(j).getID() == shiftID) {
-               shift = shifts.get(j);
-            }
-         }
-         day.setShift(shift);
-      }
+      // for (int i = 0; i < doctorShifts.size(); ++i) {
+      //    EmployeeShift employeeShift = doctorShifts.get(i); //TODO assuming it has been read successfully
+      //    Calendar shiftDate = employeeShift.getDate();
+      //    //subtract shiftDate from startingDate to get index for calendar
+      //    long newTime = shiftDate.getTimeInMillis() 
+      //                    - startingDate.getTimeInMillis();
+      //    int index = (int) newTime / MILLISECONDS_TO_DAYS;
+      //    //use index in to get calendar day
+      //    Day day = calendar.get(index);
+      //    String shiftName = employeeShift.getShift();
+      //    Shift shift = null;
+      //    for (int j = 0; j < shifts.size(); ++j) {
+      //       if (shifts.get(j).get() == shiftID) {
+      //          shift = shifts.get(j);
+      //       }
+      //    }
+      //    day.setShift(shift);
+      // }
    }
 
    private void readDoctorPreferredShifts() {
