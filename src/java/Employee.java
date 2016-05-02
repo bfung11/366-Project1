@@ -36,9 +36,13 @@ public class Employee {
    private final static String FIRSTNAME_TABLENAME = "firstname";
    private final static String LASTNAME_TABLENAME = "lastname";
    private final static String PHONE_TABLENAME = "phone";
-   private final static String TIMEOFF_TABLENAME = "timeoff";
+   private final static String VACATION_DAYS_TABLENAME = "vacationDays";
+   private final static String SICK_DAYS_TABLENAME = "sickDays";
    private final static String DATE_TABLENAME = "date";
    private final static String SHIFTID_TABLENAME = "shift";
+
+   private final static int MAX_NUM_VACATION_DAYS = 8;
+   private final static int MAX_NUM_SICK_DAYS = 4;
 
    private int id;
    private String email;
@@ -46,7 +50,8 @@ public class Employee {
    private String firstname;
    private String lastname;
    private String phone;
-   private int timeoff; /* counted in hours */
+   private int vacationDays;
+   private int sickDays;
    private int type;
    
    private Scheduler schedule;
@@ -88,6 +93,8 @@ public class Employee {
          firstname = result.getString(FIRSTNAME_TABLENAME);
          lastname = result.getString(LASTNAME_TABLENAME);
          phone = result.getString(PHONE_TABLENAME);
+         vacationDays = result.getInt(VACATION_DAYS_TABLENAME);
+         sickDays = result.getInt(SICK_DAYS_TABLENAME);
          timeoff = result.getInt(TIMEOFF_TABLENAME);
 
          con.close();
@@ -191,23 +198,77 @@ public class Employee {
 
    }
 
-   public void chooseTimeOff() {
-
+   public boolean canTakeVacation(String username, EmployeeShift shift) {
+      return hasVacationDays(); // TODO : && generateSchedule()
    }
 
-   public void addDoctor() {
-
+   private boolean hasVacationDays() {
+      return vacationDays > 0;
    }
 
-   public void addTechnician() {
-
+   public boolean canTakeSickDay(Employee employee, EmployeeShift shift) {
+      return hasSickDays(); // TODO : && generateSchedule()
    }
 
-   public void getListofDoctors() {
-
+   private boolean hasSickDays() {
+      return sickDays > 0;
    }
 
-   public void getListOfTechnicians() {
+  /* 
+   * @precondition assumes that sick day is granted;
+   */
+   public void takeSickDay(EmployeeShift shift) {
+      //update TimeOff
+      --sickDays;
+      String tablename = getTableName("s");
+      String query = "UPDATE " + tablename + " " +
+                     "SET sickDays = " + sickDays;
+                     "WHERE id = " + id + ";";
+      connection.execUpdate(query);
 
+      //update
+      tablename = getTableName("TimeOff");
+      String date = convertDateToString(shift.getDate());
+      Shift genericShift = new Shift(shift.getShiftName());
+      String fromTime = convertTimeToString(genericShift.getFromTime());
+      String toTime = convertTimeToString(genericShift.getToTime());
+      String query = "INSERT INTO "  + tablename + " " +
+                     "(" + id + ", " 
+                         + date + ", "
+                         + fromTime + ", " 
+                         + date + ", "
+                         + toTime + ", "
+                         + "'sickDay'" + ")";
+      connection.execUpdate(query);  
+   }
+
+   private String convertDateToString(Calendar date) {
+      SimpleDateFormat formatter = new SimpleDateFormat("YYYY-MM-DD");
+      return formatter.format(date.getTime());
+   }
+
+   private String convertTimeToString() {
+      SimpleDateFormat formatter = new SimpleDateFormat("HH:MM");
+      return formatter.format(date.getTime());
+   }
+
+   private String getTableName(String secondPart) {
+      String tablename = "";
+
+      switch(type) {
+         case Employee.DOCTOR:
+            tablename = "Doctor" + secondPart;
+            break;
+         case Employee.TECHNICIAN:
+            tablename = "Technician" + secondPart;
+            break;
+         case Employee.ADMINISTRATOR:
+            tablename = "Administrator" + secondPart;
+            break;
+         default:
+            break;
+      }
+
+      return tablename;
    }
 }
