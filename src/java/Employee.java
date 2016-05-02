@@ -38,8 +38,8 @@ public class Employee {
    private final static String FIRSTNAME_TABLENAME = "firstname";
    private final static String LASTNAME_TABLENAME = "lastname";
    private final static String PHONE_TABLENAME = "phone";
-   private final static String VACATION_DAYS_TABLENAME = "vacationDays";
-   private final static String SICK_DAYS_TABLENAME = "sickDays";
+   private final static String VACATION_DAYS_TABLENAME = "vacationDaysLeft";
+   private final static String SICK_DAYS_TABLENAME = "sickDaysLeft";
    private final static String DATE_TABLENAME = "date";
    private final static String SHIFTID_TABLENAME = "shift";
 
@@ -49,9 +49,10 @@ public class Employee {
    private int id;
    private String email;
    private String password;
+   private String username;
    private String firstname;
    private String lastname;
-   private String phone;
+   private String phonenumber;
    private int vacationDays;
    private int sickDays;
    private int type;
@@ -91,10 +92,11 @@ public class Employee {
          
          id = result.getInt(ID_TABLENAME);
          email = result.getString(EMAIL_TABLENAME);
+         this.username = username;
          password = result.getString(PASSWORD_TABLENAME);
          firstname = result.getString(FIRSTNAME_TABLENAME);
          lastname = result.getString(LASTNAME_TABLENAME);
-         phone = result.getString(PHONE_TABLENAME);
+         phonenumber = result.getString(PHONE_TABLENAME);
          vacationDays = result.getInt(VACATION_DAYS_TABLENAME);
          sickDays = result.getInt(SICK_DAYS_TABLENAME);
 
@@ -113,24 +115,76 @@ public class Employee {
       return id;
    }
 
+   public void setEmail(String email) {
+      this.email = email;
+   }
+
    public String getEmail() {
       return email;
+   }
+
+   public void setUsername(String username) {
+      this.username = username;
+   }
+
+   public String getUsername() {
+      return username;
+   }
+
+   public void setPassword(String password) {
+      this.password = password;
    }
 
    public String getPassword() {
       return password;
    }
 
+   public void setFirstName(String firstname) {
+      this.firstname = firstname;
+   }
+
    public String getFirstName() {
       return firstname;
+   }
+
+   public void setLastName(String lastname) {
+      this.lastname = lastname;
    }
 
    public String getLastName() {
       return lastname;
    }
 
+   public void setPhoneNumber(String phonenumber) {
+      this.phonenumber = phonenumber;
+   }
+
    public String getPhoneNumber() {
-      return phone;
+      return phonenumber;
+   }
+
+   public int getNumVacationDays() {
+      return vacationDays;
+   }
+
+   public int getSickDays() {
+      return sickDays;
+   }
+
+   public void createEmployee(String tablename) {
+      try {
+         String query = "INSERT INTO " + tablename + " " +
+                        "VALUES (" + email + ", "
+                                   + username + ", "
+                                   + password + ", "
+                                   + firstname + ", "
+                                   + lastname + ", "
+                                   + phonenumber + ")";
+         connection.execUpdate(query);
+      }
+      catch (Exception e) {
+         e.printStackTrace();
+      }
    }
 
    public ArrayList<String> getSchedule() {
@@ -141,8 +195,9 @@ public class Employee {
    private ArrayList<String> getEmployeeSchedule() {
       ArrayList<String> mySchedule = new ArrayList<>();
       int i;
-      String tableName1;
-      String tableName2;
+      String thisEmpShifts;
+      String otherEmpShifts;
+      String otherEmpInfo;
       String resultLine;
       
       try {
@@ -150,22 +205,30 @@ public class Employee {
          Connection con = connection.getConnection();
 
          // get tablename
-         tableName1 = "DoctorShifts";
-         tableName2 = "TechnicianShifts";
+         thisEmpShifts = "DoctorShifts";
+         otherEmpShifts = "TechnicianShifts";
+         otherEmpInfo = "Technicians";
          if (type == TECHNICIAN) {
-            tableName1 = "TechnicianShifts";
+            thisEmpShifts = "TechnicianShifts";
+            otherEmpShifts = "DoctorShifts";
+            otherEmpInfo = "Doctors";
           }
 
-         String query = "select * from " + tableName1 + " where id = " + this.id;
+         String query = "select DoctorShifts.date, fromTime, toTime, " + otherEmpInfo
+                 + ".name from DoctorShifts, TechnicianShifts, Shifts, " + otherEmpInfo 
+                 + " where " + thisEmpShifts + ".id = " + this.id + " and " + otherEmpInfo
+                 + ".id = " + otherEmpShifts + ".id and DoctorShifts.date = "
+                 + "TechnicianShifts.date and DoctorShifts.shift = Shifts.name";
          ResultSet result =
             connection.execQuery(query);
 
-         // add shifts to a list
+         // add shifts to a list in date, fromTime, toTime, name of coworker format
          while(result.next()) {  
             resultLine = "";
-            resultLine = resultLine + Integer.toString(result.getInt(1));
-            resultLine = resultLine + " " + result.getDate(2);
-            resultLine = resultLine + " " + result.getString(3);
+            resultLine = resultLine + result.getDate(1);
+            resultLine = resultLine + " " + result.getTime(2);
+            resultLine = resultLine + " " + result.getTime(3);
+            resultLine = resultLine + " " + result.getString(4);
             mySchedule.add(resultLine);
          }
       }

@@ -7,6 +7,7 @@ CREATE TABLE Shifts (
 CREATE TABLE Doctors (
    id SERIAL PRIMARY KEY,
    email TEXT UNIQUE NOT NULL,
+   username TEXT UNIQUE NOT NULL,
    password TEXT NOT NULL,
    firstname TEXT,
    lastname TEXT NOT NULL,
@@ -43,6 +44,7 @@ CREATE TABLE DoctorTimeOff (
 CREATE TABLE Technicians (
    id SERIAL PRIMARY KEY,
    email TEXT UNIQUE NOT NULL,
+   username TEXT UNIQUE NOT NULL,
    password TEXT NOT NULL,
    firstname TEXT,
    lastname TEXt NOT NULL,
@@ -79,6 +81,7 @@ CREATE TABLE TechnicianTimeOff (
 CREATE TABLE Admins (
    id SERIAL PRIMARY KEY,
    email TEXT UNIQUE NOT NULL,
+   username TEXT UNIQUE NOT NULL,
    password TEXT NOT NULL,
    firstname TEXT,
    lastname TEXt NOT NULL,
