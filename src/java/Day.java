@@ -156,4 +156,8 @@ public class Day {
          return true;
       return false;
    }
+   
+   public Calendar getDate() {
+      return date;
+   }
 }
