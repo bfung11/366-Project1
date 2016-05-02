@@ -34,10 +34,11 @@ public class Employee {
 
    private final static String ID_TABLENAME = "id";
    private final static String EMAIL_TABLENAME = "email";
+   private final static String USERNAME_TABLENAME = "username";
    private final static String PASSWORD_TABLENAME = "password";
    private final static String FIRSTNAME_TABLENAME = "firstname";
    private final static String LASTNAME_TABLENAME = "lastname";
-   private final static String PHONE_TABLENAME = "phone";
+   private final static String PHONE_NUMBER_TABLENAME = "phonenumber";
    private final static String VACATION_DAYS_TABLENAME = "vacationDaysLeft";
    private final static String SICK_DAYS_TABLENAME = "sickDaysLeft";
    private final static String DATE_TABLENAME = "date";
@@ -97,7 +98,7 @@ public class Employee {
          password = result.getString(PASSWORD_TABLENAME);
          firstname = result.getString(FIRSTNAME_TABLENAME);
          lastname = result.getString(LASTNAME_TABLENAME);
-         phonenumber = result.getString(PHONE_TABLENAME);
+         phonenumber = result.getString(PHONE_NUMBER_TABLENAME);
          vacationDays = result.getInt(VACATION_DAYS_TABLENAME);
          sickDays = result.getInt(SICK_DAYS_TABLENAME);
 
@@ -219,6 +220,49 @@ public class Employee {
       }
       catch (Exception e) {
          e.printStackTrace();
+      }
+   }
+
+   public List<Employee> getEmployeeList(String tablename) {
+      List<Employee> list = new ArrayList<Employee>();
+
+      try {
+         String query = "SELECT * from " + tablename;
+         DBConnection con = new DBConnection();
+         ResultSet result = con.execQuery(query);
+
+         int type = getTypeByTablename(tablename);
+
+         while (result.next()) {
+            Employee emp = EmployeeFactory.createEmployee(type);
+
+            emp.setId(result.getInt(ID_TABLENAME));
+            emp.setEmail(result.getString(EMAIL_TABLENAME));
+            emp.setUsername(result.getString(USERNAME_TABLENAME));
+            emp.setPassword(result.getString(PASSWORD_TABLENAME));
+            emp.setLastName(result.getString(LASTNAME_TABLENAME));
+            emp.setPhoneNumber(result.getString(PHONE_NUMBER_TABLENAME));
+
+            list.add(emp);
+         }
+      }
+      catch(Exception e) {
+         e.printStackTrace();
+      }
+
+      return list;
+   }
+
+   private int getTypeByTablename(String tablename) {
+      switch(tablename) {
+         case "Doctors":
+            return Employee.DOCTOR;
+         case "Technicians":
+            return Employee.TECHNICIAN;
+         case "Administrators":
+            return Employee.ADMINISTRATOR;
+         default:
+            return -1;
       }
    }
 

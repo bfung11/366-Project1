@@ -2,14 +2,17 @@ import java.sql.*;
 
 public class EmployeeFactory {
    public static Employee createEmployee(String username) {
+      return EmployeeFactory.createEmployee(EmployeeFactory.getType(username));
+   }
 
-      switch(EmployeeFactory.getType(username)) {
+   public static Employee createEmployee(int type) {
+      switch(type) {
          case Employee.DOCTOR:
-            return new Doctor(username);
+            return new Doctor();
          case Employee.TECHNICIAN:
-            return new Technician(username);
+            return new Technician();
          case Employee.ADMINISTRATOR:
-            return new Admin(username);
+            return new Admin();
          default:
             return null;
       }
