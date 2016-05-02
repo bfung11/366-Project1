@@ -8,6 +8,18 @@
         <managed-bean-class>Selector</managed-bean-class>
         <managed-bean-scope>session</managed-bean-scope>
     </managed-bean>
+    
+    <managed-bean>
+        <managed-bean-name>doctor</managed-bean-name>
+        <managed-bean-class>Doctor</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
+    
+    <managed-bean>
+        <managed-bean-name>technician</managed-bean-name>
+        <managed-bean-class>Technician</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
      <managed-bean>
         <managed-bean-name>util</managed-bean-name>
         <managed-bean-class>Util</managed-bean-class>
