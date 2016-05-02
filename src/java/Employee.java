@@ -19,6 +19,8 @@ import java.util.TimeZone;
 
 
 import java.util.*;
+import java.text.*;
+import java.sql.*;
 
 @Named(value = "employee")
 @SessionScoped
@@ -95,7 +97,6 @@ public class Employee {
          phone = result.getString(PHONE_TABLENAME);
          vacationDays = result.getInt(VACATION_DAYS_TABLENAME);
          sickDays = result.getInt(SICK_DAYS_TABLENAME);
-         timeoff = result.getInt(TIMEOFF_TABLENAME);
 
          con.close();
       } 
@@ -130,10 +131,6 @@ public class Employee {
 
    public String getPhoneNumber() {
       return phone;
-   }
-
-   public int getTimeOff() {
-      return timeoff;
    }
 
    public ArrayList<String> getSchedule() {
@@ -218,28 +215,34 @@ public class Employee {
    * @precondition assumes that sick day is granted;
    */
    public void takeSickDay(EmployeeShift shift) {
-      //update TimeOff
-      --sickDays;
-      String tablename = getTableName("s");
-      String query = "UPDATE " + tablename + " " +
-                     "SET sickDays = " + sickDays;
-                     "WHERE id = " + id + ";";
-      connection.execUpdate(query);
 
-      //update
-      tablename = getTableName("TimeOff");
-      String date = convertDateToString(shift.getDate());
-      Shift genericShift = new Shift(shift.getShiftName());
-      String fromTime = convertTimeToString(genericShift.getFromTime());
-      String toTime = convertTimeToString(genericShift.getToTime());
-      String query = "INSERT INTO "  + tablename + " " +
-                     "(" + id + ", " 
-                         + date + ", "
-                         + fromTime + ", " 
-                         + date + ", "
-                         + toTime + ", "
-                         + "'sickDay'" + ")";
-      connection.execUpdate(query);  
+      try {
+         //update TimeOff
+         --sickDays;
+         String tablename = getTableName("s");
+         String query = "UPDATE " + tablename + " " +
+                        "SET sickDays = " + sickDays + " " +
+                        "WHERE id = " + id + ";";
+         connection.execUpdate(query);
+
+         //update
+         tablename = getTableName("TimeOff");
+         String date = convertDateToString(shift.getDate());
+         Shift genericShift = new Shift(shift.getShift());
+         String fromTime = convertTimeToString(genericShift.getFromTime());
+         String toTime = convertTimeToString(genericShift.getToTime());
+         query = "INSERT INTO "  + tablename + " " +
+                      "VALUES (" + id + ", " 
+                                 + date + ", "
+                                 + fromTime + ", " 
+                                 + date + ", "
+                                 + toTime + ", "
+                                 + "'sickDay'" + ")";
+         connection.execUpdate(query);  
+      }
+      catch (Exception e) {
+
+      }
    }
 
    private String convertDateToString(Calendar date) {
@@ -247,9 +250,9 @@ public class Employee {
       return formatter.format(date.getTime());
    }
 
-   private String convertTimeToString() {
+   private String convertTimeToString(Time time) {
       SimpleDateFormat formatter = new SimpleDateFormat("HH:MM");
-      return formatter.format(date.getTime());
+      return formatter.format(time.getTime());
    }
 
    private String getTableName(String secondPart) {
