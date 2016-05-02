@@ -48,6 +48,9 @@ public class Employee {
    private String phone;
    private int timeoff; /* counted in hours */
    private int type;
+   
+   private Scheduler schedule;
+   private Calendar startDate;
 
    public Employee(int type) {
       this.type = type;
@@ -56,20 +59,19 @@ public class Employee {
    public Employee(String username) {
       try {
          connection = new DBConnection();
+         Connection con = connection.getConnection();
 
          String tablename = "Doctors";
-         String query = "select * from " + tablename + " " +
-                        "where username = '" + username + "'";
+         String query = "select * from " + tablename + 
+                        "where username = " + username;
          ResultSet result =
             connection.execQuery(query);
-         System.out.println("in here? 1");
          type = DOCTOR;
-         System.out.println("in here? 2");
 
          if (result.next() == false) {
             tablename = "Technicians";
-            query = "select * from " + tablename + " " +
-                    "where username = '" + username + "'";
+            query = "select * from " + tablename + 
+                    "where username = " + username;
 
             result = connection.execQuery(query);
             type = TECHNICIAN;
@@ -79,8 +81,7 @@ public class Employee {
                result.next(); // result starts out before the first row
             } 
          }
-
-         System.out.println("Employee type " + type);
+         
          id = result.getInt(ID_TABLENAME);
          email = result.getString(EMAIL_TABLENAME);
          password = result.getString(PASSWORD_TABLENAME);
@@ -88,6 +89,8 @@ public class Employee {
          lastname = result.getString(LASTNAME_TABLENAME);
          phone = result.getString(PHONE_TABLENAME);
          timeoff = result.getInt(TIMEOFF_TABLENAME);
+
+         con.close();
       } 
       catch (Exception e) {
          e.printStackTrace();
@@ -126,47 +129,49 @@ public class Employee {
       return timeoff;
    }
 
-   // public getSchedule() {
-   //    ArrayList<EmployeeShift> list = getEmployeeSchedule();
-   //    getEmployeeNames()
-   //    //formatSchedule()
-   // }
+   public ArrayList<String> getSchedule() {
+      ArrayList<String> mySchedule = getEmployeeSchedule();
+      return mySchedule;
+   }
 
-   // private ArrayList<EmployeeShift> getEmployeeSchedule() {
-   //    ArrayList<EmployeeShift> list = new ArrayList<EmployeeShift>();
+   private ArrayList<String> getEmployeeSchedule() {
+      ArrayList<String> mySchedule = new ArrayList<>();
+      int i;
+      String tableName1;
+      String tableName2;
+      String resultLine;
+      
+      try {
+         connection = new DBConnection();
+         Connection con = connection.getConnection();
 
-   //    try {
-   //       connection = new DBConnection();
-   //       Connection con = connection.getConnection();
+         // get tablename
+         tableName1 = "DoctorShifts";
+         tableName2 = "TechnicianShifts";
+         if (type == TECHNICIAN) {
+            tableName1 = "TechnicianShifts";
+          }
 
-   //       // get tablename
-   //       String tablename = "DoctorShifts";
-   //       if (type == TECHNICIAN) {
-   //          tablename = "TechnicianShifts";
-   //       }
+         String query = "select * from " + tableName1 + " where id = " + this.id;
+         ResultSet result =
+            connection.execQuery(query);
 
-   //       String query = "select * from " + tablename + 
-   //                      "where id = " + this.id;
-   //       ResultSet result =
-   //          connection.execQuery(query);
+         // add shifts to a list
+         while(result.next()) {  
+            resultLine = "";
+            resultLine = resultLine + Integer.toString(result.getInt(1));
+            resultLine = resultLine + " " + result.getDate(2);
+            resultLine = resultLine + " " + result.getString(3);
+            mySchedule.add(resultLine);
+         }
+      }
+      catch (Exception e) {
+         e.printStackTrace();
+      }
+      
+      return mySchedule;
 
-   //       // add shifts to a list
-   //       while(result.next() == false) {  
-   //          Calendar cal = new GregorianCalendar();
-   //          cal.setTime(result.getDate(DATE_TABLENAME));         
-   //          EmployeeShift es = 
-   //             new EmployeeShift(result.getInt(ID_TABLENAME),
-   //                               cal,
-   //                               result.getInt(SHIFTID_TABLENAME));
-   //          list.add(es);
-   //       }
-   //    }
-   //    catch (Exception e) {
-   //       e.printStackTrace();
-   //    }
-
-   //    return list;
-   // }
+   }
 
    // private String getEmployeeNames() {
 
