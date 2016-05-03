@@ -90,13 +90,7 @@ public class Login implements Serializable {
         if (storedPassword == null || !this.password.equals(storedPassword)) {
             FacesMessage errorMessage = new FacesMessage("Wrong username or password!");
             throw new ValidatorException(errorMessage);
-        }
-        /*
-        if (!((this.username.equals("admin") && this.password.equals("admin")))) {
-            FacesMessage errorMessage = new FacesMessage("Wrong username or password!");
-            throw new ValidatorException(errorMessage);
-        }*/
-                
+        }       
     }
 
     public String go() {
