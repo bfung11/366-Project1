@@ -25,6 +25,11 @@ public class Doctor extends Employee {
       super.deleteEmployee("Doctors");
       return "mainAdministrator";
    }
+
+   public String doesEmailExist() {
+      super.doesEmailExist("Doctors");
+      return "mainAdministrator";
+   }
    
    public String changePassword() {
        super.changeEmplPassword("Doctors");

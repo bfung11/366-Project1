@@ -145,6 +145,22 @@ public class Employee {
       return email;
    }
 
+   public boolean doesEmailExist(String tablename) {
+      try {
+         DBConnection con = new DBConnection();
+         String query = "select * from " + tablename + " " +
+                        "where email = '" + email + "'";
+         ResultSet result = con.execQuery(query);
+
+         return result.next();
+      }
+      catch (Exception e) {
+         e.printStackTrace();
+      }
+
+      return false;
+   }
+
    public void setUsername(String username) {
       this.username = username;
    }
@@ -248,10 +264,12 @@ String query = "select * from Doctors, Login where Doctors.email = Login.email a
       }
    }
 
-      public void changeEmplPassword(String tablename) {
+   public void changeEmplPassword(String tablename) {
        try {
-         String query = "UPDATE " + tablename + " SET password = '" + this.password + "' " +
-                        "WHERE id = " + this.id;
+         // String query = "UPDATE " + tablename + " SET password = '" + this.password + "' " +
+         //                "WHERE id = " + this.id;
+         String query = "UPDATE Login SET password = '" + this.password + "' " +
+                        "WHERE email = '" + email + "'";
          System.out.println("WHOA: " + query);
          DBConnection con = new DBConnection();
          con.execUpdate(query);
@@ -280,9 +298,7 @@ String query = "select * from Doctors, Login where Doctors.email = Login.email a
             emp.setLastName(result.getString(LASTNAME_TABLENAME));
             emp.setPhoneNumber(result.getString(PHONE_NUMBER_TABLENAME));
 
-            // String loginQuery = "select * from Login where email = '" + email + "'";
             String passwordQuery = "select * from Login where email = '" + email + "'";
-            // String passwordQuery = "select * from Login where email = 'first@gmail.com'";
             ResultSet passwordResult = con.execQuery(passwordQuery);
 
             if (passwordResult.next()) {
