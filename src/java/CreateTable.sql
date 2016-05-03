@@ -83,8 +83,6 @@ CREATE TABLE TechnicianTimeOff (
 CREATE TABLE Administrators (
    id SERIAL PRIMARY KEY,
    email TEXT UNIQUE NOT NULL,
-   username TEXT UNIQUE NOT NULL,
-   password TEXT NOT NULL,
    firstname TEXT,
    lastname TEXt NOT NULL,
    phonenumber TEXT NOT NULL

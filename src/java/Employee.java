@@ -95,7 +95,7 @@ public class Employee {
          id = result.getInt(ID_TABLENAME);
          email = result.getString(EMAIL_TABLENAME);
          this.username = username;
-         password = result.getString(PASSWORD_TABLENAME);
+         password = getPassword(tablename);
          firstname = result.getString(FIRSTNAME_TABLENAME);
          lastname = result.getString(LASTNAME_TABLENAME);
          phonenumber = result.getString(PHONE_NUMBER_TABLENAME);
@@ -161,6 +161,27 @@ public class Employee {
       return password;
    }
 
+   private String getPassword(String tablename) {
+      String password = "";
+
+      try {
+         // String query = "select * " + 
+         //                "from Login, " + tablename + " " +
+         //                "where username = '" + username + "' and " + 
+         //                "Login.email = " + tablename + ".email";
+String query = "select * from Doctors, Login where Doctors.email = Login.email and username = 'd1'";
+         ResultSet result = connection.execQuery(query);
+         if (result.next()) {
+            password = result.getString(PASSWORD_TABLENAME);
+         }
+      }
+      catch (Exception e) {
+         e.printStackTrace();
+      }
+
+      return password;
+   }
+
    public void setFirstName(String firstname) {
       this.firstname = firstname;
    }
@@ -195,15 +216,19 @@ public class Employee {
 
    public void createEmployee(String tablename) {
       try {
-         String query = "INSERT INTO " + tablename +
-                        "(email, username, password, firstname, lastname, phonenumber) " +
+         DBConnection con = new DBConnection();
+         String query = "INSERT INTO Login " +
                         "VALUES (" + "'" + email + "', "
                                    + "'" + username + "', "
-                                   + "'" + password + "', "
-                                   + "'" + firstname + "', "
-                                   + "'" + lastname + "', "
-                                   + "'" + phonenumber + "')";
-         DBConnection con = new DBConnection();
+                                   + "'" + password + "')";
+         con.execUpdate(query);
+         query = "INSERT INTO " + tablename +
+                 "(email, firstname, lastname, phonenumber) " +
+                 "VALUES (" + "'" + email + "', "
+                            + "'" + firstname + "', "
+                            + "'" + lastname + "', "
+                            + "'" + phonenumber + "')";
+
          con.execUpdate(query);
       }
       catch (Exception e) {
@@ -249,12 +274,22 @@ public class Employee {
          while (result.next()) {
             Employee emp = EmployeeFactory.createEmployee(type);
 
+            String email = result.getString(EMAIL_TABLENAME);
             emp.setId(result.getInt(ID_TABLENAME));
-            emp.setEmail(result.getString(EMAIL_TABLENAME));
-            emp.setUsername(result.getString(USERNAME_TABLENAME));
-            emp.setPassword(result.getString(PASSWORD_TABLENAME));
+            emp.setEmail(email);
             emp.setLastName(result.getString(LASTNAME_TABLENAME));
             emp.setPhoneNumber(result.getString(PHONE_NUMBER_TABLENAME));
+
+            // String loginQuery = "select * from Login where email = '" + email + "'";
+            String passwordQuery = "select * from Login where email = '" + email + "'";
+            // String passwordQuery = "select * from Login where email = 'first@gmail.com'";
+            ResultSet passwordResult = con.execQuery(passwordQuery);
+
+            if (passwordResult.next()) {
+               System.out.println("Query : " + passwordResult.getString(USERNAME_TABLENAME));
+               emp.setUsername(passwordResult.getString(USERNAME_TABLENAME));
+               emp.setPassword(passwordResult.getString(PASSWORD_TABLENAME));
+            }
 
             list.add(emp);
          }
@@ -331,14 +366,6 @@ public class Employee {
       return mySchedule;
 
    }
-
-   // private String getEmployeeNames() {
-
-   // }
-
-   // private String formatSchedule() {
-
-   // }
 
    public boolean canChoosePreferredShift() {
       // generate schedule and then find out
