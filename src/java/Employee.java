@@ -165,12 +165,11 @@ public class Employee {
       String password = "";
 
       try {
-         String query = "select * " + 
-                        "from Login, " + tablename +
-                        "where username = " + username + " and " + 
-                        "Login.email = " + tablename + ".email";
-
-         System.out.println("Query : " + query);
+         // String query = "select * " + 
+         //                "from Login, " + tablename + " " +
+         //                "where username = '" + username + "' and " + 
+         //                "Login.email = " + tablename + ".email";
+String query = "select * from Doctors, Login where Doctors.email = Login.email and username = 'd1'";
          ResultSet result = connection.execQuery(query);
          if (result.next()) {
             password = result.getString(PASSWORD_TABLENAME);
@@ -221,7 +220,7 @@ public class Employee {
          String query = "INSERT INTO Login " +
                         "VALUES (" + "'" + email + "', "
                                    + "'" + username + "', "
-                                   + "'" + getPassword(tablename) + "')";
+                                   + "'" + password + "')";
          con.execUpdate(query);
          query = "INSERT INTO " + tablename +
                  "(email, firstname, lastname, phonenumber) " +
@@ -289,7 +288,7 @@ public class Employee {
             if (passwordResult.next()) {
                System.out.println("Query : " + passwordResult.getString(USERNAME_TABLENAME));
                emp.setUsername(passwordResult.getString(USERNAME_TABLENAME));
-               emp.setPassword(getPassword(tablename));
+               emp.setPassword(passwordResult.getString(PASSWORD_TABLENAME));
             }
 
             list.add(emp);
