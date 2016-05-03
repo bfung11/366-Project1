@@ -2,18 +2,22 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:singleCustomer = "http://xmlns.jcp.org/jsf/composite/ezcomp">
-    <title>Delete Technician</title>
+      xmlns:singleTechnician = "http://xmlns.jcp.org/jsf/composite/ezcomp">
+    <title>Change Technician Password</title>
     <h:head>
         <link href="css/stylesheet.css" rel="stylesheet" type="text/css" />
-        <h1>Delete Technician</h1>
+        <h1>Change Technician Password</h1>
     </h:head>
 
     <h:body>
         <h:form>
-            <singleCustomer:getCustomerID />
+            <singleTechnician:getTechnicianEmail/>
+            New Password: <h:inputText value="#{technician.password}" required ="true"
+                                   requiredMessage="Your must enter a"
+                                   id="userPass"/>
+                <h:message for="userPass" style="color:red;margin:8px;"/>
             <h:panelGrid>
-                <h:commandButton value="Go" action="#{customer.deleteCustomer}"/>
+                <h:commandButton value="Go" action="#{technician.changePassword()}"/>
             </h:panelGrid>
         </h:form>
     </h:body>
