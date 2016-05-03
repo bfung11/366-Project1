@@ -21,6 +21,16 @@ public class Technician extends Employee {
       return "mainAdministrator";
    }
 
+   public String doesEmailExist() {
+      super.doesEmailExist("Technicians");
+      return "mainAdministrator";
+   }
+
+   public String changePassword() {
+       super.changeEmplPassword("Technicians");
+       return "mainAdministrator";
+   }
+
    public String deleteTechnician() {
       super.deleteEmployee("Technicians");
       return "mainAdministrator";
