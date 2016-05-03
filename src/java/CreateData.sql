@@ -14,7 +14,7 @@ VALUES ('first@gmail.com', 'd1', 'password'),
        ('fifth@gmail.com', 'd5', 'password'),
        ('sixth@gmail.com', 'd6', 'password'),
        ('seventh@gmail.com', 'd7', 'password'),
-       ('eigth@gmail.com', 'd8', 'password'),
+       ('eighth@gmail.com', 'd8', 'password'),
        ('ninth@gmail.com', 'd9', 'password'),
        ('tenth@gmail.com', 'd10', 'password'),
        ('first@yahoo.com', 't1', 'password'),
@@ -26,7 +26,8 @@ VALUES ('first@gmail.com', 'd1', 'password'),
        ('seventh@yahoo.com', 't7', 'password'),
        ('eighth@yahoo.com', 't8', 'password'),
        ('ninth@yahoo.com', 't9', 'password'),
-       ('tenth@yahoo.com', 't10', 'password');
+       ('tenth@yahoo.com', 't10', 'password'),
+       ('admin@hotmail.com', 'admin', 'admin');
 
 
 INSERT INTO Doctors (email, lastname, phonenumber)
@@ -50,3 +51,6 @@ VALUES ('first@yahoo.com', 'First', '(111) 111-1111'),
        ('seventh@yahoo.com', 'Seventh', '(111) 111-1111'),
        ('eighth@yahoo.com', 'Eighth', '(111) 111-1111'),
        ('ninth@yahoo.com', 'Ninth', '(111) 111-1111');
+
+INSERT INTO Administrators (email, lastname, phonenumber) 
+VALUES ('admin@hotmail.com', 'last', '(111) 111-1111');
