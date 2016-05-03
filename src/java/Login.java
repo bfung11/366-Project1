@@ -1,5 +1,6 @@
 
 import java.io.Serializable;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.annotation.ManagedBean;
 import javax.faces.application.FacesMessage;
@@ -30,6 +31,7 @@ import javax.servlet.http.HttpSession;
 @SessionScoped
 @ManagedBean
 public class Login implements Serializable {
+    DBConnection connection;
 
     private String username;
     private String password;
@@ -67,12 +69,34 @@ public class Login implements Serializable {
     ) throws ValidatorException, SQLException {
         this.username = loginUI.getLocalValue().toString();
         this.password = value.toString();
+        String storedPassword = null;
+        ResultSet result;
 
         // TODO: check if user and password matches input
-        if (!((this.username.equals("admin") && this.password.equals("admin")))) {
+        //Get password from DB
+        
+        try {
+            String query = "select password from login where username = '" 
+                   + this.username + "'";
+            DBConnection con = new DBConnection();
+            result = con.execQuery(query);
+            result.next();
+            storedPassword = result.getString(1);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+        
+        if (storedPassword == null || !this.password.equals(storedPassword)) {
             FacesMessage errorMessage = new FacesMessage("Wrong username or password!");
             throw new ValidatorException(errorMessage);
         }
+        /*
+        if (!((this.username.equals("admin") && this.password.equals("admin")))) {
+            FacesMessage errorMessage = new FacesMessage("Wrong username or password!");
+            throw new ValidatorException(errorMessage);
+        }*/
+                
     }
 
     public String go() {
