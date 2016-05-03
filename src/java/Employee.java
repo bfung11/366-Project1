@@ -223,6 +223,19 @@ public class Employee {
       }
    }
 
+      public void changeEmplPassword(String tablename) {
+       try {
+         String query = "UPDATE " + tablename + " SET password = '" + this.password + "' " +
+                        "WHERE id = " + this.id;
+         System.out.println("WHOA: " + query);
+         DBConnection con = new DBConnection();
+         con.execUpdate(query);
+      }
+      catch (Exception e) {
+         e.printStackTrace();
+      }
+   }
+   
    public List<Employee> getEmployeeList(String tablename) {
       List<Employee> list = new ArrayList<Employee>();
 
