@@ -286,7 +286,6 @@ String query = "select * from Doctors, Login where Doctors.email = Login.email a
             ResultSet passwordResult = con.execQuery(passwordQuery);
 
             if (passwordResult.next()) {
-               System.out.println("Query : " + passwordResult.getString(USERNAME_TABLENAME));
                emp.setUsername(passwordResult.getString(USERNAME_TABLENAME));
                emp.setPassword(passwordResult.getString(PASSWORD_TABLENAME));
             }
