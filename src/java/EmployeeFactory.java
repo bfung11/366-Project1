@@ -42,7 +42,9 @@ public class EmployeeFactory {
       try {
          DBConnection connection = new DBConnection();
          String query = "select * from " + tablename + 
-                        "where username = " + username;
+                        " natural join login" +
+                        " where username = '" + username + "'";
+
          ResultSet result = connection.execQuery(query);
 
          isCorrectType = result.next();
