@@ -17,7 +17,6 @@ import javax.inject.Named;
 import java.util.Date;
 import java.util.TimeZone;
 
-
 import java.util.*;
 import java.text.*;
 import java.sql.*;
@@ -31,18 +30,6 @@ public class Employee {
    public final static int DOCTOR = 1;
    public final static int TECHNICIAN = 2;
    public final static int ADMINISTRATOR = 3;
-
-   private final static String ID_TABLENAME = "id";
-   private final static String EMAIL_TABLENAME = "email";
-   private final static String USERNAME_TABLENAME = "username";
-   private final static String PASSWORD_TABLENAME = "password";
-   private final static String FIRSTNAME_TABLENAME = "firstname";
-   private final static String LASTNAME_TABLENAME = "lastname";
-   private final static String PHONE_NUMBER_TABLENAME = "phonenumber";
-   private final static String VACATION_DAYS_TABLENAME = "vacationDaysLeft";
-   private final static String SICK_DAYS_TABLENAME = "sickDaysLeft";
-   private final static String DATE_TABLENAME = "date";
-   private final static String SHIFTID_TABLENAME = "shift";
 
    private final static int MAX_NUM_VACATION_DAYS = 8;
    private final static int MAX_NUM_SICK_DAYS = 4;
@@ -92,15 +79,15 @@ public class Employee {
             } 
          }
          
-         id = result.getInt(ID_TABLENAME);
-         email = result.getString(EMAIL_TABLENAME);
+         id = result.getInt(Table.ID_TABLENAME);
+         email = result.getString(Table.EMAIL_TABLENAME);
          this.username = username;
          password = getPassword(tablename);
-         firstname = result.getString(FIRSTNAME_TABLENAME);
-         lastname = result.getString(LASTNAME_TABLENAME);
-         phonenumber = result.getString(PHONE_NUMBER_TABLENAME);
-         vacationDays = result.getInt(VACATION_DAYS_TABLENAME);
-         sickDays = result.getInt(SICK_DAYS_TABLENAME);
+         firstname = result.getString(Table.FIRSTNAME_TABLENAME);
+         lastname = result.getString(Table.LASTNAME_TABLENAME);
+         phonenumber = result.getString(Table.PHONE_NUMBER_TABLENAME);
+         vacationDays = result.getInt(Table.VACATION_DAYS_TABLENAME);
+         sickDays = result.getInt(Table.SICK_DAYS_TABLENAME);
 
          con.close();
       } 
@@ -292,11 +279,11 @@ String query = "select * from Doctors, Login where Doctors.email = Login.email a
          while (result.next()) {
             Employee emp = EmployeeFactory.createEmployee(type);
 
-            String email = result.getString(EMAIL_TABLENAME);
-            emp.setId(result.getInt(ID_TABLENAME));
+            String email = result.getString(Table.EMAIL_TABLENAME);
+            emp.setId(result.getInt(Table.ID_TABLENAME));
             emp.setEmail(email);
-            emp.setLastName(result.getString(LASTNAME_TABLENAME));
-            emp.setPhoneNumber(result.getString(PHONE_NUMBER_TABLENAME));
+            emp.setLastName(result.getString(Table.LASTNAME_TABLENAME));
+            emp.setPhoneNumber(result.getString(Table.PHONE_NUMBER_TABLENAME));
 
             String passwordQuery = "select * from Login where email = '" + email + "'";
             ResultSet passwordResult = con.execQuery(passwordQuery);
@@ -395,8 +382,9 @@ String query = "select * from Doctors, Login where Doctors.email = Login.email a
    public boolean canTakeVacation(String username, EmployeeShift shift) {
       if (hasVacationDays()) {
          getCoworkerIDs();
+         Table.setEmployeeType(type);
          return schedule.requestDayOff(coworkerIDs, id, shift.getDate(), 
-                 getTableName("Shifts"));
+                 Table.getTableName("Shifts"));
       }
       return hasVacationDays();
    }
@@ -408,8 +396,9 @@ String query = "select * from Doctors, Login where Doctors.email = Login.email a
    public boolean canTakeSickDay(Employee employee, EmployeeShift shift) {
       if (hasSickDays()) {
          getCoworkerIDs();
+         Table.setEmployeeType(type);
          return schedule.requestDayOff(coworkerIDs, id, shift.getDate(), 
-                 getTableName("Shifts"));
+                 Table.getTableName("Shifts"));
       }
       return hasSickDays();
    }
@@ -426,14 +415,15 @@ String query = "select * from Doctors, Login where Doctors.email = Login.email a
       try {
          //update TimeOff
          --sickDays;
-         String tablename = getTableName("s");
+         Table.setEmployeeType(type);
+         String tablename = Table.getTableName("s");
          String query = "UPDATE " + tablename + " " +
                         "SET sickDays = " + sickDays + " " +
                         "WHERE id = " + id + ";";
          connection.execUpdate(query);
 
          //update
-         tablename = getTableName("TimeOff");
+         tablename = Table.getTableName("TimeOff");
          String date = convertDateToString(shift.getDate());
          Shift genericShift = new Shift(shift.getShift());
          String fromTime = convertTimeToString(genericShift.getFromTime());
@@ -488,25 +478,5 @@ String query = "select * from Doctors, Login where Doctors.email = Login.email a
    private String convertTimeToString(Time time) {
       SimpleDateFormat formatter = new SimpleDateFormat("HH:MM");
       return formatter.format(time.getTime());
-   }
-
-   private String getTableName(String secondPart) {
-      String tablename = "";
-
-      switch(type) {
-         case Employee.DOCTOR:
-            tablename = "Doctor" + secondPart;
-            break;
-         case Employee.TECHNICIAN:
-            tablename = "Technician" + secondPart;
-            break;
-         case Employee.ADMINISTRATOR:
-            tablename = "Administrator" + secondPart;
-            break;
-         default:
-            break;
-      }
-
-      return tablename;
    }
 }
