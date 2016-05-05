@@ -79,15 +79,15 @@ public class Employee {
             } 
          }
          
-         id = result.getInt(Table.ID_TABLENAME);
-         email = result.getString(Table.EMAIL_TABLENAME);
+         id = result.getInt(Table.ID);
+         email = result.getString(Table.EMAIL);
          this.username = username;
          password = getPassword(tablename);
-         firstname = result.getString(Table.FIRSTNAME_TABLENAME);
-         lastname = result.getString(Table.LASTNAME_TABLENAME);
-         phonenumber = result.getString(Table.PHONE_NUMBER_TABLENAME);
-         vacationDays = result.getInt(Table.VACATION_DAYS_TABLENAME);
-         sickDays = result.getInt(Table.SICK_DAYS_TABLENAME);
+         firstname = result.getString(Table.FIRSTNAME);
+         lastname = result.getString(Table.LASTNAME);
+         phonenumber = result.getString(Table.PHONE_NUMBER);
+         vacationDays = result.getInt(Table.VACATION_DAYS);
+         sickDays = result.getInt(Table.SICK_DAYS);
 
          con.close();
       } 
@@ -175,7 +175,7 @@ public class Employee {
 String query = "select * from Doctors, Login where Doctors.email = Login.email and username = 'd1'";
          ResultSet result = connection.execQuery(query);
          if (result.next()) {
-            password = result.getString(PASSWORD_TABLENAME);
+            password = result.getString(Table.PASSWORD);
          }
       }
       catch (Exception e) {
@@ -279,18 +279,18 @@ String query = "select * from Doctors, Login where Doctors.email = Login.email a
          while (result.next()) {
             Employee emp = EmployeeFactory.createEmployee(type);
 
-            String email = result.getString(Table.EMAIL_TABLENAME);
-            emp.setId(result.getInt(Table.ID_TABLENAME));
+            String email = result.getString(Table.EMAIL);
+            emp.setId(result.getInt(Table.ID));
             emp.setEmail(email);
-            emp.setLastName(result.getString(Table.LASTNAME_TABLENAME));
-            emp.setPhoneNumber(result.getString(Table.PHONE_NUMBER_TABLENAME));
+            emp.setLastName(result.getString(Table.LASTNAME));
+            emp.setPhoneNumber(result.getString(Table.PHONE_NUMBER));
 
             String passwordQuery = "select * from Login where email = '" + email + "'";
             ResultSet passwordResult = con.execQuery(passwordQuery);
 
             if (passwordResult.next()) {
-               emp.setUsername(passwordResult.getString(USERNAME_TABLENAME));
-               emp.setPassword(passwordResult.getString(PASSWORD_TABLENAME));
+               emp.setUsername(passwordResult.getString(Table.USERNAME));
+               emp.setPassword(passwordResult.getString(Table.PASSWORD));
             }
 
             list.add(emp);
