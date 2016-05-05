@@ -78,12 +78,15 @@ CREATE TABLE TechnicianSickDays (
    PRIMARY KEY (id, date)
 );
 
+<<<<<<< Updated upstream
 CREATE TABLE TechnicianVacationDays (
    id INTEGER REFERENCES Technicians(id),
    date DATE NOT NULL
    PRIMARY KEY (id, date)
 );
 
+=======
+>>>>>>> Stashed changes
 CREATE TABLE Administrators (
    id SERIAL PRIMARY KEY,
    email TEXT UNIQUE NOT NULL,
@@ -94,8 +97,12 @@ CREATE TABLE Administrators (
 
 /* Copy pasta this to drop tables en masse
 DROP TABLE Administrators;
+<<<<<<< Updated upstream
 DROP TABLE TechnicianSickDays;
 DROP TABLE TechnicianVacationDays;
+=======
+DROP TABLE TechnicianTimeOff;
+>>>>>>> Stashed changes
 DROP TABLE TechnicianPreferredShifts;
 DROP TABLE TechnicianShifts;
 DROP TABLE Technicians;

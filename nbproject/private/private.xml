@@ -3,18 +3,21 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Tomiyoshi/Documents/GitHub/366-Project1/src/java/Login.java</file>
-            <file>file:/C:/Users/Tomiyoshi/Documents/GitHub/366-Project1/web/index.xhtml</file>
+            <file>file:/C:/Users/Tomiyoshi/Documents/GitHub/366-Project1/web/changeDocPw.xhtml</file>
             <file>file:/C:/Users/Tomiyoshi/Documents/GitHub/366-Project1/web/WEB-INF/faces-config.xml</file>
-            <file>file:/C:/Users/Tomiyoshi/Documents/GitHub/366-Project1/web/startD.xhtml</file>
-            <file>file:/C:/Users/Tomiyoshi/Documents/GitHub/366-Project1/src/java/DBConnection.java</file>
-            <file>file:/C:/Users/Tomiyoshi/Documents/GitHub/366-Project1/web/startA.xhtml</file>
             <file>file:/C:/Users/Tomiyoshi/Documents/GitHub/366-Project1/src/java/Customer.java</file>
             <file>file:/C:/Users/Tomiyoshi/Documents/GitHub/366-Project1/src/java/Doctor.java</file>
-            <file>file:/C:/Users/Tomiyoshi/Documents/GitHub/366-Project1/src/java/Employee.java</file>
             <file>file:/C:/Users/Tomiyoshi/Documents/GitHub/366-Project1/web/startT.xhtml</file>
             <file>file:/C:/Users/Tomiyoshi/Documents/GitHub/366-Project1/src/java/Selector.java</file>
             <file>file:/C:/Users/Tomiyoshi/Documents/GitHub/366-Project1/src/java/EmployeeFactory.java</file>
+            <file>file:/C:/Users/Tomiyoshi/Documents/GitHub/366-Project1/web/newDoctor.xhtml</file>
+            <file>file:/C:/Users/Tomiyoshi/Documents/GitHub/366-Project1/web/listDoctors.xhtml</file>
+            <file>file:/C:/Users/Tomiyoshi/Documents/GitHub/366-Project1/src/java/Login.java</file>
+            <file>file:/C:/Users/Tomiyoshi/Documents/GitHub/366-Project1/web/index.xhtml</file>
+            <file>file:/C:/Users/Tomiyoshi/Documents/GitHub/366-Project1/web/startD.xhtml</file>
+            <file>file:/C:/Users/Tomiyoshi/Documents/GitHub/366-Project1/web/startA.xhtml</file>
+            <file>file:/C:/Users/Tomiyoshi/Documents/GitHub/366-Project1/src/java/Employee.java</file>
+            <file>file:/C:/Users/Tomiyoshi/Documents/GitHub/366-Project1/web/resources/ezcomp/getDoctorID.xhtml</file>
         </group>
     </open-files>
 </project-private>
