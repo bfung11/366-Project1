@@ -43,19 +43,6 @@ public class Scheduler {
 
    //TODO -- Probably have to update this
    public Scheduler(Calendar startingDate) {
-      //calendar = new ArrayList<Day>(MAX_CALENDAR_DAYS);
-      shifts = new ArrayList<Shift>();
-      //TODO read in shifts
-      doctors = new ArrayList<Employee>();
-      doctorShifts = new ArrayList<EmployeeShift>();
-      doctorPreferredShifts = new ArrayList<EmployeePreferredShift>();
-      doctorTimeOff = new ArrayList<EmployeeTimeOff>();
-      //docIDs = new ArrayList<Integer>();
-      for (int i = 0; i < doctorTimeOff.size(); ++i) {
-         //TODO add timeoff for multiple days
-      }
-
-      //addDaysToCalendar(startingDate);
       initDayIndices();
    }
    
@@ -88,14 +75,14 @@ public class Scheduler {
 
    private ArrayList<Request> getRequests(int requestType) {
       ArrayList<Request> list = new ArrayList<Request>();
-      String tablename = getTableName(requestType);
+      String tablename = Table.getTableName(requestType);
 
       try {
          DBConnection connection = new DBConnection();
          String query = "SELECT * " + 
                         "FROM " + tablename + " " + 
                         "WHERE id = " + id + " and " + 
-                        " "
+                        " ";
          ResultSet result = connection.execQuery(query);
 
          while (result.next()) {
@@ -105,7 +92,7 @@ public class Scheduler {
             request.setDate(result.getDate(Table.DATE));
 
             if (requestType == Request.PREFERRED_SHIFT) {
-               request.setShift(result.getString(Table.SHIFT))
+               request.setShift(result.getString(Table.SHIFT));
             }
             list.add(request);
          }
