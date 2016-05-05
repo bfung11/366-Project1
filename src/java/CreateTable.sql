@@ -70,14 +70,16 @@ CREATE TABLE TechnicianPreferredShifts (
    PRIMARY KEY (technicianID, date, shift)
 );
 
-CREATE TABLE TechnicianTimeOff (
-   id INTEGER REFERENCES Doctors(id),
-   fromDate DATE NOT NULL,
-   fromTime TIME NOT NULL,
-   toDate DATE NOT NULL,
-   toTime TIME NOT NULL,
-   timeOffType TEXT NOT NULL,
-   PRIMARY KEY (id, fromDate, fromTime, toDate, toTime)
+CREATE TABLE TechnicianSickDays (
+   id INTEGER REFERENCES Technicians(id),
+   date DATE NOT NULL,
+   PRIMARY KEY (id, date)
+);
+
+CREATE TABLE TechnicianVacationDays (
+   id INTEGER REFERENCES Technicians(id),
+   date DATE NOT NULL,
+   PRIMARY KEY (id, date)
 );
 
 CREATE TABLE Administrators (

@@ -17,38 +17,318 @@ public class Scheduler {
    private final static int DAYS_PER_WEEK = 7;
    private final static int MAX_SHIFTS_PER_WEEK = 4;
    private final static int INVALID = -1;
+   private final static int TOTAL_SHIFTS_PER_WEEK = 32;
+   private final static int TYPICAL_SHIFTS_PER_DAY = 5;
+   
+   //Indexing constants
+   private final static int SUNDAY = 0;
+   private final static int MONDAY = 1;
+   private final static int TUESDAY = 2;
+   private final static int WEDNESDAY = 3;
+   private final static int THURSDAY = 4;
+   private final static int FRIDAY = 5;
+   private final static int SATURDAY = 6;
+   
+   private final static int EarlyMorning = 0;
+   private final static int Morning = 1;
+   private final static int LateMorning = 2;
+   private final static int Surgery = 3;
+   private final static int Overnight = 4;
+   private final static int SundayMorning = 31;
+   private final static int SundayOvernight = 30;
+   
+   private int[] SundayIndices;
+   private int[] MondayIndices;
+   private int[] TuesdayIndices;
+   private int[] WednesdayIndices;
+   private int[] ThursdayIndices;
+   private int[] FridayIndices;
+   private int[] SaturdayIndices;
+   private int[] SurgeryIndices;
+   private int[] OvernightIndices;
 
-   private ArrayList<Day> calendar;
-   private ArrayList<Shift> shifts;
-   private ArrayList<Employee> doctors;
-   private ArrayList<EmployeeShift> doctorShifts;
-   private ArrayList<EmployeePreferredShift> doctorPreferredShifts;
-   private ArrayList<EmployeeTimeOff> doctorTimeOff;
+   private Calendar requestedDay;
+   private int id = 1;
+   private ArrayList<Shift> calendar;
    //private ArrayList<Integer> docIDs;
    // look out 3 weeks in advance
 
    public Scheduler(Calendar startingDate) {
-      calendar = new ArrayList<Day>(MAX_CALENDAR_DAYS);
-      shifts = new ArrayList<Shift>();
-      //TODO read in shifts
-      doctors = new ArrayList<Employee>();
-      doctorShifts = new ArrayList<EmployeeShift>();
-      doctorPreferredShifts = new ArrayList<EmployeePreferredShift>();
-      doctorTimeOff = new ArrayList<EmployeeTimeOff>();
-      //docIDs = new ArrayList<Integer>();
-      for (int i = 0; i < doctorTimeOff.size(); ++i) {
-         //TODO add timeoff for multiple days
-      }
-
-      addDaysToCalendar(startingDate);
-      readDoctorShiftsFromDatabase(startingDate);
+      initShifts();
+      initDayIndices();
    }
 
-  /*
-   * Adds enough 28 days to the calendar
-   */ 
-   private void addDaysToCalendar(Calendar startingDate) {
-      Calendar date = startingDate;
+   private void initShifts() {
+      calendar = new ArrayList<Shift>();
+
+      try {
+         // get doctors
+         DBConnection connection = new DBConnection();
+         String query = "SELECT * FROM DoctorShifts";
+         ResultSet result = connection.execQuery(query);
+
+         while (result.next()) {
+            Shift shift = new Shift();
+            shift.setShift(result.getString(Table.SHIFT));
+            shift.setDate(result.getDate(Table.DATE));
+            shift.setDoctor(result.getInt(Table.ID));
+            calendar.add(shift);
+         }
+
+         // get technicians
+         query = "SELECT * FROM TechnicianShifts";
+         result = connection.execQuery(query);
+         while (result.next()) {
+            for (int i = 0; i < calendar.size(); ++i) {
+               Shift shift = calendar.get(i);
+               if (shift.equals(result.getDate(Table.DATE), 
+                                result.getString(Table.SHIFT))) {
+                  int technician = result.getInt(Table.ID);
+                  if (!shift.hasFirstTechnician()) {
+                     shift.setFirstTechnician(technician);
+                  }
+                  else {
+                     shift.setSecondTechnician(technician);
+                  }
+               }
+            }
+         }
+      }
+      catch (Exception e) {
+         e.printStackTrace();
+      }
+   }
+   
+   //Associate the 32 shift indices with special attributes like day, overnight,
+   //or surgery AKA "Magic"
+   private void initDayIndices() {
+      SundayIndices = new int[] {30, 31};
+      MondayIndices = new int[] {0, 1, 2, 3, 4};
+      TuesdayIndices = new int[] {5, 6, 7, 8, 9};
+      WednesdayIndices = new int[] {10, 11, 12, 13, 14};
+      ThursdayIndices = new int[] {15, 16, 17, 18, 19};
+      FridayIndices = new int[] {20, 21, 22, 23, 24};
+      SaturdayIndices = new int[] {25, 26, 27, 28, 29};
+      
+      OvernightIndices = new int[] {4, 9, 14, 19, 24, 29, 30};
+      SurgeryIndices = new int[] {3, 8, 13, 18, 23};
+   }
+
+   private ArrayList<Request> getRequestsForWeek(Calendar requestedDay) {
+      this.requestedDay = requestedDay;
+      
+      ArrayList<Request> list = new ArrayList<Request>();
+
+      list.addAll(getRequests(Request.SICK_DAY));
+      list.addAll(getRequests(Request.VACATION_DAY));
+      list.addAll(getRequests(Request.PREFERRED_SHIFT));
+
+      return list;
+   }
+
+   private ArrayList<Request> getRequests(int requestType) {
+      ArrayList<Request> list = new ArrayList<Request>();
+      String tablename = Table.getTableName(requestType);
+
+      try {
+         DBConnection connection = new DBConnection();
+         String query = "SELECT * " + 
+                        "FROM " + tablename + " " + 
+                        "WHERE id = " + id + " and " + 
+                        " ";
+         ResultSet result = connection.execQuery(query);
+
+         while (result.next()) {
+            Request request = new Request();
+            request.setType(requestType);
+            request.setDoctorID(id);
+            request.setDate(result.getDate(Table.DATE));
+
+            if (requestType == Request.PREFERRED_SHIFT) {
+               request.setShift(result.getString(Table.SHIFT));
+            }
+            list.add(request);
+         }
+      }
+      catch (Exception e) {
+         e.printStackTrace();
+      }
+
+      return list;
+   }
+   
+   public boolean generateSchedule(Calendar day, ArrayList<Integer> docIDs, 
+           ArrayList<Request> requestList) {
+      int highestDocIndex = docIDs.size() - 1;
+      int[] weekShifts = new int[TOTAL_SHIFTS_PER_WEEK];
+      int i;
+      boolean isGoodSchedule;
+      
+      for (i = 0; i < weekShifts.length; i++) {
+         weekShifts[i] = 0;
+      }
+      
+      while (weekShifts.length > 0) {
+         weekShifts = incrementPermutation(weekShifts, highestDocIndex);
+         isGoodSchedule = true;
+         
+         //Check overnights
+         if(!checkOvernightConstraint(weekShifts)) {
+            isGoodSchedule = false;
+         }
+         
+         //Check surgeries
+         if(!checkSurgeryConstraint(weekShifts)) {
+            isGoodSchedule = false;
+         }
+         
+         //Check no docs working same day and no day shifts day after overnight
+         if(!checkSingleShiftPerDayConstraint(weekShifts)) {
+            isGoodSchedule = false;
+         }
+         
+         //Check no doctor working more than 4 shifts
+         if(!checkMaxShiftConstraint(weekShifts, highestDocIndex)) {
+            isGoodSchedule = false;
+         }
+         
+         
+         if (isGoodSchedule) {
+            for (Request request : requestList) {
+               if (checkGoodRequest(weekShifts, request) == false) {
+                  isGoodSchedule = false;
+                  break;
+               }
+            }
+         }
+         
+         if (isGoodSchedule) {
+            //Push schedule
+            //Push new request
+            return true;
+         }
+      }
+
+      return false;
+   }
+       
+   
+   private int[] incrementPermutation(int[] perm, int maxIndex) {
+      int ndx;
+      for (ndx = TOTAL_SHIFTS_PER_WEEK - 1; ndx >= 0; ndx--) {
+         if (perm[ndx] < maxIndex) {
+            perm[ndx]++;
+            break;
+         }
+      }
+      if (perm[ndx] == maxIndex) {
+         for(ndx = ndx - 1; ndx >= 0; ndx--) {
+            perm[ndx]++;
+            if (perm[ndx] < maxIndex) {
+               break;
+            }
+            else if (ndx == 0) {
+               return new int[0];
+            }
+         }
+      }
+      return perm;
+   }
+   
+   private boolean checkGoodRequest(int[] schedules, Request request) {
+      int docID;
+      Calendar date;
+      String shiftName;
+      
+      docID = request.getDoctorID();
+      date = request.getDate();
+      
+      if (request.getType() == Request.PREFERRED_SHIFT) {
+         shiftName = request.getShift();
+         return checkPreferredShift(schedules, docID, date, shiftName);
+      }
+      else {
+         return checkTimeOff(schedules, docID, date);
+      }
+   }
+   
+   private boolean checkPreferredShift(int[] schedules, int docID, Calendar date, String shiftName) {
+      int dayOfWeek;
+      int[] dayIndices;
+      int shiftOffset;
+      
+      dayOfWeek = date.get(Calendar.DAY_OF_WEEK);
+      
+      switch(shiftName) {
+         case Shift.EARLY:
+            shiftOffset = EarlyMorning;
+            break;
+         case Shift.MORNING:
+            shiftOffset = Morning;
+            break;
+         case Shift.LATE:
+            shiftOffset = LateMorning;
+            break;
+         case Shift.SURGERY:
+            shiftOffset = Surgery;
+            break;
+         case Shift.OVERNIGHT:
+            shiftOffset = Overnight;
+            if (dayOfWeek == Calendar.SUNDAY)
+               shiftOffset = SundayOvernight;
+            break;
+         case Shift.SUNDAY:
+            shiftOffset = SundayMorning;
+            break;
+         default:
+            System.out.println("Got a weird shift name: " + shiftName);
+            return false;    
+      }
+            
+      if (shiftOffset != SundayOvernight && shiftOffset != SundayMorning) {
+         shiftOffset = dayOfWeek * TYPICAL_SHIFTS_PER_DAY + shiftOffset;
+      }
+      
+      return (schedules[shiftOffset] == docID); 
+   }
+   
+   private boolean checkTimeOff(int[] schedules, int docID, Calendar date) {
+      int dayOfWeek;
+      int[] dayIndices;
+      int i;
+      
+      dayOfWeek = date.get(Calendar.DAY_OF_WEEK);
+      
+      switch(dayOfWeek) {
+         case Calendar.SUNDAY:
+            dayIndices = SundayIndices;
+            break;
+         case Calendar.MONDAY:
+            dayIndices = MondayIndices;
+            break;
+         case Calendar.TUESDAY:
+            dayIndices = TuesdayIndices;
+            break;
+         case Calendar.WEDNESDAY:
+            dayIndices = WednesdayIndices;
+            break;
+         case Calendar.THURSDAY:
+            dayIndices = ThursdayIndices;
+            break;
+         case Calendar.FRIDAY:
+            dayIndices = FridayIndices;
+            break;
+         default:
+            dayIndices = SaturdayIndices;
+            break;
+      }
+      
+      for (i = 0; i < dayIndices.length; i++) {
+         if (dayIndices[i] == docID)
+            return true;
+      }
+      return false;
+   }
 
       for (int i = 0; i < MAX_CALENDAR_DAYS; ++i) {
          calendar.add(new Day(date));
@@ -83,429 +363,6 @@ public class Scheduler {
    }
 
    private void readDoctorPreferredShifts() {
-
-   }
-
-   //TODO read in shifts
-   //TODO check preferences
-   //TODO calendar
-   //Creates a default schedule assuming no preferences. Uses hardcoded shift
-   //blocks to schedule doctors.
-   //IDEA -- Generalize this process
-   public ArrayList<Day> makeDefaultSchedule(Calendar startDate, ArrayList<Integer> docIDs) {
-      int i;
-      int j;
-      int offset;
-      Day day;
-      calendar = new ArrayList<>();
-
-      for (j = 0; j < MAX_CALENDAR_DAYS / DAYS_PER_WEEK; j++) {
-         offset = DAYS_PER_WEEK * j;
-         //Initialize days of week
-         for (i = 0; i < DAYS_PER_WEEK; i++) {
-             calendar.set(i, new Day(startDate));
-             startDate.add(Calendar.DATE, 1);
-         }
-
-         //IDEA: Create shift sets with a whole 4 shift schedule that contains overnight and surgery
-         //and assign doctors to shift sets. Will have 2 doctors free to take the rest of the slots
-
-         //Schedule Sunday
-         day = scheduleDay(calendar.get(offset + 0), null, docIDs.get(3), null, null, docIDs.get(0));
-         calendar.set(0, day);
-
-         //Schedule Monday
-         day = scheduleDay(calendar.get(offset + 1), docIDs.get(7), docIDs.get(4), docIDs.get(5),
-                 docIDs.get(6), docIDs.get(1));
-         calendar.set(offset + 1, day);
-
-         //Schedule Tuesday
-         day = scheduleDay(calendar.get(offset + 2), docIDs.get(4), docIDs.get(5), docIDs.get(6),
-                 docIDs.get(0), docIDs.get(2));
-         calendar.set(offset + 2, day);
-
-         //Schedule Wednesday
-         day = scheduleDay(calendar.get(offset + 3), docIDs.get(5), docIDs.get(6), docIDs.get(0),
-                 docIDs.get(1), docIDs.get(3));
-         calendar.set(offset + 3, day);
-
-         //Schedule Thursday
-         day = scheduleDay(calendar.get(offset + 4), docIDs.get(7), docIDs.get(0), docIDs.get(1),
-                 docIDs.get(2), docIDs.get(4));
-         calendar.set(offset + 4, day);
-
-         //Schedule Friday
-         day = scheduleDay(calendar.get(offset + 5), docIDs.get(8), docIDs.get(1), docIDs.get(2),
-                 docIDs.get(3), docIDs.get(5));
-         calendar.set(offset + 5, day);
-
-         //Schedule Saturday
-         day = scheduleDay(calendar.get(offset + 6), docIDs.get(8), docIDs.get(2), docIDs.get(3),
-                 docIDs.get(4), docIDs.get(6));
-         calendar.set(offset + 6, day);
-      }
-
-      return calendar;
-   }
-
-   /* Schedules an entire day. Takes day to schedule, fills it, and returns.
-    * Pass null for early morning shift to indicate Sunday.
-    */
-   private Day scheduleDay(Day day, Integer emShift, Integer mShift, Integer lmShift,
-           Integer sShift, Integer oShift) {
-      //Schedule Sunday
-      if (emShift == null) {
-         assignDoctorToShift(day, mShift, "Sunday Shift");
-         assignDoctorToShift(day, oShift, "Overnight Shift");
-      }
-      //Schedule other days
-      else {
-         assignDoctorToShift(day, emShift, "Early Morning Shift");
-         assignDoctorToShift(day, mShift, "Morning Shift");
-         assignDoctorToShift(day, lmShift, "Late Morning Shift");
-         assignDoctorToShift(day, sShift, "Sunday Shift");
-         assignDoctorToShift(day, oShift, "Overnight Shift");
-      }
-      
-      return day;
-   }
-   
-   private void assignDoctorToShift(Day day, Integer docID, String shiftName) {
-      ShiftInDay oldShift;
-      
-      oldShift = day.getShift(shiftName);
-      
-      if (oldShift.getFirstDoctor() > 0) {
-         if (oldShift.getSecondDoctor() > 0) {
-            System.out.println("Shift is full already.");
-         }
-         else {
-            oldShift.setSecondDoctor(docID);
-         }
-      }
-      else {
-         oldShift.setFirstDoctor(docID);
-      }
-   }
-
-   //Grants request for a day off for a doctor if possible
-   public boolean requestDayOff(ArrayList<Integer> docIDs, Integer requestingDoc,
-           Calendar requestedDay, String table) {
-      int i;
-      int j;
-      int docID;
-      int temp;
-      int offset = -1;
-      int indexOfDay = 0;
-      boolean isWorking = false;
-      boolean isReplaced = false;
-      boolean isSunday = false; 
-      Integer replacementID = 0;
-      Day day;
-      Day yesterday = null;
-      Calendar lowCompDate;
-      Calendar highCompDate;
-      ShiftInDay shift;
-      Shift newShift;
-      ArrayList<Integer> validIDs = new ArrayList<>();
-      ArrayList<Integer> allIDs = new ArrayList<>();
-      ArrayList<Day> newWeek = new ArrayList<>();
-      Map<Integer, Integer> freeDays = new HashMap<>();
-      String shiftType = null;
-      String[] shiftNames = {"Early Morning Shift", "Morning Shift", "Late "
-              + "Morning Shift", "Surgery Shift", "Overnight Shift"};
-      
-
-      i = 0;
-
-      //Scheduler works on a weekly basis and needs to start on a Sunday so it has a zero-based offset from the Sunday of
-      //the week of the requested day
-      while (i < MAX_CALENDAR_DAYS / DAYS_PER_WEEK) {
-         lowCompDate = calendar.get(0).getDate();
-         highCompDate = lowCompDate;
-         highCompDate.add(Calendar.WEEK_OF_YEAR, 1);
-         if (requestedDay.compareTo(highCompDate) <= 0 && requestedDay.compareTo(lowCompDate) >= 0) {
-            offset = i * DAYS_PER_WEEK;
-         }
-	i++;
-      }
-      
-      if (offset == -1) {
-         System.out.println("Requested day out of range");
-         return false;
-      }
-      //Store which doctors are working when
-      Set[] dailyDocs = new Set[DAYS_PER_WEEK];
-      for (i = 0; i < DAYS_PER_WEEK; i++) {
-         dailyDocs[i] = new HashSet<>();
-      }
-      
-      if (requestedDay.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
-         isSunday = true;
-      //Store which doctors are working overnight shifts from Sun-Sat [0-6]
-      Integer[] overnightDocs = new Integer[DAYS_PER_WEEK];
-              
-      //Get all doctor ids and assign to maximum number of shift availability
-      for (i = 0; i < docIDs.size(); i++) {
-          allIDs.add(docIDs.get(i));
-          freeDays.put(docIDs.get(i), MAX_SHIFTS_PER_WEEK);
-      }
-
-/*      
-      //Check that there is enough doctors
-      if (allIDs.size() != 9) {
-          System.out.println("Do not have 9 doctors...");
-          return false;
-      }
-*/  
-    
-      /* Helps with finding free doctors to fill up a shift
-       * Go through current schedule and finds out which doctors work what days
-       * and overnight shifts as well as remove doctors from extra shifts.
-       * This frees them up to possibly take the shift that is being lost
-       */
-      for (i = 0; i < DAYS_PER_WEEK; i++) {
-         day = calendar.get(offset + i);
-         if (day.getDate() == requestedDay && !isSunday)
-            yesterday = calendar.get(offset + i - 1);
-         for (j = 0; j < shiftNames.length; j++) {
-            shift = day.getShift(shiftNames[j]);
-            docID = shift.getFirstDoctor();
-            if (day.getDate() == requestedDay && docID == requestingDoc) {
-               isWorking = true;
-               indexOfDay = offset + i;
-               shiftType = shiftNames[j];
-            }
-            if (docID >= 0) {
-               dailyDocs[i].add(docID);
-               temp = freeDays.get(docID);
-               freeDays.put(docID, temp - 1);
-               if (shiftNames[j].equals("Overnight Shift")) {
-                  overnightDocs[i] = docID;
-               }
-            }
-            docID = shift.getSecondDoctor();
-            if (docID >= 0) {
-               shift.setSecondDoctor(INVALID);
-            }
-         }
-      }
-      
-      //Case where doctor is already not working on the requested day
-      if (!isWorking)
-         return true;
-         
-      //Try to slot in free doctor into slot
-      for (Map.Entry<Integer, Integer> entry : freeDays.entrySet()) {
-         //If doctor has free days 
-         if (entry.getValue() > 0) {
-            //If doctor does not already work today
-            if (!calendar.get(indexOfDay).checkDoctorWorking(entry.getKey())) {
-               //If doctor did not work overnight yesterday
-               if (yesterday == null || !yesterday.checkOvernightDoctor(entry.getKey())) {
-                  //Set doctor in shift
-                  shift = calendar.get(indexOfDay).getShift(shiftType);
-                  shift.setFirstDoctor(entry.getKey());
-                  isReplaced = true;
-                  replacementID = entry.getKey();
-                  freeDays.put(entry.getKey(), entry.getValue() - 1);
-                  freeDays.put(requestingDoc, 1);
-                  break;
-               }
-            }
-         }
-      }
-      
-      //Could not replace doctor
-      if (!isReplaced) {
-         //System.out.println("Request could not be granted.");
-         return false;
-      }
-
-      //TODO -- Assign free doctors to second shifts
-      /*
-      for (Map.Entry<Integer, Integer> entry : freeDays.entrySet()) {
-         //If doctor has free days 
-         while (entry.getValue() > 0) {
-            
-            freeDays.put(entry.getKey(), entry.getValue() - 1);
-         }
-      }*/
-      
-      //Call function to push schedule changes to db
-      pushSchedule(replacementID, requestingDoc, requestedDay, table);
-
-      //Success if got here
-      return true;
-      
-   }
-   
-   //TODO -- Grants request for doctor's preferred work time if possible
-   public boolean requestWorkTime(ArrayList<Integer> docIDs,
-           Integer requestingDoc, Day requestedDay, String shiftName) {
-      //If doctor already works this day and is not changing to overnight, just switch shift time
-      //Else check if doctor can replace one of his other days with that shift and if doctors who get freed up can take that shift
-      int i;
-      int j;
-      int docID;
-      int temp;
-      int offset = -1;
-      int indexOfDay = 0;
-      boolean isWorking = false;
-      boolean isReplaced = false;
-      boolean isSunday = false; 
-      Integer replacementID = 0;
-      Day day;
-      Day yesterday = null;
-      Calendar lowCompDate;
-      Calendar highCompDate;
-      ShiftInDay shift;
-      Shift newShift;
-      ArrayList<Integer> validIDs = new ArrayList<>();
-      ArrayList<Integer> allIDs = new ArrayList<>();
-      ArrayList<Day> newWeek = new ArrayList<>();
-      Map<Integer, Integer> freeDays = new HashMap<>();
-      String shiftType = null;
-      String[] shiftNames = {"Early Morning Shift", "Morning Shift", "Late "
-              + "Morning Shift", "Surgery Shift", "Overnight Shift"};
-      
-/*
-      i = 0;
-
-      //Scheduler works on a weekly basis and needs to start on a Sunday so it has a zero-based offset from the Sunday of
-      //the week of the requested day
-      while (i < MAX_CALENDAR_DAYS / DAYS_PER_WEEK) {
-         lowCompDate = calendar.get(0).getDate();
-         highCompDate = lowCompDate;
-         highCompDate.add(Calendar.WEEK_OF_YEAR, 1);
-         if (requestedDay.compareTo(highCompDate) <= 0 && requestedDay.compareTo(lowCompDate) >= 0) {
-            offset = i * DAYS_PER_WEEK;
-         }
-	i++;
-      }
-      
-      if (offset == -1) {
-         System.out.println("Requested day out of range");
-         return false;
-      }
-
-      //Store which doctors are working when
-      Set[] dailyDocs = new Set[DAYS_PER_WEEK];
-      for (i = 0; i < DAYS_PER_WEEK; i++) {
-         dailyDocs[i] = new HashSet<>();
-      }
-      
-      //Checks if it is Sunday because we can't check previous day
-      if (requestedDay.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
-         isSunday = true;
-
-      //Store which doctors are working overnight shifts from Sun-Sat [0-6]
-      Integer[] overnightDocs = new Integer[DAYS_PER_WEEK];
-              
-      //Get all doctor ids and assign to maximum number of shift availability
-      for (i = 0; i < docIDs.size(); i++) {
-          allIDs.add(docIDs.get(i));
-          freeDays.put(docIDs.get(i), MAX_SHIFTS_PER_WEEK);
-      }
-      
-      //Check that there is enough doctors
-/*
-      if (allIDs.size() != 9) {
-          System.out.println("Do not have 9 doctors...");
-          return false;
-      }
-*/     
-      /* Helps with finding free doctors to fill up a shift
-       * Go through current schedule and finds out which doctors work what days
-       * and overnight shifts as well as remove doctors from extra shifts.
-       * This frees them up to possibly take the shift that is being lost
-       *//*
-      for (i = 0; i < DAYS_PER_WEEK; i++) {
-         day = calendar.get(offset + i);
-         if (day.getDate() == requestedDay && !isSunday)
-            yesterday = calendar.get(offset + i - 1);
-         for (j = 0; j < shiftNames.length; j++) {
-            shift = day.getShift(shiftNames[j]);
-            docID = shift.getFirstDoctor();
-            if (day.getDate() == requestedDay && docID == requestingDoc) {
-               isWorking = true;
-               indexOfDay = offset + i;
-               shiftType = shiftNames[j];
-            }
-            if (docID >= 0) {
-               dailyDocs[i].add(docID);
-               temp = freeDays.get(docID);
-               freeDays.put(docID, temp - 1);
-               if (shiftNames[j].equals("Overnight Shift")) {
-                  overnightDocs[i] = docID;
-               }
-            }
-            docID = shift.getSecondDoctor();
-            if (docID >= 0) {
-               shift.setSecondDoctor(INVALID);
-            }
-         }
-      }
-      
-      //Case where doctor is already not working on the requested day
-      if (!isWorking)
-         return true;
-         
-      //Try to slot in free doctor into slot
-      for (Map.Entry<Integer, Integer> entry : freeDays.entrySet()) {
-         //If doctor has free days 
-         if (entry.getValue() > 0) {
-            //If doctor does not already work today
-            if (!calendar.get(indexOfDay).checkDoctorWorking(entry.getKey())) {
-               //If doctor did not work overnight yesterday
-               if (yesterday == null || !yesterday.checkOvernightDoctor(entry.getKey())) {
-                  //Set doctor in shift
-                  shift = calendar.get(indexOfDay).getShift(shiftType);
-                  shift.setFirstDoctor(entry.getKey());
-                  isReplaced = true;
-                  replacementID = entry.getKey();
-                  freeDays.put(entry.getKey(), entry.getValue() - 1);
-                  freeDays.put(requestingDoc, 1);
-                  break;
-               }
-            }
-         }
-      }
-      
-      //Could not replace doctor
-      if (!isReplaced) {
-         //System.out.println("Request could not be granted.");
-         return false;
-      }*/
-
-      //TODO -- Assign free doctors to second shifts
-      /*
-      for (Map.Entry<Integer, Integer> entry : freeDays.entrySet()) {
-         //If doctor has free days 
-         while (entry.getValue() > 0) {
-            
-            freeDays.put(entry.getKey(), entry.getValue() - 1);
-         }
-      }*/
-      
-      //Call function to push schedule changes to db
-      //pushSchedule(replacementID, requestingDoc, requestedDay, table);
-
-      //Success if got here
-      return true;
-      
-   }
-   public ArrayList<Day> getSchedule() {
-      return calendar;
-   }
-   
-   //Updates assigned shift from oldID to newID
-   private void pushSchedule(Integer newID, Integer oldID, Calendar requestedDay, 
-           String table) {
-      
-      try {
-         connection = new DBConnection();
-
          String query = "UPDATE " + table + " " + 
                         "SET id = " + newID + " " + 
                         "WHERE id = " + oldID + " " + 
