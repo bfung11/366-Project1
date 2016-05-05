@@ -2,6 +2,12 @@ import java.util.*;
 import java.sql.*;
 
 public class Shift {
+   public final static String EARLY = "7:30 Shift";
+   public final static String MORNING = "8:30 Shift";
+   public final static String LATE = "9:30 Shift";
+   public final static String OVERNIGHT = "Overnight Shift";
+   public final static String SUNDAY = "Sunday Shift";
+   
    private final static String FROM_TIME_TABLENAME = "fromTime";
    private final static String TO_TIME_TABLENAME = "toTime";
 
