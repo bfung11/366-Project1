@@ -29,22 +29,20 @@ CREATE TABLE DoctorShifts (
 );
 
 CREATE TABLE DoctorPreferredShifts (
-   id INTEGER REFERENCES Doctors(id),
+   doctorID INTEGER REFERENCES Doctors(id),
    date DATE NOT NULL,
    shift TEXT REFERENCES Shifts(name),
-   PRIMARY KEY (id, date, shift)
+   PRIMARY KEY (doctorID, date, shift)
 );
 
-CREATE TABLE DoctorSickDays (
+CREATE TABLE DoctorTimeOff (
    id INTEGER REFERENCES Doctors(id),
-   date DATE NOT NULL,
-   PRIMARY KEY (id, date)
-);
-
-CREATE TABLE DoctorVacationDays (
-   id INTEGER REFERENCES Doctors(id),
-   date DATE NOT NULL,
-   PRIMARY KEY (id, date)
+   fromDate DATE NOT NULL,
+   fromTime TIME NOT NULL,
+   toDate DATE NOT NULL,
+   toTime TIME NOT NULL,
+   timeOffType TEXT NOT NULL,
+   PRIMARY KEY (id, fromDate, fromTime, toDate, toTime)
 );
 
 CREATE TABLE Technicians (
@@ -66,27 +64,22 @@ CREATE TABLE TechnicianShifts (
 );
 
 CREATE TABLE TechnicianPreferredShifts (
-   id INTEGER REFERENCES Technicians(id),
+   technicianID INTEGER REFERENCES Technicians(id),
    date DATE NOT NULL,
    shift TEXT REFERENCES Shifts(name),
    PRIMARY KEY (technicianID, date, shift)
 );
 
-CREATE TABLE TechnicianSickDays (
-   id INTEGER REFERENCES Technicians(id),
-   date DATE NOT NULL
-   PRIMARY KEY (id, date)
+CREATE TABLE TechnicianTimeOff (
+   id INTEGER REFERENCES Doctors(id),
+   fromDate DATE NOT NULL,
+   fromTime TIME NOT NULL,
+   toDate DATE NOT NULL,
+   toTime TIME NOT NULL,
+   timeOffType TEXT NOT NULL,
+   PRIMARY KEY (id, fromDate, fromTime, toDate, toTime)
 );
 
-<<<<<<< Updated upstream
-CREATE TABLE TechnicianVacationDays (
-   id INTEGER REFERENCES Technicians(id),
-   date DATE NOT NULL
-   PRIMARY KEY (id, date)
-);
-
-=======
->>>>>>> Stashed changes
 CREATE TABLE Administrators (
    id SERIAL PRIMARY KEY,
    email TEXT UNIQUE NOT NULL,
@@ -97,17 +90,11 @@ CREATE TABLE Administrators (
 
 /* Copy pasta this to drop tables en masse
 DROP TABLE Administrators;
-<<<<<<< Updated upstream
-DROP TABLE TechnicianSickDays;
-DROP TABLE TechnicianVacationDays;
-=======
 DROP TABLE TechnicianTimeOff;
->>>>>>> Stashed changes
 DROP TABLE TechnicianPreferredShifts;
 DROP TABLE TechnicianShifts;
 DROP TABLE Technicians;
-DROP TABLE DoctorSickDays;
-DROP TABLE DoctorVacationDays;
+DROP TABLE DoctorTimeOff;
 DROP TABLE DoctorPreferredShifts;
 DROP TABLE DoctorShifts;
 DROP TABLE Doctors;
