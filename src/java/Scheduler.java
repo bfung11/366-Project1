@@ -25,13 +25,6 @@ public class Scheduler {
    private final static int THURSDAY = 4;
    private final static int FRIDAY = 5;
    private final static int SATURDAY = 6;
-
-   //private ArrayList<Day> calendar;
-   private ArrayList<Shift> shifts;
-   private ArrayList<Employee> doctors;
-   private ArrayList<EmployeeShift> doctorShifts;
-   private ArrayList<EmployeePreferredShift> doctorPreferredShifts;
-   private ArrayList<EmployeeTimeOff> doctorTimeOff;
    
    private int[] SundayIndices;
    private int[] MondayIndices;
@@ -42,6 +35,9 @@ public class Scheduler {
    private int[] SaturdayIndices;
    private int[] SurgeryIndices;
    private int[] OvernightIndices;
+
+   private Calendar requestedDay;
+   private int id = 1;
    //private ArrayList<Integer> docIDs;
    // look out 3 weeks in advance
 
@@ -76,6 +72,49 @@ public class Scheduler {
       
       OvernightIndices = new int[] {4, 9, 14, 19, 24};
       SurgeryIndices = new int[] {3, 8, 13, 18, 23};
+   }
+
+   private ArrayList<Request> getRequestsForWeek(Calendar requestedDay) {
+      this.requestedDay = requestedDay;
+      
+      ArrayList<Request> list = new ArrayList<Request>();
+
+      list.addAll(getRequests(Request.SICK_DAY));
+      list.addAll(getRequests(Request.VACATION_DAY));
+      list.addAll(getRequests(Request.PREFERRED_SHIFT));
+
+      return list;
+   }
+
+   private ArrayList<Request> getRequests(int requestType) {
+      ArrayList<Request> list = new ArrayList<Request>();
+      String tablename = getTableName(requestType);
+
+      try {
+         DBConnection connection = new DBConnection();
+         String query = "SELECT * " + 
+                        "FROM " + tablename + " " + 
+                        "WHERE id = " + id + " and " + 
+                        " "
+         ResultSet result = connection.execQuery(query);
+
+         while (result.next()) {
+            Request request = new Request();
+            request.setType(requestType);
+            request.setDoctorID(id);
+            request.setDate(result.getDate(Table.DATE));
+
+            if (requestType == Request.PREFERRED_SHIFT) {
+               request.setShift(result.getString(Table.SHIFT))
+            }
+            list.add(request);
+         }
+      }
+      catch (Exception e) {
+         e.printStackTrace();
+      }
+
+      return list;
    }
    
    public boolean generateSchedule(Calendar day, ArrayList<Integer> docIDs, 
@@ -289,122 +328,3 @@ public class Scheduler {
       }
    }
 }
-
-
-//~~~~~~~~~~~~~~~~~~~~~~~OLD CODE STARTS HERE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/*
-   * Adds enough 28 days to the calendar
-   */
-   /* OLD CODE -- MAY OR MAY NOT NEED THESE; WILL CHECK LATER
-   private void addDaysToCalendar(Calendar startingDate) {
-      Calendar date = startingDate;
-
-      for (int i = 0; i < MAX_CALENDAR_DAYS; ++i) {
-         calendar.add(new Day(date));
-         date.add(date.DAY_OF_MONTH, 1);
-      }
-   }
-
-   //TODO read in shifts
-   //TODO check preferences
-   //TODO calendar
-   //Creates a default schedule assuming no preferences. Uses hardcoded shift
-   //blocks to schedule doctors.
-   //IDEA -- Generalize this process
-   public ArrayList<Day> makeDefaultSchedule(Calendar startDate, ArrayList<Integer> docIDs) {
-      int i;
-      int j;
-      int offset;
-      Day day;
-      calendar = new ArrayList<>();
-
-      for (j = 0; j < MAX_CALENDAR_DAYS / DAYS_PER_WEEK; j++) {
-         offset = DAYS_PER_WEEK * j;
-         //Initialize days of week
-         for (i = 0; i < DAYS_PER_WEEK; i++) {
-             calendar.set(i, new Day(startDate));
-             startDate.add(Calendar.DATE, 1);
-         }
-
-         //IDEA: Create shift sets with a whole 4 shift schedule that contains overnight and surgery
-         //and assign doctors to shift sets. Will have 2 doctors free to take the rest of the slots
-
-         //Schedule Sunday
-         day = scheduleDay(calendar.get(offset + 0), null, docIDs.get(3), null, null, docIDs.get(0));
-         calendar.set(0, day);
-
-         //Schedule Monday
-         day = scheduleDay(calendar.get(offset + 1), docIDs.get(7), docIDs.get(4), docIDs.get(5),
-                 docIDs.get(6), docIDs.get(1));
-         calendar.set(offset + 1, day);
-
-         //Schedule Tuesday
-         day = scheduleDay(calendar.get(offset + 2), docIDs.get(4), docIDs.get(5), docIDs.get(6),
-                 docIDs.get(0), docIDs.get(2));
-         calendar.set(offset + 2, day);
-
-         //Schedule Wednesday
-         day = scheduleDay(calendar.get(offset + 3), docIDs.get(5), docIDs.get(6), docIDs.get(0),
-                 docIDs.get(1), docIDs.get(3));
-         calendar.set(offset + 3, day);
-
-         //Schedule Thursday
-         day = scheduleDay(calendar.get(offset + 4), docIDs.get(7), docIDs.get(0), docIDs.get(1),
-                 docIDs.get(2), docIDs.get(4));
-         calendar.set(offset + 4, day);
-
-         //Schedule Friday
-         day = scheduleDay(calendar.get(offset + 5), docIDs.get(8), docIDs.get(1), docIDs.get(2),
-                 docIDs.get(3), docIDs.get(5));
-         calendar.set(offset + 5, day);
-
-         //Schedule Saturday
-         day = scheduleDay(calendar.get(offset + 6), docIDs.get(8), docIDs.get(2), docIDs.get(3),
-                 docIDs.get(4), docIDs.get(6));
-         calendar.set(offset + 6, day);
-      }
-
-      return calendar;
-   }
-
-   /* Schedules an entire day. Takes day to schedule, fills it, and returns.
-    * Pass null for early morning shift to indicate Sunday.
-    */
-   /*
-   private Day scheduleDay(Day day, Integer emShift, Integer mShift, Integer lmShift,
-           Integer sShift, Integer oShift) {
-      //Schedule Sunday
-      if (emShift == null) {
-         assignDoctorToShift(day, mShift, "Sunday Shift");
-         assignDoctorToShift(day, oShift, "Overnight Shift");
-      }
-      //Schedule other days
-      else {
-         assignDoctorToShift(day, emShift, "Early Morning Shift");
-         assignDoctorToShift(day, mShift, "Morning Shift");
-         assignDoctorToShift(day, lmShift, "Late Morning Shift");
-         assignDoctorToShift(day, sShift, "Sunday Shift");
-         assignDoctorToShift(day, oShift, "Overnight Shift");
-      }
-      
-      return day;
-   }
-   
-   private void assignDoctorToShift(Day day, Integer docID, String shiftName) {
-      ShiftInDay oldShift;
-      
-      oldShift = day.getShift(shiftName);
-      
-      if (oldShift.getFirstDoctor() > 0) {
-         if (oldShift.getSecondDoctor() > 0) {
-            System.out.println("Shift is full already.");
-         }
-         else {
-            oldShift.setSecondDoctor(docID);
-         }
-      }
-      else {
-         oldShift.setFirstDoctor(docID);
-      }
-   }
-   */
