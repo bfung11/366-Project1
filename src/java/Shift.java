@@ -31,7 +31,7 @@ public class Shift {
       return shift;
    }
 
-   public void setDate(Date date) {
+   public void setDate(java.sql.Date date) {
       this.date = new GregorianCalendar();
       this.date.setTime(date);
    }
@@ -48,8 +48,8 @@ public class Shift {
       return doctor;
    }
 
-   public void hasFirstTechnician() {
-      firstTechnician != NO_ID;
+   public boolean hasFirstTechnician() {
+      return firstTechnician != NO_ID;
    }
 
    public void setFirstTechnician(int technician) {
@@ -68,8 +68,9 @@ public class Shift {
       return secondTechnician;
    }
 
-   public boolean equals(Date date, String shift) {
-      this.date.equals((new GregorianCalendar()).setTime(date)) &&
-      this.shift.equals(shift);
+   public boolean equals(java.sql.Date date, String shift) {
+      Calendar cal = new GregorianCalendar();
+      cal.setTime(date);
+      return this.date.equals(cal) && this.shift.equals(shift);
    }
 }
