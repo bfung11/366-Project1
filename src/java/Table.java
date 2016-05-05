@@ -10,6 +10,8 @@ public class Table {
    public final static String SICK_DAYS = "sickDaysLeft";
    public final static String DATE = "date";
    public final static String SHIFT = "shift";
+   public final static String FROM_TIME = "fromTime";
+   public final static String TO_TIME = "toTime";
 
    private static int emplType;
 
