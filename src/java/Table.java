@@ -9,14 +9,16 @@ public class Table {
    public final static String VACATION_DAYS = "vacationDaysLeft";
    public final static String SICK_DAYS = "sickDaysLeft";
    public final static String DATE = "date";
-   public final static String SHIFT_ID = "shift";
+   public final static String SHIFT = "shift";
+   public final static String FROM_TIME = "fromTime";
+   public final static String TO_TIME = "toTime";
 
-   private static int employeeType;
+   private static int emplType;
 
    public static String getTableName(String secondPart) {
       String tablename = "";
 
-      switch(employeeType) {
+      switch(emplType) {
          case Employee.DOCTOR:
             tablename = "Doctor" + secondPart;
             break;
@@ -47,7 +49,7 @@ public class Table {
             tablename = Table.getTableName("PreferredShifts");
             break;
          default:
-            System.out.println("Not a valid employeeType");
+            System.out.println("Not a valid emplType");
             break;
       }
 
@@ -55,10 +57,10 @@ public class Table {
    }
 
    public static void setEmployeeType(int employeeType) {
-      this.employeeType = employeeType;
+      emplType = employeeType;
    }
 
    public static int getEmployeeType() {
-      return employeeType;
+      return emplType;
    }
 }

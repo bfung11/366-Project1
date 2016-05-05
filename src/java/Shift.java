@@ -7,45 +7,69 @@ public class Shift {
    public final static String LATE = "9:30 Shift";
    public final static String OVERNIGHT = "Overnight Shift";
    public final static String SUNDAY = "Sunday Shift";
-   
-   private final static String FROM_TIME_TABLENAME = "fromTime";
-   private final static String TO_TIME_TABLENAME = "toTime";
+   public final static String SURGERY = "Surgery";
 
-   private String name;
-   private Time fromTime; //TODO may need to change datatypes
-   private Time toTime; //TODO may need to change datatypes
-   
-   public Shift(String name, Time fromTime, Time toTime) {
-      this.name = name;
-      this.fromTime = fromTime;
-      this.toTime = toTime;
+   private final static int NO_ID = -1;
+
+   private String shift;
+   private Calendar date;
+   private int doctor;
+   private int firstTechnician;
+   private int secondTechnician;
+
+   public Shift() {
+      doctor = NO_ID;
+      firstTechnician = NO_ID;
+      secondTechnician = NO_ID;
    }
 
-   public Shift(String name) {
-      try {
-         DBConnection connection = new DBConnection();
-         String query = "select * " +
-                        "from Shifts " +
-                        "where name = '" + name + "'";
-         ResultSet result = connection.execQuery(query);
-         this.name = name;
-         this.fromTime = result.getTime(FROM_TIME_TABLENAME);
-         this.toTime = result.getTime(TO_TIME_TABLENAME);
-      }
-      catch (Exception e) {
-         e.printStackTrace();
-      }
+   public void setShift(String shift) {
+      this.shift = shift;
    }
 
-   public String getName() {
-      return name;
+   public String getShift() {
+      return shift;
    }
 
-   public Time getFromTime() {
-      return fromTime;
+   public void setDate(Date date) {
+      this.date = new GregorianCalendar();
+      this.date.setTime(date);
    }
 
-   public Time getToTime() {
-      return toTime;
+   public Calendar getDate() {
+      return date;
+   }
+
+   public void setDoctor(int doctor) {
+      this.doctor = doctor;
+   }
+
+   public int getDoctor() {
+      return doctor;
+   }
+
+   public void hasFirstTechnician() {
+      firstTechnician != NO_ID;
+   }
+
+   public void setFirstTechnician(int technician) {
+      firstTechnician = technician;
+   }
+
+   public int getFirstTechnician() {
+      return firstTechnician;
+   }
+
+   public void setSecondTechnician(int technician) {
+      secondTechnician = technician;
+   }
+
+   public int getSecondTechnician() {
+      return secondTechnician;
+   }
+
+   public boolean equals(Date date, String shift) {
+      this.date.equals((new GregorianCalendar()).setTime(date)) &&
+      this.shift.equals(shift);
    }
 }

@@ -27,19 +27,20 @@ public class Request {
       return doctorID;
    }
 
-   public void setDate(Calendar date) {
-      this.date = date;
+   public void setDate(Date date) {
+      this.date = new GregorianCalendar();
+      this.date.setTime(date);
    }
 
    public Calendar getDate() {
       return date;
    }
 
-   public void setShiftName(String shiftName) {
+   public void setShift(String shiftName) {
       this.shiftName = shiftName;
    }
 
-   public String getShiftName() {
+   public String getShift() {
       return shiftName;
    }
 }

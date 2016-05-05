@@ -49,25 +49,50 @@ public class Scheduler {
 
    private Calendar requestedDay;
    private int id = 1;
+   private ArrayList<Shift> calendar;
    //private ArrayList<Integer> docIDs;
    // look out 3 weeks in advance
 
    //TODO -- Probably have to update this
    public Scheduler(Calendar startingDate) {
-      //calendar = new ArrayList<Day>(MAX_CALENDAR_DAYS);
-      shifts = new ArrayList<Shift>();
-      //TODO read in shifts
-      doctors = new ArrayList<Employee>();
-      doctorShifts = new ArrayList<EmployeeShift>();
-      doctorPreferredShifts = new ArrayList<EmployeePreferredShift>();
-      doctorTimeOff = new ArrayList<EmployeeTimeOff>();
-      //docIDs = new ArrayList<Integer>();
-      for (int i = 0; i < doctorTimeOff.size(); ++i) {
-         //TODO add timeoff for multiple days
+      initShifts();
+      initDayIndices();
+   }
+
+   private void initShifts() {
+      calendar = new ArrayList<Shift>();
+
+      // get doctors
+      DBConnection connection = new DBConnection();
+      String query = "SELECT * FROM DoctorShifts";
+      ResultSet result = connection.execQuery(query);
+
+      while (result.next()) {
+         Shift shift = new Shift();
+         shift.setShift(result.getString(Table.SHIFT));
+         shift.setDate(result.getDate(Table.DATE));
+         shift.setDoctor(result.getInt(Table.ID));
+         calendar.add(shift);
       }
 
-      //addDaysToCalendar(startingDate);
-      initDayIndices();
+      // get technicians
+      query = "SELECT * FROM TechnicianShifts";
+      result = connection.execQuery(query);
+      while (result.next()) {
+         for (int i = 0; i < calendar.size(); ++i) {
+            Shift shift = calendar.get(i);
+            if (shift.equals(result.getDate(Table.DATE), 
+                             result.getString(Table.SHIFT))) {
+               int technician = result.get(Table.ID);
+               if (!shift.hasFirstTechnician()) {
+                  shift.setFirstTechnician(technician);
+               }
+               else {
+                  shift.setSecondTechnician(technician);
+               }
+            }
+         }
+      }
    }
    
    //Associate the 32 shift indices with special attributes like day, overnight,
@@ -99,14 +124,14 @@ public class Scheduler {
 
    private ArrayList<Request> getRequests(int requestType) {
       ArrayList<Request> list = new ArrayList<Request>();
-      String tablename = getTableName(requestType);
+      String tablename = Table.getTableName(requestType);
 
       try {
          DBConnection connection = new DBConnection();
          String query = "SELECT * " + 
                         "FROM " + tablename + " " + 
                         "WHERE id = " + id + " and " + 
-                        " "
+                        " ";
          ResultSet result = connection.execQuery(query);
 
          while (result.next()) {
@@ -116,7 +141,7 @@ public class Scheduler {
             request.setDate(result.getDate(Table.DATE));
 
             if (requestType == Request.PREFERRED_SHIFT) {
-               request.setShift(result.getString(Table.SHIFT))
+               request.setShift(result.getString(Table.SHIFT));
             }
             list.add(request);
          }
