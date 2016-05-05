@@ -74,13 +74,13 @@ CREATE TABLE TechnicianPreferredShifts (
 
 CREATE TABLE TechnicianSickDays (
    id INTEGER REFERENCES Technicians(id),
-   date DATE NOT NULL
+   date DATE NOT NULL,
    PRIMARY KEY (id, date)
 );
 
 CREATE TABLE TechnicianVacationDays (
    id INTEGER REFERENCES Technicians(id),
-   date DATE NOT NULL
+   date DATE NOT NULL,
    PRIMARY KEY (id, date)
 );
 
