@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"   xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <link href="css/stylesheet.css" rel="stylesheet" type="text/css" />
+        <h1>Your Doctor Schedule</h1>
+    </h:head>
+
+    <h:body>
+        <h:dataTable value="#{doctor.getSchedule()}" var="ds" border="1">
+            <h:column>
+                <f:facet name="header"> Date </f:facet>
+                    <!-- Something like "5/4/2016" -->
+                    #{ds.date}
+            </h:column>
+
+            <h:column>
+                <f:facet name="header"> Day of Week </f:facet>
+                    #{ds.}
+            </h:column>
+            
+            <h:column>
+                <f:facet name="header"> Shift </f:facet>
+                    <!-- We want something like "Morning shift 9:00AM - 10:00AM" -->
+                    #{ds.username}
+            </h:column>
+            
+            <h:column>
+                <f:facet name="header"> Technicians </f:facet>
+                    #{ds.password}
+            </h:column>
+
+            <h:column>
+                <f:facet name="header"> Phone Number </f:facet>
+                    #{d.phoneNumber}
+            </h:column>
+        </h:dataTable>
+    </h:body>
+</html>

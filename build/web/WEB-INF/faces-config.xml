@@ -8,6 +8,18 @@
         <managed-bean-class>Selector</managed-bean-class>
         <managed-bean-scope>session</managed-bean-scope>
     </managed-bean>
+    
+    <managed-bean>
+        <managed-bean-name>doctor</managed-bean-name>
+        <managed-bean-class>Doctor</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
+    
+    <managed-bean>
+        <managed-bean-name>technician</managed-bean-name>
+        <managed-bean-class>Technician</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
      <managed-bean>
         <managed-bean-name>util</managed-bean-name>
         <managed-bean-class>Util</managed-bean-class>
@@ -99,8 +111,8 @@
             /newTechnician.xhtml
         </from-view-id>
         <navigation-case>
-            <from-outcome>main</from-outcome>
-            <to-view-id>start.xhtml</to-view-id>
+            <from-outcome>mainAdministrator</from-outcome>
+            <to-view-id>startA.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
     
@@ -129,8 +141,8 @@
             /deleteDoctor.xhtml
         </from-view-id>
         <navigation-case>
-            <from-outcome>main</from-outcome>
-            <to-view-id>start.xhtml</to-view-id>
+            <from-outcome>mainAdministrator</from-outcome>
+            <to-view-id>startA.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
     
@@ -139,11 +151,30 @@
             /deleteTechnician.xhtml
         </from-view-id>
         <navigation-case>
-            <from-outcome>main</from-outcome>
-            <to-view-id>start.xhtml</to-view-id>
+            <from-outcome>mainAdministrator</from-outcome>
+            <to-view-id>startA.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
     
+        <navigation-rule>
+        <from-view-id>
+            /changeDocPw.xhtml
+        </from-view-id>
+        <navigation-case>
+            <from-outcome>mainAdministrator</from-outcome>
+            <to-view-id>startA.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+        <navigation-rule>
+        <from-view-id>
+            /changeTechPw.xhtml
+        </from-view-id>
+        <navigation-case>
+            <from-outcome>mainAdministrator</from-outcome>
+            <to-view-id>startA.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
     
     
     

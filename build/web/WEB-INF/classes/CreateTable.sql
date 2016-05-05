@@ -4,13 +4,18 @@ CREATE TABLE Shifts (
    toTime TIME NOT NULL
 );
 
+CREATE TABLE Login (
+   email TEXT PRIMARY KEY,
+   username TEXT UNIQUE NOT NULL,
+   password TEXT NOT NULL
+);
+
 CREATE TABLE Doctors (
    id SERIAL PRIMARY KEY,
-   email TEXT UNIQUE NOT NULL,
-   password TEXT NOT NULL,
+   email TEXT REFERENCES Login(email),
    firstname TEXT,
    lastname TEXT NOT NULL,
-   phone TEXT NOT NULL,
+   phonenumber TEXT NOT NULL,
    vacationDaysLeft INTEGER DEFAULT 8,
    sickDaysLeft INTEGER DEFAULT 4
 );
@@ -24,29 +29,30 @@ CREATE TABLE DoctorShifts (
 );
 
 CREATE TABLE DoctorPreferredShifts (
-   doctorID INTEGER REFERENCES Doctors(id),
+   id INTEGER REFERENCES Doctors(id),
    date DATE NOT NULL,
    shift TEXT REFERENCES Shifts(name),
-   PRIMARY KEY (doctorID, date, shift)
+   PRIMARY KEY (id, date, shift)
 );
 
-CREATE TABLE DoctorTimeOff (
+CREATE TABLE DoctorSickDays (
    id INTEGER REFERENCES Doctors(id),
-   fromDate DATE NOT NULL,
-   fromTime TIME NOT NULL,
-   toDate DATE NOT NULL,
-   toTime TIME NOT NULL,
-   timeOffType TEXT NOT NULL,
-   PRIMARY KEY (id, fromDate, fromTime, toDate, toTime)
+   date DATE NOT NULL,
+   PRIMARY KEY (id, date)
+);
+
+CREATE TABLE DoctorVacationDays (
+   id INTEGER REFERENCES Doctors(id),
+   date DATE NOT NULL,
+   PRIMARY KEY (id, date)
 );
 
 CREATE TABLE Technicians (
    id SERIAL PRIMARY KEY,
-   email TEXT UNIQUE NOT NULL,
-   password TEXT NOT NULL,
+   email TEXT REFERENCES Login(email),
    firstname TEXT,
    lastname TEXt NOT NULL,
-   phone TEXT NOT NULL,
+   phonenumber TEXT NOT NULL,
    vacationDaysLeft INTEGER DEFAULT 8,
    sickDaysLeft INTEGER DEFAULT 4
 );
@@ -60,48 +66,44 @@ CREATE TABLE TechnicianShifts (
 );
 
 CREATE TABLE TechnicianPreferredShifts (
-   technicianID INTEGER REFERENCES Technicians(id),
+   id INTEGER REFERENCES Technicians(id),
    date DATE NOT NULL,
    shift TEXT REFERENCES Shifts(name),
    PRIMARY KEY (technicianID, date, shift)
 );
 
-CREATE TABLE TechnicianTimeOff (
-   id INTEGER REFERENCES Doctors(id),
-   fromDate DATE NOT NULL,
-   fromTime TIME NOT NULL,
-   toDate DATE NOT NULL,
-   toTime TIME NOT NULL,
-   timeOffType TEXT NOT NULL,
-   PRIMARY KEY (id, fromDate, fromTime, toDate, toTime)
+CREATE TABLE TechnicianSickDays (
+   id INTEGER REFERENCES Technicians(id),
+   date DATE NOT NULL
+   PRIMARY KEY (id, date)
 );
 
-CREATE TABLE Admins (
+CREATE TABLE TechnicianVacationDays (
+   id INTEGER REFERENCES Technicians(id),
+   date DATE NOT NULL
+   PRIMARY KEY (id, date)
+);
+
+CREATE TABLE Administrators (
    id SERIAL PRIMARY KEY,
    email TEXT UNIQUE NOT NULL,
-   password TEXT NOT NULL,
    firstname TEXT,
    lastname TEXt NOT NULL,
-   phone TEXT NOT NULL
+   phonenumber TEXT NOT NULL
 );
 
-/*
--- Example code for inserting multiple values 
-INSERT INTO Days
-VALUES('2016-04-12'),
-      ('2016-05-12'),
-      ('2016-06-12');
-*/
-
 /* Copy pasta this to drop tables en masse
-DROP TABLE Admins;
-DROP TABLE TechnicianTimeOff;
+DROP TABLE Administrators;
+DROP TABLE TechnicianSickDays;
+DROP TABLE TechnicianVacationDays;
 DROP TABLE TechnicianPreferredShifts;
 DROP TABLE TechnicianShifts;
 DROP TABLE Technicians;
-DROP TABLE DoctorTimeOff;
+DROP TABLE DoctorSickDays;
+DROP TABLE DoctorVacationDays;
 DROP TABLE DoctorPreferredShifts;
 DROP TABLE DoctorShifts;
 DROP TABLE Doctors;
+DROP TABLE Login;
 DROP TABLE Shifts;
 */
