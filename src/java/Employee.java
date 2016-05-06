@@ -46,11 +46,16 @@ public class Employee {
    private int type;
    
    private Scheduler schedule;
+   private ArrayList<Shift> weekOne;
+   private ArrayList<Shift> weekTwo;
+   private ArrayList<Shfit> weekThree;
+   private ArrayList<Shift> weekFour;
    private Calendar startDate;
    private ArrayList<Integer> coworkerIDs;
 
    public Employee(int type) {
       this.type = type;
+      initCalendar();
    }
 
    public Employee(String username) {
@@ -89,12 +94,57 @@ public class Employee {
          vacationDays = result.getInt(Table.VACATION_DAYS);
          sickDays = result.getInt(Table.SICK_DAYS);
 
+         initCalendar();
+
          con.close();
       } 
       catch (Exception e) {
          e.printStackTrace();
       }
    }
+
+   private void initCalendar() {
+      week = new ArrayList<Shift>();
+
+      try {
+         // get doctors
+         DBConnection connection = new DBConnection();
+         String query = "SELECT * FROM DoctorShifts";
+         ResultSet result = connection.execQuery(query);
+
+         while (result.next()) {
+            Shift shift = new Shift();
+            shift.setShift(result.getString(Table.SHIFT));
+            shift.setDate(result.getDate(Table.DATE));
+            shift.setDoctor(result.getInt(Table.ID));
+            week.add(shift);
+         }
+
+         // get technicians
+         query = "SELECT * FROM TechnicianShifts";
+         result = connection.execQuery(query);
+         while (result.next()) {
+            for (int i = 0; i < week.size(); ++i) {
+               Shift shift = week.get(i);
+               if (shift.equals(result.getDate(Table.DATE), 
+                                result.getString(Table.SHIFT))) {
+                  int technician = result.getInt(Table.ID);
+                  if (!shift.hasFirstTechnician()) {
+                     shift.setFirstTechnician(technician);
+                  }
+                  else {
+                     shift.setSecondTechnician(technician);
+                  }
+               }
+            }
+         }
+      }
+      catch (Exception e) {
+         e.printStackTrace();
+      }
+   }
+
+   private ArrayList<
 
    public int getType() {
       return type;
@@ -274,7 +324,7 @@ String query = "select * from Doctors, Login where Doctors.email = Login.email a
          DBConnection con = new DBConnection();
          ResultSet result = con.execQuery(query);
 
-         int type = getTypeByTablename(tablename);
+         int type = Table.getTypeByTablename(tablename);
 
          while (result.next()) {
             Employee emp = EmployeeFactory.createEmployee(type);
@@ -303,134 +353,31 @@ String query = "select * from Doctors, Login where Doctors.email = Login.email a
       return list;
    }
 
-   private int getTypeByTablename(String tablename) {
-      switch(tablename) {
-         case "Doctors":
-            return Employee.DOCTOR;
-         case "Technicians":
-            return Employee.TECHNICIAN;
-         case "Administrators":
-            return Employee.ADMINISTRATOR;
-         default:
-            return -1;
-      }
+   private String convertDateToString(Calendar date) {
+      SimpleDateFormat formatter = new SimpleDateFormat("YYYY-MM-DD");
+      return formatter.format(date.getTime());
    }
 
-    public ArrayList<String> viewSchedule(String tablename, String username) {
-        ArrayList<String> mySchedule = new ArrayList<>();
-        try {
-            DBConnection dbconn = new DBConnection();
-            String query = "";
-            ResultSet rs = dbconn.execQuery(query);
-            while (rs.next())
-                mySchedule.add(rs.getDate("date").toString());
-        }
-        catch (SQLException sqe) {
-            sqe.printStackTrace();
-        }
-      return mySchedule;
+   private String convertTimeToString(Time time) {
+      SimpleDateFormat formatter = new SimpleDateFormat("HH:MM");
+      return formatter.format(time.getTime());
    }
 
-   public boolean canChoosePreferredShift() {
-      // generate schedule and then find out
-      return false;
-   }
-
-   // TODO : can choose preferred times
-   public void choosePreferredTimes() {
-
-   }
-
-   /*public boolean canTakeVacation(String username, EmployeeShift shift) {
-      if (hasVacationDays()) {
-         getCoworkerIDs();
-         Table.setEmployeeType(type);
-         return schedule.requestDayOff(coworkerIDs, id, shift.getDate(), 
-                 Table.getTableName("Shifts"));
-      }
-      return hasVacationDays();
-   }
-
-   private boolean hasVacationDays() {
-      return vacationDays > 0;
-   }
-
-   public boolean canTakeSickDay(Employee employee, EmployeeShift shift) {
-      if (hasSickDays()) {
-         getCoworkerIDs();
-         Table.setEmployeeType(type);
-         return schedule.requestDayOff(coworkerIDs, id, shift.getDate(), 
-                 Table.getTableName("Shifts"));
-      }
-      return hasSickDays();
-   }
-
-   private boolean hasSickDays() {
-      return sickDays > 0;
-   }
-
-  /* 
-   * @precondition assumes that sick day is granted;
-   */
-   /* 
-   public void takeSickDay(EmployeeShift shift) {
-
+   public ArrayList<String> viewSchedule(String tablename, String username) {
+      ArrayList<String> mySchedule = new ArrayList<>();
       try {
-         //update TimeOff
-         --sickDays;
-         Table.setEmployeeType(type);
-         String tablename = Table.getTableName("s");
-         String query = "UPDATE " + tablename + " " +
-                        "SET sickDays = " + sickDays + " " +
-                        "WHERE id = " + id + ";";
-         connection.execUpdate(query);
-
-         //update
-         tablename = Table.getTableName("TimeOff");
-         String date = convertDateToString(shift.getDate());
-         Shift genericShift = new Shift(shift.getShift());
-         String fromTime = convertTimeToString(genericShift.getFromTime());
-         String toTime = convertTimeToString(genericShift.getToTime());
-         query = "INSERT INTO "  + tablename + " " +
-                      "VALUES (" + id + ", " 
-                                 + date + ", "
-                                 + fromTime + ", " 
-                                 + date + ", "
-                                 + toTime + ", "
-                                 + "'sickDay'" + ")";
-         connection.execUpdate(query);  
-      }
-      catch (Exception e) {
-
-      }
-   }
-   */
-   private void getCoworkerIDs() {
-      String table;
-      coworkerIDs = new ArrayList<>();
-      
-      try {
-         connection = new DBConnection();
-         Connection con = connection.getConnection();
-
-         // get tablename
-         table = "Doctors";
-         if (type == TECHNICIAN) {
-            table = "Technicians";
-          }
-
-         String query = "select id from " + table;
-         ResultSet result =
-            connection.execQuery(query);
-
-         // add shifts to a list in date, fromTime, toTime, name of coworker format
-         while(result.next()) {  
-            coworkerIDs.add(result.getInt(1));
+         DBConnection dbconn = new DBConnection();
+         String query = "";
+         ResultSet rs = dbconn.execQuery(query);
+         while (rs.next()) {
+            mySchedule.add(rs.getDate("date").toString());
          }
-      }
-      catch (Exception e) {
-         e.printStackTrace();
-      }
+     }
+     catch (SQLException sqe) {
+         sqe.printStackTrace();
+     }
+   
+      return mySchedule;
    }
 
    private String convertDateToString(Calendar date) {

@@ -13,7 +13,8 @@ public class Shift {
 
    private String shift;
    private Calendar date;
-   private int doctor;
+   private int firstDoctor;
+   private int secondDoctor;
    private int firstTechnician;
    private int secondTechnician;
 
@@ -40,16 +41,28 @@ public class Shift {
       return date;
    }
 
-   public void setDoctor(int doctor) {
-      this.doctor = doctor;
+   public void setFirstDoctor(int doctor) {
+      firstDoctor = doctor;
    }
 
-   public int getDoctor() {
-      return doctor;
+   public int getFirstDoctor() {
+      return firstDoctor;
    }
 
-   public boolean hasFirstTechnician() {
-      return firstTechnician != NO_ID;
+   public void hasFirstDoctor() {
+      return firstDoctor != NO_ID;
+   }
+
+   public void setSecondDoctor(int doctor) {
+      secondDoctor = doctor;
+   }
+
+   public int getSecondDoctor() {
+      return secondDoctor;
+   }
+
+   public void hasSecondDoctor() {
+      return secondDoctor != NO_ID;
    }
 
    public void setFirstTechnician(int technician) {
@@ -60,12 +73,20 @@ public class Shift {
       return firstTechnician;
    }
 
+   public boolean hasFirstTechnician() {
+      return firstTechnician != NO_ID;
+   }
+
    public void setSecondTechnician(int technician) {
       secondTechnician = technician;
    }
 
    public int getSecondTechnician() {
       return secondTechnician;
+   }
+
+   public boolean hasSecondTechnician() {
+      return secondTechnician != NO_ID;
    }
 
    public boolean equals(java.sql.Date date, String shift) {
