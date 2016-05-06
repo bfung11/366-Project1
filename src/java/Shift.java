@@ -19,7 +19,8 @@ public class Shift {
    private int secondTechnician;
 
    public Shift() {
-      doctor = NO_ID;
+      firstDoctor = NO_ID;
+      secondDoctor = NO_ID;
       firstTechnician = NO_ID;
       secondTechnician = NO_ID;
    }
@@ -49,7 +50,7 @@ public class Shift {
       return firstDoctor;
    }
 
-   public void hasFirstDoctor() {
+   public boolean hasFirstDoctor() {
       return firstDoctor != NO_ID;
    }
 
@@ -61,7 +62,7 @@ public class Shift {
       return secondDoctor;
    }
 
-   public void hasSecondDoctor() {
+   public boolean hasSecondDoctor() {
       return secondDoctor != NO_ID;
    }
 
