@@ -119,6 +119,20 @@
     
     <navigation-rule>
         <from-view-id>
+            /timeOffDoc.xhtml
+        </from-view-id>
+        <navigation-case>
+            <from-outcome>mainAdministrator</from-outcome>
+            <to-view-id>startA.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>mainTechnician</from-outcome>
+            <to-view-id>startT.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>
             /startT.xhtml
         </from-view-id>
         
