@@ -164,6 +164,10 @@ public class Scheduler {
       }
    }
 
+   private void initRequests() {
+
+   }
+
    
    //Associate the 32 shift indices with special attributes like day, overnight,
    //or surgery AKA "Magic"
@@ -178,6 +182,22 @@ public class Scheduler {
       
       OvernightIndices = new int[] {4, 9, 14, 19, 24, 29, 30};
       SurgeryIndices = new int[] {3, 8, 13, 18, 23};
+   }
+
+   public ArrayList<Shift> getWeekOne() {
+      return weekOne;
+   }
+
+   public ArrayList<Shift> getWeekTwo() {
+      return weekTwo;
+   }
+
+   public ArrayList<Shift> getWeekThree() {
+      return weekThree;
+   }
+
+   public ArrayList<Shift> getWeekFour() {
+      return weekFour;
    }
 
    //WARNING: Uses Calendar
