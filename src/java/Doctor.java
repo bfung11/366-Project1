@@ -41,6 +41,6 @@ public class Doctor extends Employee {
    }
    
    public List<Shift> getDoctorSchedule() {
-       return super.viewSchedule("Doctors", this.username);
+       return super.viewSchedule("Doctors");
    }
 }

@@ -2,7 +2,7 @@ import java.util.*;
 import java.sql.*;
 import java.text.*;
 
-public class Shift {
+public final class Shift {
    public final static String EARLY = "7:30 Shift";
    public final static String MORNING = "8:30 Shift";
    public final static String LATE = "9:30 Shift";
