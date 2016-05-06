@@ -316,57 +316,19 @@ String query = "select * from Doctors, Login where Doctors.email = Login.email a
       }
    }
 
-   public ArrayList<String> getSchedule() {
-      ArrayList<String> mySchedule = getEmployeeSchedule();
+    public ArrayList<String> viewSchedule(String tablename, String username) {
+        ArrayList<String> mySchedule = new ArrayList<>();
+        try {
+            DBConnection dbconn = new DBConnection();
+            String query = "";
+            ResultSet rs = dbconn.execQuery(query);
+            while (rs.next())
+                mySchedule.add(rs.getDate("date").toString());
+        }
+        catch (SQLException sqe) {
+            sqe.printStackTrace();
+        }
       return mySchedule;
-   }
-
-   private ArrayList<String> getEmployeeSchedule() {
-      ArrayList<String> mySchedule = new ArrayList<>();
-      int i;
-      String thisEmpShifts;
-      String otherEmpShifts;
-      String otherEmpInfo;
-      String resultLine;
-      
-      try {
-         connection = new DBConnection();
-         Connection con = connection.getConnection();
-
-         // get tablename
-         thisEmpShifts = "DoctorShifts";
-         otherEmpShifts = "TechnicianShifts";
-         otherEmpInfo = "Technicians";
-         if (type == TECHNICIAN) {
-            thisEmpShifts = "TechnicianShifts";
-            otherEmpShifts = "DoctorShifts";
-            otherEmpInfo = "Doctors";
-          }
-
-         String query = "select DoctorShifts.date, fromTime, toTime, " + otherEmpInfo
-                 + ".name from DoctorShifts, TechnicianShifts, Shifts, " + otherEmpInfo 
-                 + " where " + thisEmpShifts + ".id = " + this.id + " and " + otherEmpInfo
-                 + ".id = " + otherEmpShifts + ".id and DoctorShifts.date = "
-                 + "TechnicianShifts.date and DoctorShifts.shift = Shifts.name";
-         ResultSet result =
-            connection.execQuery(query);
-
-         // add shifts to a list in date, fromTime, toTime, name of coworker format
-         while(result.next()) {  
-            resultLine = "";
-            resultLine = resultLine + result.getDate(1);
-            resultLine = resultLine + " " + result.getTime(2);
-            resultLine = resultLine + " " + result.getTime(3);
-            resultLine = resultLine + " " + result.getString(4);
-            mySchedule.add(resultLine);
-         }
-      }
-      catch (Exception e) {
-         e.printStackTrace();
-      }
-      
-      return mySchedule;
-
    }
 
    public boolean canChoosePreferredShift() {
@@ -379,7 +341,7 @@ String query = "select * from Doctors, Login where Doctors.email = Login.email a
 
    }
 
-   public boolean canTakeVacation(String username, EmployeeShift shift) {
+   /*public boolean canTakeVacation(String username, EmployeeShift shift) {
       if (hasVacationDays()) {
          getCoworkerIDs();
          Table.setEmployeeType(type);
@@ -410,6 +372,7 @@ String query = "select * from Doctors, Login where Doctors.email = Login.email a
   /* 
    * @precondition assumes that sick day is granted;
    */
+   /* 
    public void takeSickDay(EmployeeShift shift) {
 
       try {
@@ -441,7 +404,7 @@ String query = "select * from Doctors, Login where Doctors.email = Login.email a
 
       }
    }
-   
+   */
    private void getCoworkerIDs() {
       String table;
       coworkerIDs = new ArrayList<>();
