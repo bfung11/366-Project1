@@ -1,5 +1,6 @@
 import java.util.*;
-//import java.sql.*;
+import java.sql.*;
+import java.text.*;
 
 public class Shift {
    public final static String EARLY = "7:30 Shift";
@@ -51,7 +52,12 @@ public class Shift {
       return date;
    }
 
-   public final void setFirstDoctor(int doctor) {
+   public String getDateAsString() {
+      SimpleDateFormat formatter = new SimpleDateFormat("YYYY-MM-DD");
+      return formatter.format(date.getTime());
+   }
+
+   public void setFirstDoctor(int doctor) {
       firstDoctor = doctor;
    }
 
