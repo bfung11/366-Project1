@@ -4,18 +4,13 @@ CREATE TABLE Shifts (
    toTime TIME NOT NULL
 );
 
-CREATE TABLE Login (
-   email TEXT PRIMARY KEY,
-   username TEXT UNIQUE NOT NULL,
-   password TEXT NOT NULL
-);
-
 CREATE TABLE Doctors (
    id SERIAL PRIMARY KEY,
-   email TEXT REFERENCES Login(email),
+   email TEXT UNIQUE NOT NULL,
+   password TEXT NOT NULL,
    firstname TEXT,
    lastname TEXT NOT NULL,
-   phonenumber TEXT NOT NULL,
+   phone TEXT NOT NULL,
    vacationDaysLeft INTEGER DEFAULT 8,
    sickDaysLeft INTEGER DEFAULT 4
 );
@@ -47,10 +42,11 @@ CREATE TABLE DoctorTimeOff (
 
 CREATE TABLE Technicians (
    id SERIAL PRIMARY KEY,
-   email TEXT REFERENCES Login(email),
+   email TEXT UNIQUE NOT NULL,
+   password TEXT NOT NULL,
    firstname TEXT,
    lastname TEXt NOT NULL,
-   phonenumber TEXT NOT NULL,
+   phone TEXT NOT NULL,
    vacationDaysLeft INTEGER DEFAULT 8,
    sickDaysLeft INTEGER DEFAULT 4
 );
@@ -80,16 +76,25 @@ CREATE TABLE TechnicianTimeOff (
    PRIMARY KEY (id, fromDate, fromTime, toDate, toTime)
 );
 
-CREATE TABLE Administrators (
+CREATE TABLE Admins (
    id SERIAL PRIMARY KEY,
    email TEXT UNIQUE NOT NULL,
+   password TEXT NOT NULL,
    firstname TEXT,
    lastname TEXt NOT NULL,
-   phonenumber TEXT NOT NULL
+   phone TEXT NOT NULL
 );
 
+/*
+-- Example code for inserting multiple values 
+INSERT INTO Days
+VALUES('2016-04-12'),
+      ('2016-05-12'),
+      ('2016-06-12');
+*/
+
 /* Copy pasta this to drop tables en masse
-DROP TABLE Administrators;
+DROP TABLE Admins;
 DROP TABLE TechnicianTimeOff;
 DROP TABLE TechnicianPreferredShifts;
 DROP TABLE TechnicianShifts;
@@ -98,6 +103,5 @@ DROP TABLE DoctorTimeOff;
 DROP TABLE DoctorPreferredShifts;
 DROP TABLE DoctorShifts;
 DROP TABLE Doctors;
-DROP TABLE Login;
 DROP TABLE Shifts;
 */

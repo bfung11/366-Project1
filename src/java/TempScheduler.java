@@ -1,11 +1,7 @@
 
-import java.sql.ResultSet;
-import java.util.*;
-
-
 // TODO : set requestedDay
 public class TempScheduler {
-   /*private Calendar requestedDay;
+   private Calendar requestedDay;
    private int id = 1;
 
    private ArrayList<Request> getRequestsForWeek(Calendar requestedDay) {
@@ -29,7 +25,7 @@ public class TempScheduler {
          String query = "SELECT * " + 
                         "FROM " + tablename + " " + 
                         "WHERE id = " + id + " and " + 
-                        " ";
+                        " "
          ResultSet result = connection.execQuery(query);
 
          while (result.next()) {
@@ -83,5 +79,5 @@ public class TempScheduler {
 
       return tablename;
    }
-*/
+
 }

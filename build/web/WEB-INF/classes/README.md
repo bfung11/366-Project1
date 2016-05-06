@@ -20,4 +20,3 @@ A full stack program that schedules doctors
 If using the professor’s account:
 - username: lubo
 - password: secret
-

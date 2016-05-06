@@ -29,20 +29,22 @@ CREATE TABLE DoctorShifts (
 );
 
 CREATE TABLE DoctorPreferredShifts (
-   doctorID INTEGER REFERENCES Doctors(id),
+   id INTEGER REFERENCES Doctors(id),
    date DATE NOT NULL,
    shift TEXT REFERENCES Shifts(name),
-   PRIMARY KEY (doctorID, date, shift)
+   PRIMARY KEY (id, date, shift)
 );
 
-CREATE TABLE DoctorTimeOff (
+CREATE TABLE DoctorSickDays (
    id INTEGER REFERENCES Doctors(id),
-   fromDate DATE NOT NULL,
-   fromTime TIME NOT NULL,
-   toDate DATE NOT NULL,
-   toTime TIME NOT NULL,
-   timeOffType TEXT NOT NULL,
-   PRIMARY KEY (id, fromDate, fromTime, toDate, toTime)
+   date DATE NOT NULL,
+   PRIMARY KEY (id, date)
+);
+
+CREATE TABLE DoctorVacationDays (
+   id INTEGER REFERENCES Doctors(id),
+   date DATE NOT NULL,
+   PRIMARY KEY (id, date)
 );
 
 CREATE TABLE Technicians (
@@ -64,7 +66,7 @@ CREATE TABLE TechnicianShifts (
 );
 
 CREATE TABLE TechnicianPreferredShifts (
-   technicianID INTEGER REFERENCES Technicians(id),
+   id INTEGER REFERENCES Technicians(id),
    date DATE NOT NULL,
    shift TEXT REFERENCES Shifts(name),
    PRIMARY KEY (technicianID, date, shift)
@@ -92,11 +94,13 @@ CREATE TABLE Administrators (
 
 /* Copy pasta this to drop tables en masse
 DROP TABLE Administrators;
-DROP TABLE TechnicianTimeOff;
+DROP TABLE TechnicianSickDays;
+DROP TABLE TechnicianVacationDays;
 DROP TABLE TechnicianPreferredShifts;
 DROP TABLE TechnicianShifts;
 DROP TABLE Technicians;
-DROP TABLE DoctorTimeOff;
+DROP TABLE DoctorSickDays;
+DROP TABLE DoctorVacationDays;
 DROP TABLE DoctorPreferredShifts;
 DROP TABLE DoctorShifts;
 DROP TABLE Doctors;

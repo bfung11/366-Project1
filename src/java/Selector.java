@@ -121,8 +121,6 @@ public class Selector implements Serializable {
                 return "docPrefWorkday";
             case "Choose Time Off":
                 return "docTimeOff";
-            case "Choose Sick Day":
-                return "docSickDay";
             default:
                 return null;
         }
@@ -136,8 +134,6 @@ public class Selector implements Serializable {
                 return "techPrefWorkday";
             case "Choose Time Off":
                 return "techTimeOff";
-            case "Choose Sick Day":
-                return "techSickDay";
             default:
                 return null;
         }
@@ -172,6 +168,5 @@ public class Selector implements Serializable {
                 return null;
         }
     }
-    
 
 }
