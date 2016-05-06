@@ -55,4 +55,9 @@ public class Doctor extends Employee {
    public List<String> getAllShifts() {
        return super.getWeekShifts();
    }
+   
+   public String getUsr() {
+      System.out.println("BLAH " + super.getUsername());
+      return super.getUsername();
+   }
 }
