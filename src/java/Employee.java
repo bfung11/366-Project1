@@ -153,14 +153,14 @@ public class Employee {
             id = rs.getInt(Table.ID);
             this.username = username;
             getTypeFromUsername();
-            id = result.getInt(Table.ID);
-            email = result.getString(Table.EMAIL);
-            password = getPassword(tablename);
-            firstname = result.getString(Table.FIRSTNAME);
-            lastname = result.getString(Table.LASTNAME);
-            phonenumber = result.getString(Table.PHONE_NUMBER);
-            vacationDays = result.getInt(Table.VACATION_DAYS);
-            sickDays = result.getInt(Table.SICK_DAYS);
+            id = rs.getInt(Table.ID);
+            email = rs.getString(Table.EMAIL);
+            // password = getPassword(tablename);
+            firstname = rs.getString(Table.FIRSTNAME);
+            lastname = rs.getString(Table.LASTNAME);
+            phonenumber = rs.getString(Table.PHONE_NUMBER);
+            vacationDays = rs.getInt(Table.VACATION_DAYS);
+            sickDays = rs.getInt(Table.SICK_DAYS);
          }
       }
       catch (Exception e) {
@@ -449,11 +449,6 @@ public class Employee {
          if (rs.next()) {
             int vacationDaysLeft = rs.getInt(Table.VACATION_DAYS);
             if (vacationDaysLeft > 0) {
-//               Scheduler scheduler = new Scheduler();
-               // canGetTimeOff = scheduler.generateSchedule();
-            }
-            else {
-               int vacationDays = rs.getInt(Table.VACATION_DAYS);
                --vacationDays;
                query = "UPDATE Doctors SET vacationDays = " + vacationDays;
 
@@ -469,6 +464,8 @@ public class Employee {
                   query = "INSERT INTO TechnicianVacationDays " + 
                           "VALUES (" + id + ", " + date + ")";
                }
+//               Scheduler scheduler = new Scheduler();
+               // canGetTimeOff = scheduler.generateSchedule();
             }
          }
       }
@@ -494,11 +491,6 @@ public class Employee {
          if (rs.next()) {
             int sickDaysLeft = rs.getInt(Table.SICK_DAYS);
             if (sickDaysLeft > 0) {
-               // Scheduler scheduler = new Scheduler();
-               // canGetTimeOff = scheduler.generateSchedule();
-            }
-            else {
-               int sickDays = rs.getInt(Table.SICK_DAYS);
                --sickDays;
                query = "UPDATE Doctors SET sickDays = " + sickDays;
 
@@ -514,6 +506,8 @@ public class Employee {
                   query = "INSERT INTO TechnicianSickDays " + 
                           "VALUES (" + id + ", " + date + ")";
                }
+               // Scheduler scheduler = new Scheduler();
+               // canGetTimeOff = scheduler.generateSchedule();
             }
          }
       }
