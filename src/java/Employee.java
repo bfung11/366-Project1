@@ -429,6 +429,19 @@ public class Employee {
       return mySchedule;
    }
 
+    public ArrayList<String> getWeekShifts() {
+        ArrayList<Shift> shifts = new ArrayList<>();
+        ArrayList<String> options = new ArrayList<>();
+        shifts.addAll(this.weekOne);
+        shifts.addAll(this.weekTwo);
+        shifts.addAll(this.weekThree);
+        shifts.addAll(this.weekFour);
+        for (int i = 0; i < shifts.size(); i++) {
+            options.add(shifts.get(i).getShift() + " " + shifts.get(i).getDateAsString());
+        }
+        return options;
+    }
+   
    private String convertTimeToString(Time time) {
       SimpleDateFormat formatter = new SimpleDateFormat("HH:MM");
       return formatter.format(time.getTime());
@@ -441,6 +454,27 @@ public class Employee {
       pushWeekToDatabase(weekFour);
    }
 
+   public boolean canGetPreferredShifts(String employee, String shiftOption){
+       try {
+       DBConnection dbcon = new DBConnection();
+       //Scheduler scheduler = new Scheduler(weekOne.get(0).getDate());
+       String[] shiftStr = shiftOption.split(" ");
+       String query = 
+               "SELECT COUNT(*) AS emplCount FROM " 
+               + employee 
+               + "Shifts WHERE date = " 
+               + LocalDate.parse(shiftStr[1]) 
+               + " AND shift = " + shiftStr[0] + ";"; 
+       
+       dbcon.execQuery(query);
+       }
+       catch (SQLException se) {
+           se.printStackTrace();
+       }
+       
+       return true;
+   }
+   
    private void pushWeekToDatabase(ArrayList<Shift> week) {
       try {
          DBConnection connection = new DBConnection();

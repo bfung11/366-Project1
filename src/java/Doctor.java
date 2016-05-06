@@ -43,4 +43,8 @@ public class Doctor extends Employee {
    public List<Shift> getDoctorSchedule() {
        return super.viewSchedule("Doctors");
    }
+   
+   public List<String> getAllShifts() {
+       return super.getWeekShifts();
+   }
 }

@@ -11,18 +11,18 @@
         <ui:composition template="./template.xhtml">
 
             <ui:define name="title">
-                Doctor Page
+                Doctor Preferred Shift
             </ui:define>
 
             <ui:define name="header">
-                Doctor Page
+                Doctor Preferred Shift
             </ui:define>
 
             <ui:define name="box">
                 <h:form>
-                    Choose what to do:
+                    Choose a shift:
                     <h:selectOneMenu value="#{selector.choiceDoc}">
-                        <f:selectItems value="#{selector.DChoices}"/>
+                        <f:selectItems value="#{doctor.allShifts}"/>
                     </h:selectOneMenu>
                     <h:commandButton value = "Go" action="#{selector.doctorList()}"/>
                 </h:form>
