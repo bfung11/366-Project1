@@ -25,8 +25,6 @@ import java.sql.*;
 @SessionScoped
 @ManagedBean
 public class Employee {
-   DBConnection connection;
-
    public final static int DOCTOR = 1;
    public final static int TECHNICIAN = 2;
    public final static int ADMINISTRATOR = 3;
@@ -53,6 +51,8 @@ public class Employee {
    private ArrayList<Shift> weekThree;
    private ArrayList<Shift> weekFour;
 
+   private Calendar aDate;
+
    public Employee(int type) {
       this.type = type;
       initCalendar();
@@ -60,7 +60,7 @@ public class Employee {
 
    public Employee(String username) {
       try {
-         connection = new DBConnection();
+         DBConnection connection = new DBConnection();
          Connection con = connection.getConnection();
 
          String tablename = "Doctors";
@@ -108,18 +108,23 @@ public class Employee {
       weekTwo = new ArrayList<Shift>(NUM_SHIFTS_PER_WEEK);
       weekThree = new ArrayList<Shift>(NUM_SHIFTS_PER_WEEK);
       weekFour = new ArrayList<Shift>(NUM_SHIFTS_PER_WEEK);
-      
-      ArrayList<Shift> week = new ArrayList<Shift>();
-
+ 
       initStartdate();
-      initWeek(weekOne);
-      initWeek(weekTwo);
-      initWeek(weekThree);
-      initWeek(weekFour);
+      aDate = new GregorianCalendar();
+      startDate.getTime();
+      aDate.setTime(startDate.getTime());
+
+      initWeek(weekOne, aDate);
+      initWeek(weekTwo, aDate);
+      initWeek(weekThree, aDate);
+      initWeek(weekFour, aDate);
    }
 
    private void initStartdate() {
+      System.out.println("initStartDate()");
+
       try {
+         DBConnection connection = new DBConnection();
          String query = "SELECT min(date) AS date from DoctorShifts";
          ResultSet result = connection.execQuery(query);
          if (result.next()) {
@@ -132,24 +137,42 @@ public class Employee {
       }
    }
 
-   private void initWeek(ArrayList<Shift> week) {
+   private void initWeek(ArrayList<Shift> week, Calendar startDate) {
       try {
          // get doctors
-         String query = "SELECT * FROM DoctorShifts ORDER BY date ASC";
+         DBConnection connection = new DBConnection();
+         SimpleDateFormat formatter = new SimpleDateFormat("YYYY-MM-DD");
+
+         String earliest = formatter.format(aDate.getTime());
+         aDate.add(Calendar.WEEK_OF_YEAR, 1);
+         String latest = formatter.format(aDate.getTime());
+         String query = "select * from doctorShifts " + 
+                        "where date >= '" + earliest + "' and date < '" + latest + "' " + 
+                        "order by date ASC";
          ResultSet result = connection.execQuery(query);
 
          while (result.next()) {
-            Shift shift = new Shift();
-            shift.setShift(result.getString(Table.SHIFT));
-            shift.setDate(result.getDate(Table.DATE));
-
-            if (!shift.hasFirstDoctor()) {
-               shift.setFirstDoctor(result.getInt(Table.ID));
+            String shiftName  = result.getString(Table.SHIFT);
+            java.sql.Date date = result.getDate(Table.DATE);
+            if (!week.isEmpty()) {
+               Shift shift = week.get(week.size() - 1);
+               if (!shift.equals(date, shiftName)) {
+                  Shift newShift = new Shift();
+                  newShift.setShift(shiftName);
+                  newShift.setDate(date);
+                  newShift.setFirstDoctor(result.getInt(Table.ID));
+                  week.add(newShift);
+               }
+               else {
+                  shift.setSecondDoctor(result.getInt(Table.ID));
+               }
             }
             else {
-               shift.setSecondDoctor(result.getInt(Table.ID));
+               Shift newShift = new Shift();
+               newShift.setShift(shiftName);
+               newShift.setDate(date);
+               week.add(newShift);
             }
-            week.add(shift);
          }
 
          // get technicians
@@ -252,7 +275,8 @@ public class Employee {
          //                "from Login, " + tablename + " " +
          //                "where username = '" + username + "' and " + 
          //                "Login.email = " + tablename + ".email";
-String query = "select * from Doctors, Login where Doctors.email = Login.email and username = 'd1'";
+         DBConnection connection = new DBConnection();
+         String query = "select * from Doctors, Login where Doctors.email = Login.email and username = 'd1'";
          ResultSet result = connection.execQuery(query);
          if (result.next()) {
             password = result.getString(Table.PASSWORD);
@@ -416,6 +440,7 @@ String query = "select * from Doctors, Login where Doctors.email = Login.email a
 
    private void pushWeekToDatabase(ArrayList<Shift> week) {
       try {
+         DBConnection connection = new DBConnection();
          for (int index = 0; index < week.size(); ++index) {
             Shift shift = week.get(index);
             String querySecondHalf = "WHERE date = '" + shift.getDateAsString() + 
@@ -445,6 +470,21 @@ String query = "select * from Doctors, Login where Doctors.email = Login.email a
       }
       catch (Exception e) {
          e.printStackTrace();
+      }
+   }
+
+   public void viewSchedule() {
+      printWeek(weekOne);
+      printWeek(weekTwo);
+      printWeek(weekThree);
+      printWeek(weekFour);
+   }
+
+   private void printWeek(ArrayList<Shift> week) {
+         System.out.println("Size: " + week.size());
+
+      for (int i = 0; i < week.size(); ++i) {
+         week.get(i).print();
       }
    }
 }
