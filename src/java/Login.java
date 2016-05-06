@@ -71,6 +71,10 @@ public class Login implements Serializable {
         this.password = value.toString();
         String storedPassword = null;
         ResultSet result;
+        
+        HttpSession session = (HttpSession) context.getExternalContext().getSession(true);
+        session.setAttribute("user", this.username);
+        //System.out.println(session.);
 
         // TODO: check if user and password matches input
         //Get password from DB
@@ -79,9 +83,18 @@ public class Login implements Serializable {
             String query = "select password from login where username = '" 
                    + this.username + "'";
             DBConnection con = new DBConnection();
+            int userId = -1;
+            
             result = con.execQuery(query);
             result.next();
+            
             storedPassword = result.getString(1);
+            
+            query = "select id from Doctors d, Login l where d.email = l.email and l.username = " + this.username;
+            result = con.execQuery(query);
+            userId = result.getInt("id");
+            session.setAttribute("userId", userId);
+            result.close();
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -94,7 +107,7 @@ public class Login implements Serializable {
     }
 
     public String go() {
-        this.invalidateUserSession();
+        //this.invalidateUserSession();
         System.out.println("username " + this.username);
         Employee empl = EmployeeFactory.createEmployee(this.username);
         switch(EmployeeFactory.getType(this.username)) {

@@ -1,6 +1,9 @@
 import java.sql.*;
 import java.text.ParseException;
 import java.util.*;
+import javax.annotation.ManagedBean;
+import javax.faces.bean.SessionScoped;
+import javax.inject.Named;
 
 @Named(value = "doctor")
 @SessionScoped
@@ -55,11 +58,11 @@ public class Doctor extends Employee {
       return super.getOption();
    }
    
-   public boolean canGetSickDays(int id, String date) {
+   public boolean canGetSDays(int id, String date) {
       return super.canGetSickDays(id, date);
    }
 
-   public boolean canGetVacationDays(int id, String date) {
+   public boolean canGetVacDays(int id, String date) {
       return super.canGetVacationDays(id, date);
    }
 

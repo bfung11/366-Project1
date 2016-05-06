@@ -434,9 +434,10 @@ public class Employee {
 
    //public void setWeek
    
+
    public boolean canGetVacationDays(int id, String date) {
       boolean canGetTimeOff = false;
-
+      System.out.println("vacation username: " + username);
       try {
          String query = "select vacationDaysLeft from Doctors where id = id";
 
@@ -478,7 +479,7 @@ public class Employee {
 
    public boolean canGetSickDays(int id, String date) {
       boolean canGetTimeOff = false;
-
+      System.out.println("sick username: " + username);
       try {
          String query = "select sickDaysLeft from Doctors where id = id";
 
