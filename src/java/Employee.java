@@ -117,7 +117,7 @@ public class Employee {
             Shift shift = new Shift();
             shift.setShift(result.getString(Table.SHIFT));
             shift.setDate(result.getDate(Table.DATE));
-            shift.setDoctor(result.getInt(Table.ID));
+            //shift.setDoctor(result.getInt(Table.ID));
             week.add(shift);
          }
 
@@ -353,8 +353,8 @@ String query = "select * from Doctors, Login where Doctors.email = Login.email a
       return list;
    }
 
-   public ArrayList<String> viewSchedule(String tablename, String username) {
-      ArrayList<String> mySchedule = new ArrayList<>();
+   public ArrayList<Shift> viewSchedule(String tablename, String username) {
+      ArrayList<Shift> mySchedule = new ArrayList<>();
       try {
          DBConnection dbconn = new DBConnection();
          String query = "";
