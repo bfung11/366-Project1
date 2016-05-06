@@ -58,17 +58,6 @@ public class Employee {
       //    DBConnection connection = new DBConnection();
       //    Connection con = connection.getConnection();
 
-      //    this.username = username;
-      //    getTypeFromUsername();
-      //    id = result.getInt(Table.ID);
-      //    email = result.getString(Table.EMAIL);
-      //    password = getPassword(tablename);
-      //    firstname = result.getString(Table.FIRSTNAME);
-      //    lastname = result.getString(Table.LASTNAME);
-      //    phonenumber = result.getString(Table.PHONE_NUMBER);
-      //    vacationDays = result.getInt(Table.VACATION_DAYS);
-      //    sickDays = result.getInt(Table.SICK_DAYS);
-
       //    con.close();
       // } 
       // catch (Exception e) {
@@ -139,7 +128,10 @@ public class Employee {
 
    public void setUsername(String username) {
       this.username = username;
+      setAllOtherFields();
+   }
 
+   private void setAllOtherFields() {
       try {
          String query = "";
          getTypeFromUsername();
@@ -159,6 +151,16 @@ public class Employee {
          ResultSet rs = connection.execQuery(query);
          if (rs.next()) {
             id = rs.getInt(Table.ID);
+            this.username = username;
+            getTypeFromUsername();
+            id = result.getInt(Table.ID);
+            email = result.getString(Table.EMAIL);
+            password = getPassword(tablename);
+            firstname = result.getString(Table.FIRSTNAME);
+            lastname = result.getString(Table.LASTNAME);
+            phonenumber = result.getString(Table.PHONE_NUMBER);
+            vacationDays = result.getInt(Table.VACATION_DAYS);
+            sickDays = result.getInt(Table.SICK_DAYS);
          }
       }
       catch (Exception e) {
@@ -432,7 +434,7 @@ public class Employee {
 
    //public void setWeek
    
-   public boolean canGetVacationDays() {
+   public boolean canGetVacationDays(int id, String date) {
       boolean canGetTimeOff = false;
 
       try {
@@ -447,8 +449,26 @@ public class Employee {
          if (rs.next()) {
             int vacationDaysLeft = rs.getInt(Table.VACATION_DAYS);
             if (vacationDaysLeft > 0) {
-               // Scheduler scheduler = new Scheduler();
+//               Scheduler scheduler = new Scheduler();
                // canGetTimeOff = scheduler.generateSchedule();
+            }
+            else {
+               int vacationDays = rs.getInt(Table.VACATION_DAYS);
+               --vacationDays;
+               query = "UPDATE Doctors SET vacationDays = " + vacationDays;
+
+               if (type == Employee.TECHNICIAN) {
+                  query = "UPDATE Technicians SET vacationDays = " + vacationDays;
+               }
+
+               connection.execUpdate(query);
+
+               query = "INSERT INTO DoctorVacationDays " + 
+                       "VALUES (" + id + ", " + date + ")";
+               if (type == Employee.TECHNICIAN) {
+                  query = "INSERT INTO TechnicianVacationDays " + 
+                          "VALUES (" + id + ", " + date + ")";
+               }
             }
          }
       }
@@ -459,7 +479,7 @@ public class Employee {
       return canGetTimeOff;
    }
 
-   public boolean canGetSickDays() {
+   public boolean canGetSickDays(int id, String date) {
       boolean canGetTimeOff = false;
 
       try {
@@ -472,10 +492,28 @@ public class Employee {
          DBConnection connection = new DBConnection();
          ResultSet rs = connection.execQuery(query);
          if (rs.next()) {
-            int vacationDaysLeft = rs.getInt(Table.SICK_DAYS);
-            if (vacationDaysLeft > 0) {
+            int sickDaysLeft = rs.getInt(Table.SICK_DAYS);
+            if (sickDaysLeft > 0) {
                // Scheduler scheduler = new Scheduler();
                // canGetTimeOff = scheduler.generateSchedule();
+            }
+            else {
+               int sickDays = rs.getInt(Table.SICK_DAYS);
+               --sickDays;
+               query = "UPDATE Doctors SET sickDays = " + sickDays;
+
+               if (type == Employee.TECHNICIAN) {
+                  query = "UPDATE Technicians SET sickDays = " + sickDays;
+               }
+
+               connection.execUpdate(query);
+
+               query = "INSERT INTO DoctorSickDays " + 
+                       "VALUES (" + id + ", " + date + ")";
+               if (type == Employee.TECHNICIAN) {
+                  query = "INSERT INTO TechnicianSickDays " + 
+                          "VALUES (" + id + ", " + date + ")";
+               }
             }
          }
       }

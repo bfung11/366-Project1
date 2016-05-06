@@ -31,12 +31,12 @@ public class Technician extends Employee {
        return "mainAdministrator";
    }
 
-   public boolean canGetSickDays() {
-      return super.canGetSickDays();
+   public boolean canGetSickDays(int id, String date) {
+      return super.canGetSickDays(id, date);
    }
 
-   public boolean canGetVacationDays() {
-      return super.canGetVacationDays();
+   public boolean canGetVacationDays(int id, String date) {
+      return super.canGetVacationDays(id, date);
    }
 
    public String deleteTechnician() {

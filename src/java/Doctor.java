@@ -2,6 +2,9 @@ import java.sql.*;
 import java.text.ParseException;
 import java.util.*;
 
+@Named(value = "doctor")
+@SessionScoped
+@ManagedBean
 public class Doctor extends Employee {
    public Doctor() {
       super(Employee.DOCTOR);
@@ -52,12 +55,12 @@ public class Doctor extends Employee {
       return super.getOption();
    }
    
-   public boolean canGetSickDays() {
-      return super.canGetSickDays();
+   public boolean canGetSickDays(int id, String date) {
+      return super.canGetSickDays(id, date);
    }
 
-   public boolean canGetVacationDays() {
-      return super.canGetVacationDays();
+   public boolean canGetVacationDays(int id, String date) {
+      return super.canGetVacationDays(id, date);
    }
 
    public List<Employee> getDoctorList() {
