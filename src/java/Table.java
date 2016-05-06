@@ -56,6 +56,19 @@ public class Table {
       return tablename;
    }
 
+   public static int getTypeByTablename(String tablename) {
+      switch(tablename) {
+         case "Doctors":
+            return Employee.DOCTOR;
+         case "Technicians":
+            return Employee.TECHNICIAN;
+         case "Administrators":
+            return Employee.ADMINISTRATOR;
+         default:
+            return -1;
+      }
+   }
+
    public static void setEmployeeType(int employeeType) {
       emplType = employeeType;
    }
