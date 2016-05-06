@@ -110,4 +110,13 @@ public class Shift {
       cal.setTime(date);
       return this.date.equals(cal) && this.shift.equals(shift);
    }
+
+   public void toString() {
+      System.out.println(
+         "On " + getDateAsString() + "\n" + 
+         "   Shift : " + shift + "\n" +
+         "   Doctor : " + firstDoctor + ", " + secondDoctor + "\n" + 
+         "   Technician : " + firstTechnician + ", " + secondTechnician + "\n" + 
+      );
+   }
 }
