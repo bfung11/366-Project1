@@ -316,13 +316,13 @@ String query = "select * from Doctors, Login where Doctors.email = Login.email a
       }
    }
 
-   public ArrayList<String> getSchedule(String username) {
-      ArrayList<String> mySchedule = viewSchedule(username);
+   public ArrayList<String> getSchedule() {
+      ArrayList<String> mySchedule = getEmployeeSchedule();
       return mySchedule;
    }
 
-   private ArrayList<String> viewSchedule(String username) {
-      /* ArrayList<String> mySchedule = new ArrayList<>();
+   private ArrayList<String> getEmployeeSchedule() {
+      ArrayList<String> mySchedule = new ArrayList<>();
       int i;
       String thisEmpShifts;
       String otherEmpShifts;
@@ -363,38 +363,23 @@ String query = "select * from Doctors, Login where Doctors.email = Login.email a
       }
       catch (Exception e) {
          e.printStackTrace();
-      } */
+      }
       
-      // Special formating of how it prints out
-      // print out username
-      ArrayList<String> strFormat = new ArrayList<String>();
-              strFormat.add("5/4/2016 Morning Shift 7:30AM - 6:30pm Technicians: Bob Saget, Meowhead Meowingtons");
-              strFormat.add("5/5/2016 Morning Shift 7:30AM - 6:30pm Technicians: Bot Sagaset, Mewhasdad Meowasdons");
-              strFormat.add("5/6/2016 Morning Shift 7:30AM - 6:30pm Technicians: Bte rasds, Measd Marwsr");
-              
-      
-      this.setUsername(username);
-      System.out.println(username);
-      return strFormat;
+      return mySchedule;
 
    }
 
-   // If employee can choose preferred shift
-    public boolean canChoosePreferredShift() {
-        System.out.println(this.getUsername() + " canChoosePreferredShift()");
-        return false;
-    }
-
-   
-   // If employee can choose time off
-   public boolean canChooseTimeOff() {
-       System.out.println(this.getUsername() + "canChooseTimeOff()");
-       return false;
+   public boolean canChoosePreferredShift() {
+      // generate schedule and then find out
+      return false;
    }
 
+   // TODO : can choose preferred times
+   public void choosePreferredTimes() {
 
-   
-   /* public boolean canTakeVacation(String username, EmployeeShift shift) {
+   }
+
+   public boolean canTakeVacation(String username, EmployeeShift shift) {
       if (hasVacationDays()) {
          getCoworkerIDs();
          Table.setEmployeeType(type);
@@ -425,7 +410,7 @@ String query = "select * from Doctors, Login where Doctors.email = Login.email a
   /* 
    * @precondition assumes that sick day is granted;
    */
-   /*public void takeSickDay(EmployeeShift shift) {
+   public void takeSickDay(EmployeeShift shift) {
 
       try {
          //update TimeOff
@@ -484,9 +469,7 @@ String query = "select * from Doctors, Login where Doctors.email = Login.email a
          e.printStackTrace();
       }
    }
-   */
-   
-   
+
    private String convertDateToString(Calendar date) {
       SimpleDateFormat formatter = new SimpleDateFormat("YYYY-MM-DD");
       return formatter.format(date.getTime());

@@ -90,50 +90,6 @@
     
     <navigation-rule>
         <from-view-id>
-            /startD.xhtml
-        </from-view-id>
-        <navigation-case>
-            <from-outcome>docViewSchedule</from-outcome>
-            <to-view-id>viewDocSchedule.xhtml</to-view-id>
-        </navigation-case>
-        <navigation-case>
-            <from-outcome>docPrefWorkday</from-outcome>
-            <to-view-id>prefDoc.xhtml</to-view-id>
-        </navigation-case>
-        <navigation-case>
-            <from-outcome>docTimeOff</from-outcome>
-            <to-view-id>timeOffDoc.xhtml</to-view-id>
-        </navigation-case>
-        <navigation-case>
-            <from-outcome>docSickDay</from-outcome>
-            <to-view-id>sickDayDoc.xhtml</to-view-id>
-        </navigation-case>
-    <navigation-rule>
-        
-        <navigation-rule>
-        <from-view-id>
-            /startT.xhtml
-        </from-view-id>
-        <navigation-case>
-            <from-outcome>techViewSchedule</from-outcome>
-            <to-view-id>viewTechSchedule.xhtml</to-view-id>
-        </navigation-case>
-        <navigation-case>
-            <from-outcome>techPrefWorkday</from-outcome>
-            <to-view-id>prefTech.xhtml</to-view-id>
-        </navigation-case>
-        <navigation-case>
-            <from-outcome>techTimeOff</from-outcome>
-            <to-view-id>timeOffTech.xhtml</to-view-id>
-        </navigation-case>
-        <navigation-case>
-            <from-outcome>techSickDay</from-outcome>
-            <to-view-id>sickDayTech.xhtml</to-view-id>
-        </navigation-case>
-    <navigation-rule>
-    
-    <navigation-rule>
-        <from-view-id>
             /newDoctor.xhtml
         </from-view-id>
         <navigation-case>
