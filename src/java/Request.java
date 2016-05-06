@@ -1,3 +1,4 @@
+import java.time.*;
 import java.util.*;
 
 public class Request {
@@ -8,7 +9,7 @@ public class Request {
 
    private int type;
    private int doctorID;
-   private Calendar date;
+   private LocalDate date;
    private String shiftName;
 
    public void setType(int type) {
@@ -27,12 +28,11 @@ public class Request {
       return doctorID;
    }
 
-   public void setDate(Date date) {
-      this.date = new GregorianCalendar();
-      this.date.setTime(date);
+   public void setDate(Date date) {    
+      this.date = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
    }
 
-   public Calendar getDate() {
+   public LocalDate getDate() {
       return date;
    }
 
