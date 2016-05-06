@@ -435,7 +435,7 @@ public class Employee {
    //public void setWeek
    
 
-   public boolean canGetVacationDays(int id, String date) {
+   public boolean canGetVacationDays(int id) {
       boolean canGetTimeOff = false;
       System.out.println("vacation username: " + username);
       try {
@@ -460,10 +460,10 @@ public class Employee {
                connection.execUpdate(query);
 
                query = "INSERT INTO DoctorVacationDays " + 
-                       "VALUES (" + id + ", " + date + ")";
+                       "VALUES (" + id + ", " + this.option + ")";
                if (type == Employee.TECHNICIAN) {
                   query = "INSERT INTO TechnicianVacationDays " + 
-                          "VALUES (" + id + ", " + date + ")";
+                          "VALUES (" + id + ", " + this.option + ")";
                }
 //               Scheduler scheduler = new Scheduler();
                // canGetTimeOff = scheduler.generateSchedule();
@@ -477,7 +477,7 @@ public class Employee {
       return canGetTimeOff;
    }
 
-   public boolean canGetSickDays(int id, String date) {
+   public boolean canGetSickDays(int id) {
       boolean canGetTimeOff = false;
       System.out.println("sick username: " + username);
       try {
@@ -502,10 +502,10 @@ public class Employee {
                connection.execUpdate(query);
 
                query = "INSERT INTO DoctorSickDays " + 
-                       "VALUES (" + id + ", " + date + ")";
+                       "VALUES (" + id + ", " + this.option + ")";
                if (type == Employee.TECHNICIAN) {
                   query = "INSERT INTO TechnicianSickDays " + 
-                          "VALUES (" + id + ", " + date + ")";
+                          "VALUES (" + id + ", " + this.option + ")";
                }
                // Scheduler scheduler = new Scheduler();
                // canGetTimeOff = scheduler.generateSchedule();

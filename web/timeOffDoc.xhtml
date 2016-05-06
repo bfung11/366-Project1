@@ -15,7 +15,7 @@
             </ui:define>
 
             <ui:define name="header">
-                Doctor Time Off
+                Doctor Time Off for #{user}
             </ui:define>
 
             <ui:define name="box">
@@ -24,7 +24,7 @@
                     <h:selectOneMenu value="#{doctor.vacOption}">
                         <f:selectItems value="#{doctor.allDates}"/>
                     </h:selectOneMenu>
-                    <h:commandButton value = "Go" action="#{doctor.canGetVacDays(user)}"/>
+                    <h:commandButton value = "Go" action="#{doctor.canGetVacDays(userId)}"/>
                 </h:form>
                 
                 <h:form>
@@ -32,7 +32,7 @@
                     <h:selectOneMenu value="#{doctor.sickOption}">
                         <f:selectItems value="#{doctor.allDates}"/>
                     </h:selectOneMenu>
-                    <h:commandButton value = "Go" action="#{doctor.canGetSDays(user)}"/>
+                    <h:commandButton value = "Go" action="#{doctor.canGetSDays(userId)}"/>
                 </h:form>
             </ui:define>
 
