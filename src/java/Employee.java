@@ -47,6 +47,7 @@ public class Employee {
    private int type;
    
    private Scheduler schedule;
+   private Calendar startDate;
    private ArrayList<Shift> weekOne;
    private ArrayList<Shift> weekTwo;
    private ArrayList<Shift> weekThree;
@@ -110,13 +111,30 @@ public class Employee {
       
       ArrayList<Shift> week = new ArrayList<Shift>();
 
+      initStartdate();
       initWeek(weekOne);
+      initWeek(weekTwo);
+      initWeek(weekThree);
+      initWeek(weekFour);
    }
 
-   private ArrayList<Shift> initWeek(ArrayList<Shift> week) {
+   private void initStartdate() {
+      try {
+         String query = "SELECT min(date) AS date from DoctorShifts";
+         ResultSet result = connection.execQuery(query);
+         if (result.next()) {
+            startDate = new GregorianCalendar();
+            startDate.setTime(result.getDate(Table.DATE));
+         }
+      }
+      catch (Exception e) {
+         e.printStackTrace();
+      }
+   }
+
+   private void initWeek(ArrayList<Shift> week) {
       try {
          // get doctors
-         DBConnection connection = new DBConnection();
          String query = "SELECT * FROM DoctorShifts";
          ResultSet result = connection.execQuery(query);
 
@@ -124,7 +142,13 @@ public class Employee {
             Shift shift = new Shift();
             shift.setShift(result.getString(Table.SHIFT));
             shift.setDate(result.getDate(Table.DATE));
-            shift.setDoctor(result.getInt(Table.ID));
+
+            if (!shift.hasFirstDoctor()) {
+               shift.setFirstDoctor(result.getInt(Table.ID));
+            }
+            else {
+               shift.setSecondDoctor(result.getInt(Table.ID));
+            }
             week.add(shift);
          }
 
@@ -376,13 +400,49 @@ String query = "select * from Doctors, Login where Doctors.email = Login.email a
       return mySchedule;
    }
 
-   private String convertDateToString(Calendar date) {
-      SimpleDateFormat formatter = new SimpleDateFormat("YYYY-MM-DD");
-      return formatter.format(date.getTime());
-   }
-
    private String convertTimeToString(Time time) {
       SimpleDateFormat formatter = new SimpleDateFormat("HH:MM");
       return formatter.format(time.getTime());
+   }
+
+   private void pushCalendarToDatabase() {
+      pushWeekToDatabase(weekOne);
+      pushWeekToDatabase(weekTwo);
+      pushWeekToDatabase(weekThree);
+      pushWeekToDatabase(weekFour);
+   }
+
+   private void pushWeekToDatabase(ArrayList<Shift> week) {
+      try {
+         for (int index = 0; index < week.size(); ++index) {
+            Shift shift = week.get(index);
+            String querySecondHalf = "WHERE date = '" + shift.getDateAsString() + 
+                                     "' and " + 
+                                     "shift = '" + shift.getShift() + "'";
+
+            String query = "UPDATE DoctorShifts SET id = " +  
+                           shift.getFirstDoctor() + " " + querySecondHalf;
+            connection.execQuery(query); 
+
+            if (shift.hasSecondDoctor()) {
+               query = "UPDATE DoctorShifts SET id = " +  
+                        shift.getSecondDoctor() + " " + querySecondHalf;
+               connection.execQuery(query);
+            }
+
+            query = "UPDATE TechnicianShifts SET id = " +  
+                     shift.getFirstTechnician() + " " + querySecondHalf;
+            connection.execQuery(query);
+
+            if (shift.hasSecondTechnician()) {
+               query = "UPDATE TechnicianShifts SET id = " +  
+                        shift.getSecondTechnician() + " " + querySecondHalf;
+               connection.execQuery(query);
+            }
+         }
+      }
+      catch (Exception e) {
+         e.printStackTrace();
+      }
    }
 }
