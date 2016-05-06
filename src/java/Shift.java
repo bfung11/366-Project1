@@ -26,7 +26,16 @@ public class Shift {
       secondTechnician = NO_ID;
    }
 
-   public void setShift(String shift) {
+   public Shift(String shift, java.sql.Date date, int firstD, int secondD, int firstT, int secondT) {
+       this.setShift(shift);
+       this.setDate(date);
+       this.setFirstDoctor(firstD);
+       this.setSecondDoctor(secondD);
+       this.setFirstTechnician(firstT);
+       this.setSecondTechnician(secondT);
+   }
+   
+   public final void setShift(String shift) {
       this.shift = shift;
    }
 
@@ -34,7 +43,7 @@ public class Shift {
       return shift;
    }
 
-   public void setDate(java.sql.Date date) {
+   public final void setDate(java.sql.Date date) {
       this.date = new GregorianCalendar();
       this.date.setTime(date);
    }
@@ -60,7 +69,7 @@ public class Shift {
       return firstDoctor != NO_ID;
    }
 
-   public void setSecondDoctor(int doctor) {
+   public final void setSecondDoctor(int doctor) {
       secondDoctor = doctor;
    }
 
@@ -72,7 +81,7 @@ public class Shift {
       return secondDoctor != NO_ID;
    }
 
-   public void setFirstTechnician(int technician) {
+   public final void setFirstTechnician(int technician) {
       firstTechnician = technician;
    }
 
@@ -84,7 +93,7 @@ public class Shift {
       return firstTechnician != NO_ID;
    }
 
-   public void setSecondTechnician(int technician) {
+   public final void setSecondTechnician(int technician) {
       secondTechnician = technician;
    }
 
