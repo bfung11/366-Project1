@@ -11,7 +11,7 @@
     <h:body>
         <h:form>
             <h:panelGrid columns="3">
-                Last Name: <h:inputText value="#{doctor.lastname}" required ="true"
+                Last Name: <h:inputText value="#{doctor.lastName}" required ="true"
                                    requiredMessage="Your must enter a"
                                    id="useLast"/>
                 <h:message for="userLast" style="color:red;margin:8px;"/>
@@ -24,13 +24,13 @@
 
                 Password: <h:inputText value="#{doctor.password}" required ="true"
                                       requiredMessage="Your must enter a password!"
-                                      validatorMessage="Address must be at least five characters"
+                                      validatorMessage="Password must be at least five characters"
                                       id="userPassword">
                     <f:validateLength minimum="5"/>
                 </h:inputText>
                 <h:message for="userPassword" style="color:red;margin:8px;"/>
                 
-                Phone Number: <h:inputText value="#{doctor.phonenumber}" required ="true"
+                Phone Number: <h:inputText value="#{doctor.phoneNumber}" required ="true"
                                    requiredMessage="Your must enter a"
                                    id="userPhone"/>
                 <h:message for="userPhone" style="color:red;margin:8px;"/>
@@ -40,7 +40,7 @@
                 <h:message for="userEmail" style="color:red;margin:8px;"/>
             </h:panelGrid>
             <h:panelGrid>
-                <h:commandButton value="Go" action="#{doctor.createDoctor}"/>
+                <h:commandButton value="Go" action="#{doctor.createDoctor()}"/>
             </h:panelGrid>
         </h:form>
     </h:body>

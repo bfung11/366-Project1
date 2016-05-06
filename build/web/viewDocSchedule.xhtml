@@ -5,39 +5,36 @@
       xmlns:f="http://java.sun.com/jsf/core">
     <h:head>
         <link href="css/stylesheet.css" rel="stylesheet" type="text/css" />
-        <h1>Technicians</h1>
+        <h1>Your Doctor Schedule</h1>
     </h:head>
 
     <h:body>
-        <h:dataTable value="#{technician.getTechnicianList()}" var="t" border="1">
+        <h:dataTable value="#{doctor.getSchedule()}" var="ds" border="1">
             <h:column>
-                <f:facet name="header"> Technician ID </f:facet>
-                    #{t.id}
+                <f:facet name="header"> Date </f:facet>
+                    <!-- Something like "5/4/2016" -->
+                    #{ds.date}
             </h:column>
 
             <h:column>
-                <f:facet name="header"> Last Name </f:facet>
-                    #{t.lastName}
-            </h:column>
-
-            <h:column>
-                <f:facet name="header"> Email </f:facet>
-                    #{t.email}
+                <f:facet name="header"> Day of Week </f:facet>
+                    #{ds.}
             </h:column>
             
             <h:column>
-                <f:facet name="header"> Username </f:facet>
-                    #{t.username}
+                <f:facet name="header"> Shift </f:facet>
+                    <!-- We want something like "Morning shift 9:00AM - 10:00AM" -->
+                    #{ds.username}
             </h:column>
             
             <h:column>
-                <f:facet name="header"> Password </f:facet>
-                    #{t.password}
+                <f:facet name="header"> Technicians </f:facet>
+                    #{ds.password}
             </h:column>
 
             <h:column>
                 <f:facet name="header"> Phone Number </f:facet>
-                    #{t.phoneNumber}
+                    #{d.phoneNumber}
             </h:column>
         </h:dataTable>
     </h:body>

@@ -8,6 +8,18 @@
         <managed-bean-class>Selector</managed-bean-class>
         <managed-bean-scope>session</managed-bean-scope>
     </managed-bean>
+    
+    <managed-bean>
+        <managed-bean-name>doctor</managed-bean-name>
+        <managed-bean-class>Doctor</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
+    
+    <managed-bean>
+        <managed-bean-name>technician</managed-bean-name>
+        <managed-bean-class>Technician</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
      <managed-bean>
         <managed-bean-name>util</managed-bean-name>
         <managed-bean-class>Util</managed-bean-class>
@@ -78,6 +90,50 @@
     
     <navigation-rule>
         <from-view-id>
+            /startD.xhtml
+        </from-view-id>
+        <navigation-case>
+            <from-outcome>docViewSchedule</from-outcome>
+            <to-view-id>viewDocSchedule.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>docPrefWorkday</from-outcome>
+            <to-view-id>prefDoc.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>docTimeOff</from-outcome>
+            <to-view-id>timeOffDoc.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>docSickDay</from-outcome>
+            <to-view-id>sickDayDoc.xhtml</to-view-id>
+        </navigation-case>
+    <navigation-rule>
+        
+        <navigation-rule>
+        <from-view-id>
+            /startT.xhtml
+        </from-view-id>
+        <navigation-case>
+            <from-outcome>techViewSchedule</from-outcome>
+            <to-view-id>viewTechSchedule.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>techPrefWorkday</from-outcome>
+            <to-view-id>prefTech.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>techTimeOff</from-outcome>
+            <to-view-id>timeOffTech.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>techSickDay</from-outcome>
+            <to-view-id>sickDayTech.xhtml</to-view-id>
+        </navigation-case>
+    <navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>
             /newDoctor.xhtml
         </from-view-id>
         <navigation-case>
@@ -99,8 +155,8 @@
             /newTechnician.xhtml
         </from-view-id>
         <navigation-case>
-            <from-outcome>main</from-outcome>
-            <to-view-id>start.xhtml</to-view-id>
+            <from-outcome>mainAdministrator</from-outcome>
+            <to-view-id>startA.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
     
@@ -129,8 +185,8 @@
             /deleteDoctor.xhtml
         </from-view-id>
         <navigation-case>
-            <from-outcome>main</from-outcome>
-            <to-view-id>start.xhtml</to-view-id>
+            <from-outcome>mainAdministrator</from-outcome>
+            <to-view-id>startA.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
     
@@ -139,11 +195,30 @@
             /deleteTechnician.xhtml
         </from-view-id>
         <navigation-case>
-            <from-outcome>main</from-outcome>
-            <to-view-id>start.xhtml</to-view-id>
+            <from-outcome>mainAdministrator</from-outcome>
+            <to-view-id>startA.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
     
+        <navigation-rule>
+        <from-view-id>
+            /changeDocPw.xhtml
+        </from-view-id>
+        <navigation-case>
+            <from-outcome>mainAdministrator</from-outcome>
+            <to-view-id>startA.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+        <navigation-rule>
+        <from-view-id>
+            /changeTechPw.xhtml
+        </from-view-id>
+        <navigation-case>
+            <from-outcome>mainAdministrator</from-outcome>
+            <to-view-id>startA.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
     
     
     

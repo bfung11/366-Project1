@@ -13,10 +13,10 @@
 
         <h:panelGrid columns="3">
 
-            Doctor Id: <h:inputText value="#{doctor.id}" required ="true"
-                                  requiredMessage="Your must enter Doctor ID"
-                                  validator="#{doctor.doesIdExist()}"
-                                  converterMessage="Doctor ID must be an integer"
+            Doctor Email: <h:inputText value="#{doctor.email}" required ="true"
+                                  requiredMessage="Your must enter Doctor Email"
+                                  validator="#{doctor.doesEmailExist()}"
+                                  converterMessage="Doctor Email must be a String"
                                   id="userId"/>
             <h:message for="userId" style="color:red;margin:8px;"/>
         </h:panelGrid>

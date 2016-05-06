@@ -53,7 +53,6 @@ public class Scheduler {
    //private ArrayList<Integer> docIDs;
    // look out 3 weeks in advance
 
-   //TODO -- Probably have to update this
    public Scheduler(Calendar startingDate) {
       initShifts();
       initDayIndices();
@@ -331,122 +330,39 @@ public class Scheduler {
       return false;
    }
 
-   private boolean checkOvernightConstraint(int[] schedules) {
-      int i;
-      int overnightShiftIndex;
-      int docID;
-      ArrayList<Integer> seen = new ArrayList<>();
-      
-      
-      for (i = 0; i < OvernightIndices.length; i++) {
-         overnightShiftIndex = OvernightIndices[i];
-         docID = schedules[overnightShiftIndex];
-         if (seen.contains(docID)) {
-            return false;
-         }
-         seen.add(docID);
+      for (int i = 0; i < MAX_CALENDAR_DAYS; ++i) {
+         calendar.add(new Day(date));
+         date.add(date.DAY_OF_MONTH, 1);
       }
-      return true;
    }
 
-   private boolean checkSurgeryConstraint(int[] schedules) {
-      int i;
-      int surgeryShiftIndex;
-      int docID;
-      ArrayList<Integer> seen = new ArrayList<>();
+   private void readDoctorShiftsFromDatabase(Calendar startingDate) {
+      // DBConnection con = new DBConnection();
+      // // ResultSet set = con.execQuery("SELECT *" +
+      // //                               "FROM DoctorShifts");
       
-      
-      for (i = 0; i < SurgeryIndices.length; i++) {
-         surgeryShiftIndex = SurgeryIndices[i];
-         docID = schedules[surgeryShiftIndex];
-         if (seen.contains(docID)) {
-            return false;
-         }
-         seen.add(docID);
-      }
-      return true;
+
+      // for (int i = 0; i < doctorShifts.size(); ++i) {
+      //    EmployeeShift employeeShift = doctorShifts.get(i); //TODO assuming it has been read successfully
+      //    Calendar shiftDate = employeeShift.getDate();
+      //    //subtract shiftDate from startingDate to get index for calendar
+      //    long newTime = shiftDate.getTimeInMillis() 
+      //                    - startingDate.getTimeInMillis();
+      //    int index = (int) newTime / MILLISECONDS_TO_DAYS;
+      //    //use index in to get calendar day
+      //    Day day = calendar.get(index);
+      //    String shiftName = employeeShift.getShift();
+      //    Shift shift = null;
+      //    for (int j = 0; j < shifts.size(); ++j) {
+      //       if (shifts.get(j).get() == shiftID) {
+      //          shift = shifts.get(j);
+      //       }
+      //    }
+      //    day.setShift(shift);
+      // }
    }
 
-   private boolean checkMaxShiftConstraint(int[] schedules, int highestDocIndex) {
-      int i;
-      int j;
-      int numShifts;
-      
-      for (i = 0; i <= highestDocIndex; i++) {
-         numShifts = 0;
-         for (j = 0; j < schedules.length; j++) {
-            if (schedules[j] == i) {
-               numShifts++;
-            }
-            if (numShifts >= MAX_SHIFTS_PER_WEEK) {
-               return false;
-            }
-         }
-      }
-      return true;
-   }
-
-   private boolean checkSingleShiftPerDayConstraint(int[] schedules) {
-      ArrayList<Integer> dailyIDs = new ArrayList<>();
-      int i;
-      int j;
-      int id;
-      
-      if (!checkDay(schedules, SundayIndices, INVALID)) {
-         return false;
-      }
-      
-      if (!checkDay(schedules, MondayIndices, SUNDAY)) {
-         return false;
-      }
-      
-      if (!checkDay(schedules, TuesdayIndices, MONDAY)) {
-         return false;
-      }
-      
-      if (!checkDay(schedules, WednesdayIndices, TUESDAY)) {
-         return false;
-      }
-      
-      if (!checkDay(schedules, ThursdayIndices, WEDNESDAY)) {
-         return false;
-      }
-      
-      if (!checkDay(schedules, FridayIndices, THURSDAY)) {
-         return false;
-      }
-      
-      if (!checkDay(schedules, SaturdayIndices, FRIDAY)) {
-         return false;
-      }
-      
-      return true;
-   }
-   
-   private boolean checkDay(int[] schedules, int[] dayIndices, int prevDayIndex) {
-      int i;
-      int id;
-      ArrayList<Integer> dailyIDs = new ArrayList<>();
-      for (i = 0; i < dayIndices.length; i++) {
-         id = schedules[dayIndices[i]];
-         if (dailyIDs.contains(id)) {
-            return false;
-         }
-         if (prevDayIndex >= 0 && id == OvernightIndices[prevDayIndex]) {
-            return false;
-         }
-         dailyIDs.add(i);
-      }
-      return true;
-   }
-   
-   //Updates assigned shift from oldID to newID
-   private void pushSchedule(Integer newID, Integer oldID, Calendar requestedDay, 
-           String table) {
-      
-      try {
-         connection = new DBConnection();
-
+   private void readDoctorPreferredShifts() {
          String query = "UPDATE " + table + " " + 
                         "SET id = " + newID + " " + 
                         "WHERE id = " + oldID + " " + 

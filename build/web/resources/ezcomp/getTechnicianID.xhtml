@@ -13,10 +13,10 @@
 
         <h:panelGrid columns="3">
 
-            Doctor Id: <h:inputText value="#{doctor.id}" required ="true"
-                                  requiredMessage="Your must enter Doctor ID"
-                                  validator="#{doctor.doesIdExist()}"
-                                  converterMessage="Doctor ID must be an integer"
+            Technician Id: <h:inputText value="#{technician.id}" required ="true"
+                                  requiredMessage="Your must enter Technician ID"
+                                  validator="#{technician.doesIdExist()}"
+                                  converterMessage="Technician ID must be an integer"
                                   id="userId"/>
             <h:message for="userId" style="color:red;margin:8px;"/>
         </h:panelGrid>
