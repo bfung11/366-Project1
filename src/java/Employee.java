@@ -361,10 +361,10 @@ public class Employee {
    public ArrayList<String> getWeekShifts() {
       ArrayList<Shift> shifts = new ArrayList<>();
       ArrayList<String> options = new ArrayList<>();
-      shifts.addAll(this.weekOne);
-      shifts.addAll(this.weekTwo);
-      shifts.addAll(this.weekThree);
-      shifts.addAll(this.weekFour);
+//      shifts.addAll(this.weekOne);
+//      shifts.addAll(this.weekTwo);
+//      shifts.addAll(this.weekThree);
+//      shifts.addAll(this.weekFour);
       for (int i = 0; i < shifts.size(); i++) {
          options.add(shifts.get(i).getShift() + " " + shifts.get(i).getDateAsString());
       }
@@ -386,7 +386,7 @@ public class Employee {
          if (rs.next()) {
             int vacationDaysLeft = rs.getInt(Table.VACATION_DAYS);
             if (vacationDaysLeft > 0) {
-               // Scheduler scheduler = new Scheduler();
+//               Scheduler scheduler = new Scheduler();
                // canGetTimeOff = scheduler.generateSchedule();
             }
          }
@@ -413,7 +413,7 @@ public class Employee {
          if (rs.next()) {
             int vacationDaysLeft = rs.getInt(Table.SICK_DAYS);
             if (vacationDaysLeft > 0) {
-               // Scheduler scheduler = new Scheduler();
+               Scheduler scheduler = new Scheduler();
                // canGetTimeOff = scheduler.generateSchedule();
             }
          }
