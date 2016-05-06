@@ -2,7 +2,7 @@ import java.util.*;
 import java.sql.*;
 import java.text.*;
 
-public final class Shift {
+public class Shift {
    public final static String EARLY = "7:30 Shift";
    public final static String MORNING = "8:30 Shift";
    public final static String LATE = "9:30 Shift";
@@ -27,15 +27,16 @@ public final class Shift {
    }
 
    public Shift(String shift, java.sql.Date date, int firstD, int secondD, int firstT, int secondT) {
-       this.setShift(shift);
-       this.setDate(date);
-       this.setFirstDoctor(firstD);
-       this.setSecondDoctor(secondD);
-       this.setFirstTechnician(firstT);
-       this.setSecondTechnician(secondT);
+      this.shift = shift;
+      this.date = new GregorianCalendar();
+      this.date.setTime(date);
+      this.firstDoctor = firstD;
+      this.secondDoctor = secondD;
+      this.firstTechnician = firstT;
+      this.secondTechnician = secondT;
    }
    
-   public final void setShift(String shift) {
+   public void setShift(String shift) {
       this.shift = shift;
    }
 
@@ -43,7 +44,7 @@ public final class Shift {
       return shift;
    }
 
-   public final void setDate(java.sql.Date date) {
+   public void setDate(java.sql.Date date) {
       this.date = new GregorianCalendar();
       this.date.setTime(date);
    }
@@ -69,7 +70,7 @@ public final class Shift {
       return firstDoctor != NO_ID;
    }
 
-   public final void setSecondDoctor(int doctor) {
+   public void setSecondDoctor(int doctor) {
       secondDoctor = doctor;
    }
 
@@ -81,7 +82,7 @@ public final class Shift {
       return secondDoctor != NO_ID;
    }
 
-   public final void setFirstTechnician(int technician) {
+   public void setFirstTechnician(int technician) {
       firstTechnician = technician;
    }
 
@@ -93,7 +94,7 @@ public final class Shift {
       return firstTechnician != NO_ID;
    }
 
-   public final void setSecondTechnician(int technician) {
+   public void setSecondTechnician(int technician) {
       secondTechnician = technician;
    }
 
@@ -109,5 +110,14 @@ public final class Shift {
       Calendar cal = new GregorianCalendar();
       cal.setTime(date);
       return this.date.equals(cal) && this.shift.equals(shift);
+   }
+
+   public void print() {
+      System.out.println(
+         "On " + getDateAsString() + "\n" + 
+         "   Shift : " + shift + "\n" +
+         "   Doctor : " + firstDoctor + ", " + secondDoctor + "\n" + 
+         "   Technician : " + firstTechnician + ", " + secondTechnician + "\n" 
+      );
    }
 }

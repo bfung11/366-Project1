@@ -24,8 +24,8 @@ If using the professor’s account:
 ## TODO
 1. Delete old weeks so that min(date) will get the starting date of the schedule
 2. Add secondary technician shifts in the scheduler
-~~3. Update calendar with schedule - assigned to Justin Zaman ~~
-~~4. Push schedule to database - assigned to Brian Fung ~~
+3. ~~Update calendar with schedule - assigned to Justin Zaman~~
+4. ~~Push schedule to database - assigned to Brian Fung~~
 5. Adding query to view schedule - assigned to Kevin Yang
 6. Add query to update request with preferred shifts, or time off
 7. Add requestedDay to DB
