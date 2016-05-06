@@ -23,10 +23,11 @@ If using the professor’s account:
 
 ## TODO
 1. Delete old weeks so that min(date) will get the starting date of the schedule
-2. Add secondary shifts in the scheduler
-3. Update calendar with schedule - assigned to Justin Zaman
-4. Push schedule to database
+2. Add secondary technician shifts in the scheduler
+~~3. Update calendar with schedule - assigned to Justin Zaman ~~
+~~4. Push schedule to database - assigned to Brian Fung ~~
 5. Adding query to view schedule - assigned to Kevin Yang
 6. Add query to update request with preferred shifts, or time off
-7. Add request to DB
-8. Remove request from set of requests if not valid
+7. Add requestedDay to DB
+8. Remove requestedDay from set of requests if not valid
+9. Add toString() to Shift
