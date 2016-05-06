@@ -1,7 +1,13 @@
 import java.sql.*;
 import java.text.ParseException;
 import java.util.*;
+import javax.annotation.ManagedBean;
+import javax.faces.bean.SessionScoped;
+import javax.inject.Named;
 
+@Named(value = "doctor")
+@SessionScoped
+@ManagedBean
 public class Doctor extends Employee {
    public Doctor() {
       super(Employee.DOCTOR);
@@ -52,12 +58,12 @@ public class Doctor extends Employee {
       return super.getOption();
    }
    
-   public boolean canGetSickDays() {
-      return super.canGetSickDays();
+   public boolean canGetSDays(String username) {
+      return super.canGetSickDays(username);
    }
 
-   public boolean canGetVacationDays() {
-      return super.canGetVacationDays();
+   public boolean canGetVacDays(String username) {
+      return super.canGetVacationDays(username);
    }
 
    public List<Employee> getDoctorList() {
