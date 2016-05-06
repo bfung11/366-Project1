@@ -32,7 +32,6 @@ public class Employee {
 
    private final static int MAX_NUM_VACATION_DAYS = 8;
    private final static int MAX_NUM_SICK_DAYS = 4;
-   private final static int NUM_SHIFTS_PER_WEEK = 32;
 
    private int id;
    private String email;
@@ -46,156 +45,32 @@ public class Employee {
    private int type;
    
    private Scheduler schedule;
-   private LocalDate startDate;
-   private ArrayList<Shift> weekOne;
-   private ArrayList<Shift> weekTwo;
-   private ArrayList<Shift> weekThree;
-   private ArrayList<Shift> weekFour;
-
-   private LocalDate aDate;
 
    public Employee(int type) {
       this.type = type;
-      initCalendar();
    }
 
    public Employee(String username) {
-      try {
-         DBConnection connection = new DBConnection();
-         Connection con = connection.getConnection();
+      // try {
+      //    DBConnection connection = new DBConnection();
+      //    Connection con = connection.getConnection();
 
-         String tablename = "Doctors";
-         String query = "select * from " + tablename + 
-                        "where username = " + username;
-         ResultSet result =
-            connection.execQuery(query);
-         type = DOCTOR;
+      //    this.username = username;
+      //    getTypeFromUsername();
+      //    id = result.getInt(Table.ID);
+      //    email = result.getString(Table.EMAIL);
+      //    password = getPassword(tablename);
+      //    firstname = result.getString(Table.FIRSTNAME);
+      //    lastname = result.getString(Table.LASTNAME);
+      //    phonenumber = result.getString(Table.PHONE_NUMBER);
+      //    vacationDays = result.getInt(Table.VACATION_DAYS);
+      //    sickDays = result.getInt(Table.SICK_DAYS);
 
-         if (result.next() == false) {
-            tablename = "Technicians";
-            query = "select * from " + tablename + 
-                    "where username = " + username;
-
-            result = connection.execQuery(query);
-            type = TECHNICIAN;
-
-            if (result.next() == false) {
-               type = ADMINISTRATOR;
-               result.next(); // result starts out before the first row
-            } 
-         }
-         
-         id = result.getInt(Table.ID);
-         email = result.getString(Table.EMAIL);
-         this.username = username;
-         password = getPassword(tablename);
-         firstname = result.getString(Table.FIRSTNAME);
-         lastname = result.getString(Table.LASTNAME);
-         phonenumber = result.getString(Table.PHONE_NUMBER);
-         vacationDays = result.getInt(Table.VACATION_DAYS);
-         sickDays = result.getInt(Table.SICK_DAYS);
-
-         initCalendar();
-
-         con.close();
-      } 
-      catch (Exception e) {
-         e.printStackTrace();
-      }
-   }
-
-   private void initCalendar() {
-      weekOne = new ArrayList<Shift>(NUM_SHIFTS_PER_WEEK);
-      weekTwo = new ArrayList<Shift>(NUM_SHIFTS_PER_WEEK);
-      weekThree = new ArrayList<Shift>(NUM_SHIFTS_PER_WEEK);
-      weekFour = new ArrayList<Shift>(NUM_SHIFTS_PER_WEEK);
- 
-      initStartdate();
-      aDate = LocalDate.parse(startDate.toString());
-
-      initWeek(weekOne, aDate);
-      initWeek(weekTwo, aDate);
-      initWeek(weekThree, aDate);
-      initWeek(weekFour, aDate);
-   }
-
-   private void initStartdate() {
-      try {
-         DBConnection connection = new DBConnection();
-         String query = "SELECT min(date) AS date from DoctorShifts";
-         ResultSet result = connection.execQuery(query);
-         if (result.next()) {
-            startDate = LocalDate.parse(result.getDate(Table.DATE).toString());
-            System.out.println("initStartDate(): " + result.getDate(Table.DATE));
-         }
-      }
-      catch (Exception e) {
-         e.printStackTrace();
-      }
-   }
-
-   private void initWeek(ArrayList<Shift> week, LocalDate startDate) {
-      try {
-         // get doctors
-         DBConnection connection = new DBConnection();
-         SimpleDateFormat formatter = new SimpleDateFormat("YYYY-MM-DD");
-
-         String earliest = aDate.toString();
-         aDate = aDate.plusDays(7);
-         String latest = aDate.toString();
-         System.out.println("earliest : " + earliest);
-         System.out.println("latest : " + latest);
-         String query = "select * from doctorShifts " + 
-                        "where date >= '" + earliest + "' and date < '" + latest + "' " + 
-                        "order by date ASC";
-         ResultSet result = connection.execQuery(query);
-
-         while (result.next()) {
-            String shiftName  = result.getString(Table.SHIFT);
-            java.sql.Date date = result.getDate(Table.DATE);
-            if (!week.isEmpty()) {
-               Shift shift = week.get(week.size() - 1);
-               if (!shift.equals(date, shiftName)) {
-                  Shift newShift = new Shift();
-                  newShift.setShift(shiftName);
-                  newShift.setDate(date);
-                  newShift.setFirstDoctor(result.getInt(Table.ID));
-                  week.add(newShift);
-               }
-               else {
-                  shift.setSecondDoctor(result.getInt(Table.ID));
-               }
-            }
-            else {
-               Shift newShift = new Shift();
-               newShift.setShift(shiftName);
-               newShift.setDate(date);
-               week.add(newShift);
-            }
-         }
-
-         // get technicians
-         query = "SELECT * FROM TechnicianShifts ORDER BY date ASC";
-         result = connection.execQuery(query);
-         while (result.next()) {
-            for (int i = 0; i < week.size(); ++i) {
-               Shift shift = week.get(i);
-               if (shift.equals(result.getDate(Table.DATE), 
-                                result.getString(Table.SHIFT))) {
-                  int technician = result.getInt(Table.ID);
-                  if (!shift.hasFirstTechnician()) {
-                     shift.setFirstTechnician(technician);
-                  }
-                  else {
-                     shift.setSecondTechnician(technician);
-                  }
-               }
-            }
-         }
-      }
-      catch (Exception e) {
-         e.printStackTrace();
-      }
+      //    con.close();
+      // } 
+      // catch (Exception e) {
+      //    e.printStackTrace();
+      // }
    }
 
    public int getType() {
@@ -252,6 +127,60 @@ public class Employee {
 
    public void setUsername(String username) {
       this.username = username;
+
+      try {
+         String query = "";
+         getTypeFromUsername();
+
+         if (type == Employee.DOCTOR) {
+            query = "select id from Doctors, Login where " + 
+                    "Doctors.email = Login.email and " +
+                    "username = '" + username + "'";
+         }
+         else {
+            query = "select id from Technicians, Login where " + 
+                    "Technicians.email = Login.email and " +
+                    "username = '" + username + "'";
+         }
+
+         DBConnection connection = new DBConnection();
+         ResultSet rs = connection.execQuery(query);
+         if (rs.next()) {
+            id = rs.getInt(Table.ID);
+         }
+      }
+      catch (Exception e) {
+         e.printStackTrace();
+      }
+   }
+
+   private void getTypeFromUsername() {
+      try {
+         String tablename = "Doctors";
+         String query = "select * from " + tablename + 
+                        "where username = " + username;
+         DBConnection connection = new DBConnection();
+         ResultSet result =
+            connection.execQuery(query);
+         type = DOCTOR;
+
+         if (result.next() == false) {
+            tablename = "Technicians";
+            query = "select * from " + tablename + 
+                    "where username = " + username;
+
+            result = connection.execQuery(query);
+            type = TECHNICIAN;
+
+            if (result.next() == false) {
+               type = ADMINISTRATOR;
+               result.next(); // result starts out before the first row
+            } 
+         }
+      }
+      catch (Exception e) {
+         e.printStackTrace();
+      }
    }
 
    public String getUsername() {
@@ -422,106 +351,77 @@ public class Employee {
          sqe.printStackTrace();
      }
      */
-      mySchedule.addAll(this.weekOne);
-      mySchedule.addAll(this.weekTwo);
-      mySchedule.addAll(this.weekThree);
-      mySchedule.addAll(this.weekFour);
+      // mySchedule.addAll(this.weekOne);
+      // mySchedule.addAll(this.weekTwo);
+      // mySchedule.addAll(this.weekThree);
+      // mySchedule.addAll(this.weekFour);
       return mySchedule;
    }
 
-    public ArrayList<String> getWeekShifts() {
-        ArrayList<Shift> shifts = new ArrayList<>();
-        ArrayList<String> options = new ArrayList<>();
-        shifts.addAll(this.weekOne);
-        shifts.addAll(this.weekTwo);
-        shifts.addAll(this.weekThree);
-        shifts.addAll(this.weekFour);
-        for (int i = 0; i < shifts.size(); i++) {
-            options.add(shifts.get(i).getShift() + " " + shifts.get(i).getDateAsString());
-        }
-        return options;
-    }
-   
-   private String convertTimeToString(Time time) {
-      SimpleDateFormat formatter = new SimpleDateFormat("HH:MM");
-      return formatter.format(time.getTime());
+   public ArrayList<String> getWeekShifts() {
+      ArrayList<Shift> shifts = new ArrayList<>();
+      ArrayList<String> options = new ArrayList<>();
+      shifts.addAll(this.weekOne);
+      shifts.addAll(this.weekTwo);
+      shifts.addAll(this.weekThree);
+      shifts.addAll(this.weekFour);
+      for (int i = 0; i < shifts.size(); i++) {
+         options.add(shifts.get(i).getShift() + " " + shifts.get(i).getDateAsString());
+      }
+      return options;
    }
 
-   private void pushCalendarToDatabase() {
-      pushWeekToDatabase(weekOne);
-      pushWeekToDatabase(weekTwo);
-      pushWeekToDatabase(weekThree);
-      pushWeekToDatabase(weekFour);
-   }
+   public boolean canGetVacationDays() {
+      boolean canGetTimeOff = false;
 
-   public boolean canGetPreferredShifts(String employee, String shiftOption){
-       try {
-       DBConnection dbcon = new DBConnection();
-       //Scheduler scheduler = new Scheduler(weekOne.get(0).getDate());
-       String[] shiftStr = shiftOption.split(" ");
-       String query = 
-               "SELECT COUNT(*) AS emplCount FROM " 
-               + employee 
-               + "Shifts WHERE date = " 
-               + LocalDate.parse(shiftStr[1]) 
-               + " AND shift = " + shiftStr[0] + ";"; 
-       
-       dbcon.execQuery(query);
-       }
-       catch (SQLException se) {
-           se.printStackTrace();
-       }
-       
-       return true;
-   }
-   
-   private void pushWeekToDatabase(ArrayList<Shift> week) {
       try {
+         String query = "select vacationDaysLeft from Doctors where id = id";
+
+         if (type == Employee.TECHNICIAN) {
+            query = "select vacationDaysLeft from Technicians where id = id";
+         }
+
          DBConnection connection = new DBConnection();
-         for (int index = 0; index < week.size(); ++index) {
-            Shift shift = week.get(index);
-            String querySecondHalf = "WHERE date = '" + shift.getDateAsString() + 
-                                     "' and " + 
-                                     "shift = '" + shift.getShift() + "'";
-
-            String query = "UPDATE DoctorShifts SET id = " +  
-                           shift.getFirstDoctor() + " " + querySecondHalf;
-            connection.execQuery(query); 
-
-            if (shift.hasSecondDoctor()) {
-               query = "UPDATE DoctorShifts SET id = " +  
-                        shift.getSecondDoctor() + " " + querySecondHalf;
-               connection.execQuery(query);
-            }
-
-            query = "UPDATE TechnicianShifts SET id = " +  
-                     shift.getFirstTechnician() + " " + querySecondHalf;
-            connection.execQuery(query);
-
-            if (shift.hasSecondTechnician()) {
-               query = "UPDATE TechnicianShifts SET id = " +  
-                        shift.getSecondTechnician() + " " + querySecondHalf;
-               connection.execQuery(query);
+         ResultSet rs = connection.execQuery(query);
+         if (rs.next()) {
+            int vacationDaysLeft = rs.getInt(Table.VACATION_DAYS);
+            if (vacationDaysLeft > 0) {
+               // Scheduler scheduler = new Scheduler();
+               // canGetTimeOff = scheduler.generateSchedule();
             }
          }
       }
       catch (Exception e) {
          e.printStackTrace();
       }
+
+      return canGetTimeOff;
    }
 
-   public void viewSchedule() {
-      printWeek(weekOne);
-      printWeek(weekTwo);
-      printWeek(weekThree);
-      printWeek(weekFour);
-   }
+   public boolean canGetSickDays() {
+      boolean canGetTimeOff = false;
 
-   private void printWeek(ArrayList<Shift> week) {
-         System.out.println("Size: " + week.size());
+      try {
+         String query = "select sickDaysLeft from Doctors where id = id";
 
-      for (int i = 0; i < week.size(); ++i) {
-         week.get(i).print();
+         if (type == Employee.TECHNICIAN) {
+            query = "select sickDaysLeft from Technicians where id = id";
+         }
+
+         DBConnection connection = new DBConnection();
+         ResultSet rs = connection.execQuery(query);
+         if (rs.next()) {
+            int vacationDaysLeft = rs.getInt(Table.SICK_DAYS);
+            if (vacationDaysLeft > 0) {
+               // Scheduler scheduler = new Scheduler();
+               // canGetTimeOff = scheduler.generateSchedule();
+            }
+         }
       }
+      catch (Exception e) {
+         e.printStackTrace();
+      }
+
+      return canGetTimeOff;
    }
 }
