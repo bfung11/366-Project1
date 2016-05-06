@@ -1,10 +1,10 @@
 INSERT INTO Shifts
-VALUES ('7:30 Shift', '07:30', '18:30'),
-       ('8:30 Shift', '08:30', '19:30'),
-       ('9:30 Shift', '09:30', '20:30'),
+VALUES ('Early Morning', '07:30', '18:30'),
+       ('Morning', '08:30', '19:30'),
+       ('Late Morning', '09:30', '20:30'),
        ('Surgery', '07:30', '18:30'),
-       ('Overnight Shift', '20:00', '08:30'),
-       ('Sunday Shift', '08:00', '20:00');
+       ('Overnight', '20:00', '08:30'),
+       ('Sunday', '08:00', '20:00');
 
 INSERT INTO Login
 VALUES ('first@gmail.com', 'd1', 'password'),
@@ -54,3 +54,52 @@ VALUES ('first@yahoo.com', 'First', '(111) 111-1111'),
 
 INSERT INTO Administrators (email, lastname, phonenumber) 
 VALUES ('admin@hotmail.com', 'last', '(111) 111-1111');
+
+
+
+INSERT INTO DoctorShifts 
+VALUES (4, '2016-01-20', 'Sunday'),
+       (1, '2016-01-20', 'Overnight'),
+
+       (8, '2016-02-20', 'Early Morning'),
+       (5, '2016-02-20', 'Morning'),
+       (6, '2016-02-20', 'Late Morning'),
+       (7, '2016-02-20', 'Surgery'),
+       (2, '2016-02-20', 'Overnight'),
+
+       (5, '2016-03-20', 'Early Morning'),
+       (9, '2016-03-20', 'Early Morning'),
+       (6, '2016-03-20', 'Morning'),
+       (7, '2016-03-20', 'Late Morning'),
+       (1, '2016-03-20', 'Surgery'),
+       (3, '2016-03-20', 'Overnight'),
+
+       (6, '2016-04-20', 'Early Morning'),
+       (9, '2016-04-20', 'Early Morning'),
+       (7, '2016-04-20', 'Morning'),
+       (1, '2016-04-20', 'Late Morning'),
+       (2, '2016-04-20', 'Surgery'),
+       (4, '2016-04-20', 'Overnight'),
+
+       (8, '2016-05-20', 'Early Morning'),
+       (1, '2016-05-20', 'Morning'),
+       (2, '2016-05-20', 'Late Morning'),
+       (3, '2016-05-20', 'Surgery'),
+       (5, '2016-05-20', 'Overnight'),
+
+       (9, '2016-06-20', 'Early Morning'),
+       (2, '2016-06-20', 'Morning'),
+       (3, '2016-06-20', 'Late Morning'),
+       (8, '2016-06-20', 'Late Morning'),
+       (4, '2016-06-20', 'Surgery'),
+       (6, '2016-06-20', 'Overnight'),
+
+       (9, '2016-07-20', 'Early Morning'),
+       (3, '2016-07-20', 'Morning'),
+       (4, '2016-07-20', 'Late Morning'),
+       (8, '2016-07-20', 'Late Morning'),
+       (5, '2016-07-20', 'Surgery'),
+       (7, '2016-07-20', 'Overnight');
+
+
+
