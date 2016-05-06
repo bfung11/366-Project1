@@ -20,6 +20,7 @@ import java.util.TimeZone;
 import java.util.*;
 import java.text.*;
 import java.sql.*;
+import java.time.*;
 
 @Named(value = "employee")
 @SessionScoped
@@ -45,13 +46,13 @@ public class Employee {
    private int type;
    
    private Scheduler schedule;
-   private Calendar startDate;
+   private LocalDate startDate;
    private ArrayList<Shift> weekOne;
    private ArrayList<Shift> weekTwo;
    private ArrayList<Shift> weekThree;
    private ArrayList<Shift> weekFour;
 
-   private Calendar aDate;
+   private LocalDate aDate;
 
    public Employee(int type) {
       this.type = type;
@@ -110,9 +111,7 @@ public class Employee {
       weekFour = new ArrayList<Shift>(NUM_SHIFTS_PER_WEEK);
  
       initStartdate();
-      aDate = new GregorianCalendar();
-      startDate.getTime();
-      aDate.setTime(startDate.getTime());
+      aDate = LocalDate.parse(startDate.toString());
 
       initWeek(weekOne, aDate);
       initWeek(weekTwo, aDate);
@@ -121,15 +120,13 @@ public class Employee {
    }
 
    private void initStartdate() {
-      System.out.println("initStartDate()");
-
       try {
          DBConnection connection = new DBConnection();
          String query = "SELECT min(date) AS date from DoctorShifts";
          ResultSet result = connection.execQuery(query);
          if (result.next()) {
-            startDate = new GregorianCalendar();
-            startDate.setTime(result.getDate(Table.DATE));
+            startDate = LocalDate.parse(result.getDate(Table.DATE).toString());
+            System.out.println("initStartDate(): " + result.getDate(Table.DATE));
          }
       }
       catch (Exception e) {
@@ -137,15 +134,17 @@ public class Employee {
       }
    }
 
-   private void initWeek(ArrayList<Shift> week, Calendar startDate) {
+   private void initWeek(ArrayList<Shift> week, LocalDate startDate) {
       try {
          // get doctors
          DBConnection connection = new DBConnection();
          SimpleDateFormat formatter = new SimpleDateFormat("YYYY-MM-DD");
 
-         String earliest = formatter.format(aDate.getTime());
-         aDate.add(Calendar.WEEK_OF_YEAR, 1);
-         String latest = formatter.format(aDate.getTime());
+         String earliest = aDate.toString();
+         aDate = aDate.plusDays(7);
+         String latest = aDate.toString();
+         System.out.println("earliest : " + earliest);
+         System.out.println("latest : " + latest);
          String query = "select * from doctorShifts " + 
                         "where date >= '" + earliest + "' and date < '" + latest + "' " + 
                         "order by date ASC";

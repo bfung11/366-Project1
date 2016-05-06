@@ -1,6 +1,7 @@
 import java.util.*;
 import java.sql.*;
 import java.text.*;
+import java.time.*;
 
 public class Shift {
    public final static String EARLY = "7:30 Shift";
@@ -13,7 +14,7 @@ public class Shift {
    private final static int NOT_SET = -1;
 
    private String shift;
-   private Calendar date;
+   private LocalDate date;
    private int firstDoctor;
    private int secondDoctor;
    private int firstTechnician;
@@ -28,8 +29,7 @@ public class Shift {
 
    public Shift(String shift, java.sql.Date date, int firstD, int secondD, int firstT, int secondT) {
       this.shift = shift;
-      this.date = new GregorianCalendar();
-      this.date.setTime(date);
+      this.date = LocalDate.parse(date.toString());
       this.firstDoctor = firstD;
       this.secondDoctor = secondD;
       this.firstTechnician = firstT;
@@ -45,21 +45,19 @@ public class Shift {
    }
 
    public void setDate(java.sql.Date date) {
-      this.date = new GregorianCalendar();
-      this.date.setTime(date);
+      this.date = LocalDate.parse(date.toString());
    }
 
-   public String getShiftDate() {
-       return date.getTime().toString();
-   }
-   
-   public Calendar getDate() {
+   public LocalDate getDate() {
       return date;
    }
-
+   
+   public String getShiftDate() {
+       return date.toString();
+   }
+   
    public String getDateAsString() {
-      SimpleDateFormat formatter = new SimpleDateFormat("YYYY-MM-DD");
-      return formatter.format(date.getTime());
+      return date.toString();
    }
 
    public void setFirstDoctor(int doctor) {
@@ -111,8 +109,7 @@ public class Shift {
    }
 
    public boolean equals(java.sql.Date date, String shift) {
-      Calendar cal = new GregorianCalendar();
-      cal.setTime(date);
+      LocalDate cal = LocalDate.parse(date.toString());
       return this.date.equals(cal) && this.shift.equals(shift);
    }
 
