@@ -65,7 +65,12 @@ public class Scheduler {
    // look out 3 weeks in advance
 
    //TODO -- Probably have to update this
-   public Scheduler(Calendar startingDate) {
+   public Scheduler() {
+      initCalendar();
+      initDayIndices();
+   }
+   
+   public Scheduler(LocalDate startingDate) {
       initCalendar();
       initDayIndices();
    }
