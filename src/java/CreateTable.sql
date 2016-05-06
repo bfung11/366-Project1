@@ -1,3 +1,17 @@
+DROP TABLE IF EXISTS Administrators;
+DROP TABLE IF EXISTS TechnicianSickDays;
+DROP TABLE IF EXISTS TechnicianVacationDays;
+DROP TABLE IF EXISTS TechnicianPreferredShifts;
+DROP TABLE IF EXISTS TechnicianShifts;
+DROP TABLE IF EXISTS Technicians;
+DROP TABLE IF EXISTS DoctorSickDays;
+DROP TABLE IF EXISTS DoctorVacationDays;
+DROP TABLE IF EXISTS DoctorPreferredShifts;
+DROP TABLE IF EXISTS DoctorShifts;
+DROP TABLE IF EXISTS Doctors;
+DROP TABLE IF EXISTS Login;
+DROP TABLE IF EXISTS Shifts;
+
 CREATE TABLE Shifts (
    name TEXT PRIMARY KEY,
    fromTime TIME NOT NULL,
@@ -70,7 +84,7 @@ CREATE TABLE TechnicianPreferredShifts (
    id INTEGER REFERENCES Technicians(id),
    date DATE NOT NULL,
    shift TEXT REFERENCES Shifts(name),
-   PRIMARY KEY (technicianID, date, shift)
+   PRIMARY KEY (id, date, shift)
 );
 
 CREATE TABLE TechnicianSickDays (
@@ -92,19 +106,3 @@ CREATE TABLE Administrators (
    lastname TEXt NOT NULL,
    phonenumber TEXT NOT NULL
 );
-
-/* Copy pasta this to drop tables en masse
-DROP TABLE Administrators;
-DROP TABLE TechnicianSickDays;
-DROP TABLE TechnicianVacationDays;
-DROP TABLE TechnicianPreferredShifts;
-DROP TABLE TechnicianShifts;
-DROP TABLE Technicians;
-DROP TABLE DoctorSickDays;
-DROP TABLE DoctorVacationDays;
-DROP TABLE DoctorPreferredShifts;
-DROP TABLE DoctorShifts;
-DROP TABLE Doctors;
-DROP TABLE Login;
-DROP TABLE Shifts;
-*/
