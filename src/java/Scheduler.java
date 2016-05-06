@@ -69,6 +69,11 @@ public class Scheduler {
       initCalendar();
       initDayIndices();
    }
+   
+   public Scheduler(LocalDate startingDate) {
+      initCalendar();
+      initDayIndices();
+   }
 
    private void initCalendar() {
       weekOne = new ArrayList<Shift>(NUM_SHIFTS_PER_WEEK);
