@@ -10,7 +10,7 @@ import java.sql.ResultSet;
 import java.util.*;
 
 public class OldScheduler {
-   DBConnection connection;
+   /*DBConnection connection;
    
    private final static int MAX_CALENDAR_DAYS = 28;
    private final static int MILLISECONDS_TO_DAYS = 1000 * 60 * 60 * 24;
@@ -408,3 +408,4 @@ public class OldScheduler {
       }
    }
    */
+}
