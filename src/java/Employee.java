@@ -93,6 +93,10 @@ public class Employee {
       this.option = option;
    }
    
+   public String getOption() {
+      return this.option;
+   }
+   
    public boolean doesIdExist(String tablename) {
       try {
          DBConnection con = new DBConnection();
@@ -116,7 +120,7 @@ public class Employee {
    public String getEmail() {
       return email;
    }
-
+   
    public boolean doesEmailExist(String tablename) {
       try {
          DBConnection con = new DBConnection();
@@ -367,6 +371,23 @@ public class Employee {
       return mySchedule;
    }
 
+   public ArrayList<String> getShiftDates() {
+      ArrayList<Shift> shifts = new ArrayList<>();
+      ArrayList<String> options = new ArrayList<>();
+      Scheduler scheduler = new Scheduler();
+      shifts.addAll(scheduler.getWeekOne());
+      shifts.addAll(scheduler.getWeekTwo());
+      shifts.addAll(scheduler.getWeekThree());
+      shifts.addAll(scheduler.getWeekFour());
+      for (int i = 0; i < shifts.size(); i++) {
+         if (!options.contains(shifts.get(i).getDateAsString()))
+            options.add(shifts.get(i).getDateAsString());
+      }
+      return options;
+   }
+      
+   
+   
    public ArrayList<String> getWeekShifts() {
       ArrayList<Shift> shifts = new ArrayList<>();
       ArrayList<String> options = new ArrayList<>();
