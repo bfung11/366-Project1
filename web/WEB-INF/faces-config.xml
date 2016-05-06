@@ -16,6 +16,12 @@
     </managed-bean>
     
     <managed-bean>
+        <managed-bean-name>employee</managed-bean-name>
+        <managed-bean-class>Employee</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
+    
+    <managed-bean>
         <managed-bean-name>technician</managed-bean-name>
         <managed-bean-class>Technician</managed-bean-class>
         <managed-bean-scope>session</managed-bean-scope>
@@ -111,7 +117,7 @@
         </navigation-case>
     </navigation-rule>
     
-        <navigation-rule>
+    <navigation-rule>
         <from-view-id>
             /startT.xhtml
         </from-view-id>

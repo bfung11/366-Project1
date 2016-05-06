@@ -430,6 +430,19 @@ public class Employee {
       return mySchedule;
    }
 
+    public ArrayList<String> getWeekShifts() {
+        ArrayList<Shift> shifts = new ArrayList<>();
+        ArrayList<String> options = new ArrayList<>();
+        shifts.addAll(this.weekOne);
+        shifts.addAll(this.weekTwo);
+        shifts.addAll(this.weekThree);
+        shifts.addAll(this.weekFour);
+        for (int i = 0; i < shifts.size(); i++) {
+            options.add(shifts.get(i).getShift() + " " + shifts.get(i).getDateAsString());
+        }
+        return options;
+    }
+   
    private String convertTimeToString(Time time) {
       SimpleDateFormat formatter = new SimpleDateFormat("HH:MM");
       return formatter.format(time.getTime());
