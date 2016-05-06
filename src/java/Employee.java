@@ -409,7 +409,7 @@ public class Employee {
 
    public ArrayList<Shift> viewSchedule(String tablename) {
       ArrayList<Shift> mySchedule = new ArrayList<>();
-      try {
+      /* try {
          DBConnection dbconn = new DBConnection();
          String query = "";
          ResultSet rs = dbconn.execQuery(query);
@@ -422,7 +422,11 @@ public class Employee {
      catch (SQLException sqe) {
          sqe.printStackTrace();
      }
-   
+     */
+      mySchedule.addAll(this.weekOne);
+      mySchedule.addAll(this.weekTwo);
+      mySchedule.addAll(this.weekThree);
+      mySchedule.addAll(this.weekFour);
       return mySchedule;
    }
 
