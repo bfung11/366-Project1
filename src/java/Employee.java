@@ -33,6 +33,7 @@ public class Employee {
 
    private final static int MAX_NUM_VACATION_DAYS = 8;
    private final static int MAX_NUM_SICK_DAYS = 4;
+   private final static int NUM_SHIFTS_PER_WEEK = 32;
 
    private int id;
    private String email;
@@ -50,8 +51,6 @@ public class Employee {
    private ArrayList<Shift> weekTwo;
    private ArrayList<Shfit> weekThree;
    private ArrayList<Shift> weekFour;
-   private Calendar startDate;
-   private ArrayList<Integer> coworkerIDs;
 
    public Employee(int type) {
       this.type = type;
@@ -104,8 +103,15 @@ public class Employee {
    }
 
    private void initCalendar() {
-      week = new ArrayList<Shift>();
+      weekOne = new ArrayList<Shift>(NUM_SHIFTS_PER_WEEK);
+      weekTwo = new ArrayList<Shift>(NUM_SHIFTS_PER_WEEK);
+      weekThree = new ArrayList<Shift>(NUM_SHIFTS_PER_WEEK);
+      weekFour = new ArrayList<Shift>(NUM_SHIFTS_PER_WEEK);
 
+      initWeek(weekOne);
+   }
+
+   private ArrayList<Shift> initWeek(ArrayList<Shift> week) {
       try {
          // get doctors
          DBConnection connection = new DBConnection();
@@ -143,8 +149,6 @@ public class Employee {
          e.printStackTrace();
       }
    }
-
-   private ArrayList<
 
    public int getType() {
       return type;
