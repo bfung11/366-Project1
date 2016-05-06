@@ -21,6 +21,7 @@ CREATE TABLE Doctors (
 );
 
 -- DoctorShifts connects a doctor to a shift and a date
+-- Can have two doctors per shift
 CREATE TABLE DoctorShifts (
    id INTEGER REFERENCES Doctors(id),
    date DATE NOT NULL,

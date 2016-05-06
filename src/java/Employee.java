@@ -383,14 +383,16 @@ String query = "select * from Doctors, Login where Doctors.email = Login.email a
       return list;
    }
 
-   public ArrayList<Shift> viewSchedule(String tablename, String username) {
+   public ArrayList<Shift> viewSchedule(String tablename) {
       ArrayList<Shift> mySchedule = new ArrayList<>();
       try {
          DBConnection dbconn = new DBConnection();
          String query = "";
          ResultSet rs = dbconn.execQuery(query);
+         Shift shift;
          while (rs.next()) {
-            mySchedule.add(rs.getDate("date").toString());
+             //shift = new Shift(rs.getString("name"), rs.getDate("date"), rs.get);
+            //mySchedule.add(rs.getDate("date").toString());
          }
      }
      catch (SQLException sqe) {
