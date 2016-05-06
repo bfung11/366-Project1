@@ -51,7 +51,11 @@ public class Shift {
    public LocalDate getDate() {
       return date;
    }
-
+   
+   public String getShiftDate() {
+       return date.toString();
+   }
+   
    public String getDateAsString() {
       return date.toString();
    }
