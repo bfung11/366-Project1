@@ -135,7 +135,7 @@ public class Employee {
    private void initWeek(ArrayList<Shift> week) {
       try {
          // get doctors
-         String query = "SELECT * FROM DoctorShifts";
+         String query = "SELECT * FROM DoctorShifts ORDER BY date ASC";
          ResultSet result = connection.execQuery(query);
 
          while (result.next()) {
@@ -153,7 +153,7 @@ public class Employee {
          }
 
          // get technicians
-         query = "SELECT * FROM TechnicianShifts";
+         query = "SELECT * FROM TechnicianShifts ORDER BY date ASC";
          result = connection.execQuery(query);
          while (result.next()) {
             for (int i = 0; i < week.size(); ++i) {
