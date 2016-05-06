@@ -55,49 +55,7 @@ public class Scheduler {
 
    //TODO -- Probably have to update this
    public Scheduler(Calendar startingDate) {
-      initShifts();
       initDayIndices();
-   }
-
-   private void initShifts() {
-      calendar = new ArrayList<Shift>();
-
-      try {
-         // get doctors
-         DBConnection connection = new DBConnection();
-         String query = "SELECT * FROM DoctorShifts";
-         ResultSet result = connection.execQuery(query);
-
-         while (result.next()) {
-            Shift shift = new Shift();
-            shift.setShift(result.getString(Table.SHIFT));
-            shift.setDate(result.getDate(Table.DATE));
-            shift.setDoctor(result.getInt(Table.ID));
-            calendar.add(shift);
-         }
-
-         // get technicians
-         query = "SELECT * FROM TechnicianShifts";
-         result = connection.execQuery(query);
-         while (result.next()) {
-            for (int i = 0; i < calendar.size(); ++i) {
-               Shift shift = calendar.get(i);
-               if (shift.equals(result.getDate(Table.DATE), 
-                                result.getString(Table.SHIFT))) {
-                  int technician = result.getInt(Table.ID);
-                  if (!shift.hasFirstTechnician()) {
-                     shift.setFirstTechnician(technician);
-                  }
-                  else {
-                     shift.setSecondTechnician(technician);
-                  }
-               }
-            }
-         }
-      }
-      catch (Exception e) {
-         e.printStackTrace();
-      }
    }
    
    //Associate the 32 shift indices with special attributes like day, overnight,
