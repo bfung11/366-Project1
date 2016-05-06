@@ -27,12 +27,12 @@ public class Shift {
    }
 
    public Shift(String shift, java.sql.Date date, int firstD, int secondD, int firstT, int secondT) {
-       this.setShift(shift);
-       this.setDate(date);
-       this.setFirstDoctor(firstD);
-       this.setSecondDoctor(secondD);
-       this.setFirstTechnician(firstT);
-       this.setSecondTechnician(secondT);
+       this.shift = shift;
+       this.date = date;
+       this.firstDoctor = firstD;
+       this.secondDoctor = secondD;
+       this.firstTechnician = firstT;
+       this.secondTechnician = secondT;
    }
    
    public final void setShift(String shift) {
@@ -111,12 +111,12 @@ public class Shift {
       return this.date.equals(cal) && this.shift.equals(shift);
    }
 
-   public void toString() {
+   public void print() {
       System.out.println(
          "On " + getDateAsString() + "\n" + 
          "   Shift : " + shift + "\n" +
          "   Doctor : " + firstDoctor + ", " + secondDoctor + "\n" + 
-         "   Technician : " + firstTechnician + ", " + secondTechnician + "\n" + 
+         "   Technician : " + firstTechnician + ", " + secondTechnician + "\n" 
       );
    }
 }
