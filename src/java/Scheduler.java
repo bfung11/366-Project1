@@ -8,6 +8,7 @@
 
 import java.sql.ResultSet;
 import java.util.*;
+import java.time.*;
 
 public class Scheduler {
    DBConnection connection;
@@ -19,6 +20,8 @@ public class Scheduler {
    private final static int INVALID = -1;
    private final static int TOTAL_SHIFTS_PER_WEEK = 32;
    private final static int TYPICAL_SHIFTS_PER_DAY = 5;
+   private final static int NUM_SHIFTS_PER_WEEK = 32;
+
    
    //Indexing constants
    private final static int SUNDAY = 0;
@@ -47,6 +50,14 @@ public class Scheduler {
    private int[] SurgeryIndices;
    private int[] OvernightIndices;
 
+   private LocalDate startDate;
+   private ArrayList<Shift> weekOne;
+   private ArrayList<Shift> weekTwo;
+   private ArrayList<Shift> weekThree;
+   private ArrayList<Shift> weekFour;
+
+   private LocalDate aDate;
+
    private Calendar requestedDay;
    private int id = 1;
    private ArrayList<Shift> calendar;
@@ -55,8 +66,99 @@ public class Scheduler {
 
    //TODO -- Probably have to update this
    public Scheduler(Calendar startingDate) {
+      initCalendar();
       initDayIndices();
    }
+
+   private void initCalendar() {
+      weekOne = new ArrayList<Shift>(NUM_SHIFTS_PER_WEEK);
+      weekTwo = new ArrayList<Shift>(NUM_SHIFTS_PER_WEEK);
+      weekThree = new ArrayList<Shift>(NUM_SHIFTS_PER_WEEK);
+      weekFour = new ArrayList<Shift>(NUM_SHIFTS_PER_WEEK);
+ 
+      initStartdate();
+      aDate = LocalDate.parse(startDate.toString());
+
+      initWeek(weekOne, aDate);
+      initWeek(weekTwo, aDate);
+      initWeek(weekThree, aDate);
+      initWeek(weekFour, aDate);
+   }
+
+   private void initStartdate() {
+      try {
+         DBConnection connection = new DBConnection();
+         String query = "SELECT min(date) AS date from DoctorShifts";
+         ResultSet result = connection.execQuery(query);
+         if (result.next()) {
+            startDate = LocalDate.parse(result.getDate(Table.DATE).toString());
+         }
+      }
+      catch (Exception e) {
+         e.printStackTrace();
+      }
+   }
+
+   private void initWeek(ArrayList<Shift> week, LocalDate startDate) {
+      try {
+         // get doctors
+         DBConnection connection = new DBConnection();
+         String earliest = aDate.toString();
+         aDate = aDate.plusDays(7);
+         String latest = aDate.toString();
+         String query = "select * from doctorShifts " + 
+                        "where date >= '" + earliest + "' and date < '" + latest + "' " + 
+                        "order by date ASC";
+         ResultSet result = connection.execQuery(query);
+
+         while (result.next()) {
+            String shiftName  = result.getString(Table.SHIFT);
+            java.sql.Date date = result.getDate(Table.DATE);
+            if (!week.isEmpty()) {
+               Shift shift = week.get(week.size() - 1);
+               if (!shift.equals(date, shiftName)) {
+                  Shift newShift = new Shift();
+                  newShift.setShift(shiftName);
+                  newShift.setDate(date);
+                  newShift.setFirstDoctor(result.getInt(Table.ID));
+                  week.add(newShift);
+               }
+               else {
+                  shift.setSecondDoctor(result.getInt(Table.ID));
+               }
+            }
+            else {
+               Shift newShift = new Shift();
+               newShift.setShift(shiftName);
+               newShift.setDate(date);
+               week.add(newShift);
+            }
+         }
+
+         // get technicians
+         query = "SELECT * FROM TechnicianShifts ORDER BY date ASC";
+         result = connection.execQuery(query);
+         while (result.next()) {
+            for (int i = 0; i < week.size(); ++i) {
+               Shift shift = week.get(i);
+               if (shift.equals(result.getDate(Table.DATE), 
+                                result.getString(Table.SHIFT))) {
+                  int technician = result.getInt(Table.ID);
+                  if (!shift.hasFirstTechnician()) {
+                     shift.setFirstTechnician(technician);
+                  }
+                  else {
+                     shift.setSecondTechnician(technician);
+                  }
+               }
+            }
+         }
+      }
+      catch (Exception e) {
+         e.printStackTrace();
+      }
+   }
+
    
    //Associate the 32 shift indices with special attributes like day, overnight,
    //or surgery AKA "Magic"
@@ -591,5 +693,62 @@ public class Scheduler {
       }
       return true;
    }
-   
+
+   private void pushCalendarToDatabase() {
+      pushWeekToDatabase(weekOne);
+      pushWeekToDatabase(weekTwo);
+      pushWeekToDatabase(weekThree);
+      pushWeekToDatabase(weekFour);
+   }
+
+   private void pushWeekToDatabase(ArrayList<Shift> week) {
+      try {
+         DBConnection connection = new DBConnection();
+         for (int index = 0; index < week.size(); ++index) {
+            Shift shift = week.get(index);
+            String querySecondHalf = "WHERE date = '" + shift.getDateAsString() + 
+                                     "' and " + 
+                                     "shift = '" + shift.getShift() + "'";
+            System.out.println("SecondHalf : " + querySecondHalf);
+            String query = "UPDATE DoctorShifts SET id = " +  
+                           shift.getFirstDoctor() + " " + querySecondHalf;
+            connection.execQuery(query); 
+
+            if (shift.hasSecondDoctor()) {
+               query = "UPDATE DoctorShifts SET id = " +  
+                        shift.getSecondDoctor() + " " + querySecondHalf;
+               connection.execQuery(query);
+            }
+
+            if (shift.hasFirstTechnician()) {
+               query = "UPDATE TechnicianShifts SET id = " +  
+                        shift.getFirstTechnician() + " " + querySecondHalf;
+               connection.execQuery(query);
+            }
+            
+            if (shift.hasSecondTechnician()) {
+               query = "UPDATE TechnicianShifts SET id = " +  
+                        shift.getSecondTechnician() + " " + querySecondHalf;
+               connection.execQuery(query);
+            }
+         }
+      }
+      catch (Exception e) {
+         e.printStackTrace();
+      }
+   }
+
+   public void viewSchedule() {
+      // printWeek(weekOne);
+      weekOne.get(0).setFirstDoctor(9);
+      pushCalendarToDatabase();
+   }
+
+   private void printWeek(ArrayList<Shift> week) {
+         System.out.println("Size: " + week.size());
+
+      for (int i = 0; i < week.size(); ++i) {
+         week.get(i).print();
+      }
+   }
 }
