@@ -48,7 +48,7 @@ public class Employee {
    private Scheduler schedule;
    private ArrayList<Shift> weekOne;
    private ArrayList<Shift> weekTwo;
-   private ArrayList<Shfit> weekThree;
+   private ArrayList<Shift> weekThree;
    private ArrayList<Shift> weekFour;
    private Calendar startDate;
    private ArrayList<Integer> coworkerIDs;
@@ -104,7 +104,8 @@ public class Employee {
    }
 
    private void initCalendar() {
-      week = new ArrayList<Shift>();
+      
+      ArrayList<Shift> week = new ArrayList<Shift>();
 
       try {
          // get doctors
@@ -144,7 +145,6 @@ public class Employee {
       }
    }
 
-   private ArrayList<
 
    public int getType() {
       return type;
@@ -351,16 +351,6 @@ String query = "select * from Doctors, Login where Doctors.email = Login.email a
       }
 
       return list;
-   }
-
-   private String convertDateToString(Calendar date) {
-      SimpleDateFormat formatter = new SimpleDateFormat("YYYY-MM-DD");
-      return formatter.format(date.getTime());
-   }
-
-   private String convertTimeToString(Time time) {
-      SimpleDateFormat formatter = new SimpleDateFormat("HH:MM");
-      return formatter.format(time.getTime());
    }
 
    public ArrayList<String> viewSchedule(String tablename, String username) {
