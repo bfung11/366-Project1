@@ -114,7 +114,7 @@ public class Selector implements Serializable {
     }
 
     public String doctorList() {
-        switch (this.choiceAdminDoc) {
+        switch (this.choiceDoc) {
             case "View Schedule":
                 return "docViewSchedule";
             case "Choose Preferred Workday":
@@ -127,7 +127,7 @@ public class Selector implements Serializable {
     }
     
     public String techList() {
-        switch (this.choiceAdminDoc) {
+        switch (this.choiceDoc) {
             case "View Schedule":
                 return "techViewSchedule";
             case "Choose Preferred Workday":

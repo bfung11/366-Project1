@@ -49,6 +49,10 @@ public class Shift {
       this.date.setTime(date);
    }
 
+   public String getShiftDate() {
+       return date.getTime().toString();
+   }
+   
    public Calendar getDate() {
       return date;
    }
