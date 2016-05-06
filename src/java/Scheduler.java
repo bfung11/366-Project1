@@ -15,7 +15,7 @@ public class Scheduler {
    private final static int MAX_CALENDAR_DAYS = 28;
    private final static int MILLISECONDS_TO_DAYS = 1000 * 60 * 60 * 24;
    private final static int DAYS_PER_WEEK = 7;
-   private final static int MAX_SHIFTS_PER_WEEK = 4;
+   private final static int WORKABLE_SHIFTS_PER_WEEK = 4;
    private final static int INVALID = -1;
    private final static int TOTAL_SHIFTS_PER_WEEK = 32;
    private final static int TYPICAL_SHIFTS_PER_DAY = 5;
@@ -120,8 +120,18 @@ public class Scheduler {
            ArrayList<Request> requestList, int employeeType) {
       int highestEmpIndex = empIDs.size() - 1;
       int[] weekShifts = new int[TOTAL_SHIFTS_PER_WEEK];
+      int[] secondaryWeekShifts = new int[TOTAL_SHIFTS_PER_WEEK];
+      Map<Integer, Integer> realToAlgorithmIDs = new HashMap<>();
+      Map<Integer, Integer> algorithmToRealIDs = new HashMap<>();
       int i;
       boolean isGoodSchedule;
+      
+      //Creates a bi-directional map from algorithm ids (0-#empIDs) to real 
+      //ids (arbitrary)
+      for (i = 0; i < empIDs.size(); i++) {
+         realToAlgorithmIDs.put(empIDs.get(i), i);
+         algorithmToRealIDs.put(i, empIDs.get(i));
+      }
       
       for (i = 0; i < weekShifts.length; i++) {
          weekShifts[i] = 0;
@@ -162,9 +172,13 @@ public class Scheduler {
          }
          
          if (isGoodSchedule) {
-            //TO DO -- Put secondary shifts
+            //Put secondary shifts
+            //SECSHIFT
+            secondaryWeekShifts = assignSecondaryShifts(weekShifts, 
+                    realToAlgorithmIDs, algorithmToRealIDs, requestList);
             //Update schedule with new doctor assignments
-            pushSchedule(shifts, weekShifts, employeeType);
+            pushSchedule(shifts, weekShifts, secondaryWeekShifts, 
+                    employeeType, algorithmToRealIDs);
             return true;
          }
       }
@@ -172,10 +186,135 @@ public class Scheduler {
       return false;
    }
    
-   private void pushSchedule(ArrayList<Shift> oldShifts, int[] newShifts, 
-           int employeeType) {
+   private int[] assignSecondaryShifts(int[] primaryShifts, 
+           Map<Integer, Integer> realToAlgorithmIDs, 
+           Map<Integer, Integer> algorithmToRealIDs,
+           ArrayList<Request> requestList) {
+      
+      int[] secondaryShifts = new int[TOTAL_SHIFTS_PER_WEEK];
+      ArrayList<Integer> shiftsRemaining = new ArrayList<>();
       int i;
-      int empID;
+      int docIndex;
+      int realDocID;
+      int shiftIndex;
+      Request request;
+      
+      //Initialize secondary shifts with invalid ids
+      for (i = 0; i < secondaryShifts.length; i++) {
+         secondaryShifts[i] = INVALID;
+      }
+      
+      //Initialize shifts remaining for each doctor
+      for (i = 0; i < realToAlgorithmIDs.size(); i++) {
+         shiftsRemaining.add(WORKABLE_SHIFTS_PER_WEEK);
+      }
+      
+      //Decrement shifts remaining for doctors working a first shift
+      for (i = 0; i < primaryShifts.length; i++) {
+         docIndex = primaryShifts[i];
+         shiftsRemaining.set(docIndex, shiftsRemaining.get(docIndex) - 1);
+      }
+      
+      //Decrement shifts for doctors taking time off
+      for (i = 0; i < requestList.size(); i++) {
+         request = requestList.get(i);
+         if (request.getType() != Request.PREFERRED_SHIFT) {
+            realDocID = request.getDoctorID();
+            docIndex = realToAlgorithmIDs.get(realDocID);
+            shiftsRemaining.set(docIndex, shiftsRemaining.get(docIndex) - 1);
+         }
+      }
+      
+      //For all doctors with shifts remaining, add them to shift ensuring they
+      //don't already work that day or the overnight of previous day
+      for (i = 0; i < shiftsRemaining.size(); i++) {
+         while (shiftsRemaining.get(i) > 0) {
+            shiftIndex = addEmployeeToSecondaryShift(i, primaryShifts, secondaryShifts);
+            if (shiftIndex != INVALID) {
+               secondaryShifts[shiftIndex] = i;
+            }
+         }
+      }
+      
+      return secondaryShifts;
+   }
+   
+   private int addEmployeeToSecondaryShift(int empID, int[] primaryShifts, int[] secondaryShifts) {
+      int[] dailyIDs;
+      int shiftIndex = INVALID;
+      
+      if (shiftIndex == INVALID) {
+         shiftIndex = addEmployeeToDay(SundayIndices, INVALID, primaryShifts, 
+              secondaryShifts, empID);
+      }
+
+      if (shiftIndex == INVALID) {
+         shiftIndex = addEmployeeToDay(MondayIndices, SundayOvernight, primaryShifts, 
+              secondaryShifts, empID);
+      }
+      
+      if (shiftIndex == INVALID) {
+         shiftIndex = addEmployeeToDay(TuesdayIndices, MondayIndices[Overnight], primaryShifts, 
+              secondaryShifts, empID);
+      }
+      
+      if (shiftIndex == INVALID) {
+         shiftIndex = addEmployeeToDay(WednesdayIndices, TuesdayIndices[Overnight], primaryShifts, 
+              secondaryShifts, empID);
+      }
+      
+      if (shiftIndex == INVALID) {
+         shiftIndex = addEmployeeToDay(ThursdayIndices, WednesdayIndices[Overnight], primaryShifts, 
+              secondaryShifts, empID);
+      }
+      
+      if (shiftIndex == INVALID) {
+         shiftIndex = addEmployeeToDay(FridayIndices, ThursdayIndices[Overnight], primaryShifts, 
+              secondaryShifts, empID);
+      }
+      
+      if (shiftIndex == INVALID) {
+         shiftIndex = addEmployeeToDay(SaturdayIndices, FridayIndices[Overnight], primaryShifts, 
+              secondaryShifts, empID);
+      }
+      
+      return shiftIndex;
+   }
+
+   private int addEmployeeToDay(int[] dailyIndices, int lastOvernight, 
+           int[] primaryShifts, int[] secondaryShifts, int empID) {
+      
+      int i;
+      int dayIndex;
+      int potentialShift = INVALID;
+      
+      //Check if employee is in last night overnights
+      if (lastOvernight != INVALID && primaryShifts[lastOvernight] == empID) {
+         return INVALID;
+      }
+      //Check if employee is in primary shifts of this day
+      for (i = 0; i < dailyIndices.length; i++) {
+         dayIndex = dailyIndices[i];
+         if (primaryShifts[dayIndex] == empID) {
+            return INVALID;
+         }
+         if (secondaryShifts[dayIndex] == empID) {
+            return INVALID;
+         }
+         else if (secondaryShifts[dayIndex] == INVALID && i != dailyIndices.length - 1) {
+            potentialShift = dayIndex;
+         }    
+      }
+      
+      return potentialShift;
+   }
+   
+   //Pushes good schedule's shift assignments to shift list
+   private void pushSchedule(ArrayList<Shift> oldShifts, int[] newShifts, int[] secondaryShifts,
+           int employeeType, Map<Integer, Integer> algorithmToRealIDs) {
+      int i;
+      int algorithmID;
+      int realID;
       int shiftIndex;
       Calendar day;
       String shiftName;
@@ -187,16 +326,30 @@ public class Scheduler {
          day = shift.getDate();
          shiftName = oldShifts.get(i).getShift();
          shiftIndex = getShiftIndex(day, shiftName);
-         empID = newShifts[shiftIndex];
+         algorithmID = newShifts[shiftIndex];
+         realID = algorithmToRealIDs.get(algorithmID);
          
          if (employeeType == Employee.DOCTOR) {
-            shift.setFirstDoctor(empID);
+            shift.setFirstDoctor(realID);
          }
          else {
-            shift.setFirstTechnician(empID);
+            shift.setFirstTechnician(realID);
          }
          
+         //Assigns secondary shifts
+         //SECSHIFT
+         algorithmID = newShifts[shiftIndex];
+         if (algorithmID != INVALID) {
+            realID = algorithmToRealIDs.get(algorithmID);
+            if (employeeType == Employee.DOCTOR) {
+               shift.setSecondDoctor(realID);
+            }
+            else {
+               shift.setSecondTechnician(realID);
+            }
+         }
       }
+              
    }
    
    private int[] getDayIndices(Calendar day) {
@@ -377,7 +530,7 @@ public class Scheduler {
             if (schedules[j] == i) {
                numShifts++;
             }
-            if (numShifts >= MAX_SHIFTS_PER_WEEK) {
+            if (numShifts >= WORKABLE_SHIFTS_PER_WEEK) {
                return false;
             }
          }
