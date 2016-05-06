@@ -116,9 +116,9 @@ public class Scheduler {
       return list;
    }
    
-   public boolean generateSchedule(Calendar day, ArrayList<Integer> docIDs, 
-           ArrayList<Request> requestList) {
-      int highestDocIndex = docIDs.size() - 1;
+   public boolean generateSchedule(ArrayList<Shift> shifts, ArrayList<Integer> empIDs, 
+           ArrayList<Request> requestList, int employeeType) {
+      int highestEmpIndex = empIDs.size() - 1;
       int[] weekShifts = new int[TOTAL_SHIFTS_PER_WEEK];
       int i;
       boolean isGoodSchedule;
@@ -128,7 +128,7 @@ public class Scheduler {
       }
       
       while (weekShifts.length > 0) {
-         weekShifts = incrementPermutation(weekShifts, highestDocIndex);
+         weekShifts = incrementPermutation(weekShifts, highestEmpIndex);
          isGoodSchedule = true;
          
          //Check overnights
@@ -141,13 +141,13 @@ public class Scheduler {
             isGoodSchedule = false;
          }
          
-         //Check no docs working same day and no day shifts day after overnight
+         //Check no emps working same day and no day shifts day after overnight
          if(!checkSingleShiftPerDayConstraint(weekShifts)) {
             isGoodSchedule = false;
          }
          
          //Check no doctor working more than 4 shifts
-         if(!checkMaxShiftConstraint(weekShifts, highestDocIndex)) {
+         if(!checkMaxShiftConstraint(weekShifts, highestEmpIndex)) {
             isGoodSchedule = false;
          }
          
@@ -162,15 +162,105 @@ public class Scheduler {
          }
          
          if (isGoodSchedule) {
-            //Push schedule
-            //Push new request
+            //TO DO -- Put secondary shifts
+            //Update schedule with new doctor assignments
+            pushSchedule(shifts, weekShifts, employeeType);
             return true;
          }
       }
 
       return false;
    }
-       
+   
+   private void pushSchedule(ArrayList<Shift> oldShifts, int[] newShifts, 
+           int employeeType) {
+      int i;
+      int empID;
+      int shiftIndex;
+      Calendar day;
+      String shiftName;
+      Shift shift;
+      
+      //Assigns employee to first shift of this day and this shift
+      for (i = 0; i < oldShifts.size(); i++) {
+         shift = oldShifts.get(i);
+         day = shift.getDate();
+         shiftName = oldShifts.get(i).getShift();
+         shiftIndex = getShiftIndex(day, shiftName);
+         empID = newShifts[shiftIndex];
+         
+         if (employeeType == Employee.DOCTOR) {
+            shift.setFirstDoctor(empID);
+         }
+         else {
+            shift.setFirstTechnician(empID);
+         }
+         
+      }
+   }
+   
+   private int[] getDayIndices(Calendar day) {
+      int dayOfWeek = day.get(Calendar.DAY_OF_WEEK);
+      
+      switch(dayOfWeek) {
+         case Calendar.SUNDAY:
+            return SundayIndices;
+         case Calendar.MONDAY:
+            return MondayIndices;
+         case Calendar.TUESDAY:
+            return TuesdayIndices;
+         case Calendar.WEDNESDAY:
+            return WednesdayIndices;
+         case Calendar.THURSDAY:
+            return ThursdayIndices;
+         case Calendar.FRIDAY:
+            return FridayIndices;
+         default:
+            return SaturdayIndices;
+      }
+   }
+   
+   private int getShiftOffset(int dayOfWeek, String shiftName) {
+      switch(shiftName) {
+         case Shift.EARLY:
+            return EarlyMorning;
+         case Shift.MORNING:
+            return Morning;
+         case Shift.LATE:
+            return LateMorning;
+         case Shift.SURGERY:
+            return Surgery;
+         case Shift.OVERNIGHT:
+            if (dayOfWeek == Calendar.SUNDAY)
+               return SundayOvernight;
+            return Overnight;
+         case Shift.SUNDAY:
+            return SundayMorning;
+         default:
+            System.out.println("Got a weird shift name: " + shiftName);
+            return INVALID;    
+      }
+   }
+   private int getShiftIndex(Calendar day, String shiftName) {
+      int shiftIndex;
+      int[] dayIndices;
+      int shiftOffset;
+      int dayOfWeek;
+      
+      dayOfWeek = day.get(Calendar.DAY_OF_WEEK);
+      
+      dayIndices = getDayIndices(day);
+      shiftOffset = getShiftOffset(dayOfWeek, shiftName);
+      
+      if (dayOfWeek == Calendar.SUNDAY) {
+         shiftIndex = shiftOffset;
+      }
+      else {
+         shiftIndex = dayIndices[shiftOffset];
+      }
+      
+      return shiftIndex;
+   }
    
    private int[] incrementPermutation(int[] perm, int maxIndex) {
       int ndx;
@@ -217,32 +307,7 @@ public class Scheduler {
       int shiftOffset;
       
       dayOfWeek = date.get(Calendar.DAY_OF_WEEK);
-      
-      switch(shiftName) {
-         case Shift.EARLY:
-            shiftOffset = EarlyMorning;
-            break;
-         case Shift.MORNING:
-            shiftOffset = Morning;
-            break;
-         case Shift.LATE:
-            shiftOffset = LateMorning;
-            break;
-         case Shift.SURGERY:
-            shiftOffset = Surgery;
-            break;
-         case Shift.OVERNIGHT:
-            shiftOffset = Overnight;
-            if (dayOfWeek == Calendar.SUNDAY)
-               shiftOffset = SundayOvernight;
-            break;
-         case Shift.SUNDAY:
-            shiftOffset = SundayMorning;
-            break;
-         default:
-            System.out.println("Got a weird shift name: " + shiftName);
-            return false;    
-      }
+      shiftOffset = this.getShiftOffset(dayOfWeek, shiftName);
             
       if (shiftOffset != SundayOvernight && shiftOffset != SundayMorning) {
          shiftOffset = dayOfWeek * TYPICAL_SHIFTS_PER_DAY + shiftOffset;
@@ -256,31 +321,7 @@ public class Scheduler {
       int[] dayIndices;
       int i;
       
-      dayOfWeek = date.get(Calendar.DAY_OF_WEEK);
-      
-      switch(dayOfWeek) {
-         case Calendar.SUNDAY:
-            dayIndices = SundayIndices;
-            break;
-         case Calendar.MONDAY:
-            dayIndices = MondayIndices;
-            break;
-         case Calendar.TUESDAY:
-            dayIndices = TuesdayIndices;
-            break;
-         case Calendar.WEDNESDAY:
-            dayIndices = WednesdayIndices;
-            break;
-         case Calendar.THURSDAY:
-            dayIndices = ThursdayIndices;
-            break;
-         case Calendar.FRIDAY:
-            dayIndices = FridayIndices;
-            break;
-         default:
-            dayIndices = SaturdayIndices;
-            break;
-      }
+      dayIndices = getDayIndices(date);
       
       for (i = 0; i < dayIndices.length; i++) {
          if (dayIndices[i] == docID)
@@ -398,22 +439,4 @@ public class Scheduler {
       return true;
    }
    
-   //Updates assigned shift from oldID to newID
-   private void pushSchedule(Integer newID, Integer oldID, Calendar requestedDay, 
-           String table) {
-      
-      try {
-         connection = new DBConnection();
-
-         String query = "UPDATE " + table + " " + 
-                        "SET id = " + newID + " " + 
-                        "WHERE id = " + oldID + " " + 
-                        "AND date = " + requestedDay;
-             
-         connection.execUpdate(query);
-      }
-      catch (Exception e) {
-         e.printStackTrace();
-      }
-   }
 }
