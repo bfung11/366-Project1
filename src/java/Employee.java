@@ -36,13 +36,16 @@ public class Employee {
    private int id;
    private String email;
    private String password;
-   private String username;
+   private static String username;
    private String firstname;
    private String lastname;
    private String phonenumber;
    private int vacationDays;
    private int sickDays;
    private int type;
+   
+   // This is for current stuff for Scheduler
+   private String option;
    
    private Scheduler schedule;
 
@@ -85,6 +88,15 @@ public class Employee {
       return id;
    }
 
+   // Sets the week (only happens for once)
+   public void setOption(String option) {
+      this.option = option;
+   }
+   
+   public String getOption() {
+      return this.option;
+   }
+   
    public boolean doesIdExist(String tablename) {
       try {
          DBConnection con = new DBConnection();
@@ -108,7 +120,7 @@ public class Employee {
    public String getEmail() {
       return email;
    }
-
+   
    public boolean doesEmailExist(String tablename) {
       try {
          DBConnection con = new DBConnection();
@@ -337,6 +349,7 @@ public class Employee {
 
    public ArrayList<Shift> viewSchedule(String tablename) {
       ArrayList<Shift> mySchedule = new ArrayList<>();
+      Scheduler scheduler = new Scheduler();
       /* try {
          DBConnection dbconn = new DBConnection();
          String query = "";
@@ -351,26 +364,74 @@ public class Employee {
          sqe.printStackTrace();
      }
      */
-      // mySchedule.addAll(this.weekOne);
-      // mySchedule.addAll(this.weekTwo);
-      // mySchedule.addAll(this.weekThree);
-      // mySchedule.addAll(this.weekFour);
+      mySchedule.addAll(scheduler.getWeekOne());
+      mySchedule.addAll(scheduler.getWeekTwo());
+      mySchedule.addAll(scheduler.getWeekThree());
+      mySchedule.addAll(scheduler.getWeekFour());
       return mySchedule;
    }
 
+   public ArrayList<String> getShiftDates() {
+      ArrayList<Shift> shifts = new ArrayList<>();
+      ArrayList<String> options = new ArrayList<>();
+      Scheduler scheduler = new Scheduler();
+      shifts.addAll(scheduler.getWeekOne());
+      shifts.addAll(scheduler.getWeekTwo());
+      shifts.addAll(scheduler.getWeekThree());
+      shifts.addAll(scheduler.getWeekFour());
+      for (int i = 0; i < shifts.size(); i++) {
+         if (!options.contains(shifts.get(i).getDateAsString()))
+            options.add(shifts.get(i).getDateAsString());
+      }
+      return options;
+   }
+      
+   
+   
    public ArrayList<String> getWeekShifts() {
       ArrayList<Shift> shifts = new ArrayList<>();
       ArrayList<String> options = new ArrayList<>();
-//      shifts.addAll(this.weekOne);
-//      shifts.addAll(this.weekTwo);
-//      shifts.addAll(this.weekThree);
-//      shifts.addAll(this.weekFour);
+      Scheduler scheduler = new Scheduler();
+      shifts.addAll(scheduler.getWeekOne());
+      shifts.addAll(scheduler.getWeekTwo());
+      shifts.addAll(scheduler.getWeekThree());
+      shifts.addAll(scheduler.getWeekFour());
       for (int i = 0; i < shifts.size(); i++) {
-         options.add(shifts.get(i).getShift() + " " + shifts.get(i).getDateAsString());
+         options.add(shifts.get(i).getShift() + " " + shifts.get(i).getDateAsString() + " " + "");
       }
       return options;
    }
 
+   public boolean canGetPreferredShifts(String employee, String shiftOption){
+       try {
+         DBConnection dbcon = new DBConnection();
+         Scheduler scheduler = new Scheduler();
+         String[] shiftStr = shiftOption.split(" ");
+         Request request = new Request();
+         String query = 
+                 "SELECT COUNT(*) AS emplCount FROM " 
+                 + employee + "Shifts" 
+                 + " WHERE date = " 
+                 + LocalDate.parse(shiftStr[1]) 
+                 + " AND shift = " + shiftStr[0] + ";"; 
+
+         ResultSet result = dbcon.execQuery(query);
+         if (result.getInt("emplCount") == 2) {
+            return false;
+         }
+         
+         //request.set
+       
+       }
+       catch (SQLException se) {
+           se.printStackTrace();
+       }
+       
+       return true;
+   }
+
+   //public void setWeek
+   
    public boolean canGetVacationDays() {
       boolean canGetTimeOff = false;
 

@@ -22,7 +22,7 @@
 
             <h:column>
                 <f:facet name="header"> Doctor 1 </f:facet>
-                <h:panelGroup id ="d1" rendered="#{ds.firstDoctor ne -1}">#{ds.firstDoctor}</h:panelGroup>
+                <h:panelGroup id ="d1" rendered="#{ds.firstDoctor ne -1 and ds.firstDoctor eq doctor.usr}">#{ds.firstDoctor}</h:panelGroup>
             </h:column>
             
             <h:column>

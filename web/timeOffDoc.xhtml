@@ -11,20 +11,28 @@
         <ui:composition template="./template.xhtml">
 
             <ui:define name="title">
-                Doctor Page
+                Doctor Time Off
             </ui:define>
 
             <ui:define name="header">
-                Doctor Page
+                Doctor Time Off
             </ui:define>
 
             <ui:define name="box">
                 <h:form>
-                    Choose what to do:
-                    <h:selectOneMenu value="#{selector.choiceDoc}">
-                        <f:selectItems value="#{selector.DChoices}"/>
+                    Choose Vacation Day:
+                    <h:selectOneMenu value="#{doctor.vacOption}">
+                        <f:selectItems value="#{doctor.allDates}"/>
                     </h:selectOneMenu>
-                    <h:commandButton value = "Go" action="#{selector.doctorList()}"/>
+                    <h:commandButton value = "Go" action="#{doctor.canGetVacationDays()}"/>
+                </h:form>
+                
+                <h:form>
+                    Choose Sick Day:
+                    <h:selectOneMenu value="#{doctor.sickOption}">
+                        <f:selectItems value="#{doctor.allDates}"/>
+                    </h:selectOneMenu>
+                    <h:commandButton value = "Go" action="#{doctor.canGetSickDays()}"/>
                 </h:form>
             </ui:define>
 

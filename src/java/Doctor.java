@@ -36,6 +36,22 @@ public class Doctor extends Employee {
        return "mainAdministrator";
    }
 
+   public void setVacOption(String option) {
+      super.setOption(option);
+   }
+   
+  public String getVacOption() {
+      return super.getOption();
+   }
+   
+   public void setSickOption(String option) {
+      super.setOption(option);
+   }
+   
+   public String getSickOption() {
+      return super.getOption();
+   }
+   
    public boolean canGetSickDays() {
       return super.canGetSickDays();
    }
@@ -54,5 +70,14 @@ public class Doctor extends Employee {
    
    public List<String> getAllShifts() {
        return super.getWeekShifts();
+   }
+   
+   public List<String> getAllDates() {
+      return super.getShiftDates();
+   }
+   
+   public String getUsr() {
+      System.out.println("BLAH " + super.getUsername());
+      return super.getUsername();
    }
 }
