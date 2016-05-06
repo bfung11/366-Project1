@@ -31,6 +31,14 @@ public class Technician extends Employee {
        return "mainAdministrator";
    }
 
+   public boolean canGetSickDays() {
+      return super.canGetSickDays();
+   }
+
+   public boolean canGetVacationDays() {
+      return super.canGetVacationDays();
+   }
+
    public String deleteTechnician() {
       super.deleteEmployee("Technicians");
       return "mainAdministrator";

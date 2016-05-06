@@ -36,6 +36,14 @@ public class Doctor extends Employee {
        return "mainAdministrator";
    }
 
+   public boolean canGetSickDays() {
+      return super.canGetSickDays();
+   }
+
+   public boolean canGetVacationDays() {
+      return super.canGetVacationDays();
+   }
+
    public List<Employee> getDoctorList() {
       return super.getEmployeeList("Doctors");
    }
