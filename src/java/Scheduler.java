@@ -180,6 +180,7 @@ public class Scheduler {
       SurgeryIndices = new int[] {3, 8, 13, 18, 23};
    }
 
+   //WARNING: Uses Calendar
    private ArrayList<Request> getRequestsForWeek(Calendar requestedDay) {
       this.requestedDay = requestedDay;
       
@@ -423,7 +424,7 @@ public class Scheduler {
       int algorithmID;
       int realID;
       int shiftIndex;
-      Calendar day;
+      LocalDate day;
       String shiftName;
       Shift shift;
       
@@ -459,28 +460,28 @@ public class Scheduler {
               
    }
    
-   private int[] getDayIndices(Calendar day) {
-      int dayOfWeek = day.get(Calendar.DAY_OF_WEEK);
+   private int[] getDayIndices(LocalDate day) {
+      DayOfWeek dayOfWeek = day.getDayOfWeek();
       
       switch(dayOfWeek) {
-         case Calendar.SUNDAY:
+         case SUNDAY:
             return SundayIndices;
-         case Calendar.MONDAY:
+         case MONDAY:
             return MondayIndices;
-         case Calendar.TUESDAY:
+         case TUESDAY:
             return TuesdayIndices;
-         case Calendar.WEDNESDAY:
+         case WEDNESDAY:
             return WednesdayIndices;
-         case Calendar.THURSDAY:
+         case THURSDAY:
             return ThursdayIndices;
-         case Calendar.FRIDAY:
+         case FRIDAY:
             return FridayIndices;
          default:
             return SaturdayIndices;
       }
    }
    
-   private int getShiftOffset(int dayOfWeek, String shiftName) {
+   private int getShiftOffset(DayOfWeek dayOfWeek, String shiftName) {
       switch(shiftName) {
          case Shift.EARLY:
             return EarlyMorning;
@@ -491,7 +492,7 @@ public class Scheduler {
          case Shift.SURGERY:
             return Surgery;
          case Shift.OVERNIGHT:
-            if (dayOfWeek == Calendar.SUNDAY)
+            if (dayOfWeek == DayOfWeek.SUNDAY)
                return SundayOvernight;
             return Overnight;
          case Shift.SUNDAY:
@@ -501,18 +502,18 @@ public class Scheduler {
             return INVALID;    
       }
    }
-   private int getShiftIndex(Calendar day, String shiftName) {
+   private int getShiftIndex(LocalDate day, String shiftName) {
       int shiftIndex;
       int[] dayIndices;
       int shiftOffset;
-      int dayOfWeek;
+      DayOfWeek dayOfWeek;
       
-      dayOfWeek = day.get(Calendar.DAY_OF_WEEK);
+      dayOfWeek = day.getDayOfWeek();
       
       dayIndices = getDayIndices(day);
       shiftOffset = getShiftOffset(dayOfWeek, shiftName);
       
-      if (dayOfWeek == Calendar.SUNDAY) {
+      if (dayOfWeek == DayOfWeek.SUNDAY) {
          shiftIndex = shiftOffset;
       }
       else {
@@ -546,7 +547,7 @@ public class Scheduler {
    
    private boolean checkGoodRequest(int[] schedules, Request request) {
       int docID;
-      Calendar date;
+      LocalDate date;
       String shiftName;
       
       docID = request.getDoctorID();
@@ -561,22 +562,44 @@ public class Scheduler {
       }
    }
    
-   private boolean checkPreferredShift(int[] schedules, int docID, Calendar date, String shiftName) {
-      int dayOfWeek;
+   private boolean checkPreferredShift(int[] schedules, int docID, LocalDate date, String shiftName) {
+      DayOfWeek dayOfWeek;
+      int dayOffset;
       int[] dayIndices;
       int shiftOffset;
       
-      dayOfWeek = date.get(Calendar.DAY_OF_WEEK);
+      dayOfWeek = date.getDayOfWeek();
       shiftOffset = this.getShiftOffset(dayOfWeek, shiftName);
             
+      dayOffset = convertDayOfWeekToIndex(dayOfWeek);
+      
       if (shiftOffset != SundayOvernight && shiftOffset != SundayMorning) {
-         shiftOffset = dayOfWeek * TYPICAL_SHIFTS_PER_DAY + shiftOffset;
+         shiftOffset = dayOffset * TYPICAL_SHIFTS_PER_DAY + shiftOffset;
       }
       
       return (schedules[shiftOffset] == docID); 
    }
    
-   private boolean checkTimeOff(int[] schedules, int docID, Calendar date) {
+   private int convertDayOfWeekToIndex(DayOfWeek day) {
+      switch (day) {
+         case SUNDAY:
+            return SUNDAY;
+         case MONDAY:
+            return MONDAY;
+         case TUESDAY:
+            return TUESDAY;
+         case WEDNESDAY:
+            return WEDNESDAY;
+         case THURSDAY:
+            return THURSDAY;
+         case FRIDAY:
+            return FRIDAY;
+         default:
+            return SATURDAY;
+      }
+   }
+   
+   private boolean checkTimeOff(int[] schedules, int docID, LocalDate date) {
       int dayOfWeek;
       int[] dayIndices;
       int i;
