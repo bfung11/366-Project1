@@ -363,17 +363,30 @@ String query = "select * from Doctors, Login where Doctors.email = Login.email a
       return formatter.format(time.getTime());
    }
 
-   private void pushRequestedDay() {
-
+   public ArrayList<String> viewSchedule(String tablename, String username) {
+      ArrayList<String> mySchedule = new ArrayList<>();
+      try {
+         DBConnection dbconn = new DBConnection();
+         String query = "";
+         ResultSet rs = dbconn.execQuery(query);
+         while (rs.next()) {
+            mySchedule.add(rs.getDate("date").toString());
+         }
+     }
+     catch (SQLException sqe) {
+         sqe.printStackTrace();
+     }
+   
+      return mySchedule;
    }
 
-   private void pushCalendar() {
-      Table.setEmployeeType(type);
-      String tablename = Table.getTableName("Shifts");
+   private String convertDateToString(Calendar date) {
+      SimpleDateFormat formatter = new SimpleDateFormat("YYYY-MM-DD");
+      return formatter.format(date.getTime());
+   }
 
-      String query = "INSERT INTO " + tablename + " " +
-                     "VALUES (" + id + ", " + ;
-
-      connection.execUpdate(query);
+   private String convertTimeToString(Time time) {
+      SimpleDateFormat formatter = new SimpleDateFormat("HH:MM");
+      return formatter.format(time.getTime());
    }
 }
