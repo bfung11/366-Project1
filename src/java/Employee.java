@@ -454,6 +454,27 @@ public class Employee {
       pushWeekToDatabase(weekFour);
    }
 
+   public boolean canGetPreferredShifts(String employee, String shiftOption){
+       try {
+       DBConnection dbcon = new DBConnection();
+       //Scheduler scheduler = new Scheduler(weekOne.get(0).getDate());
+       String[] shiftStr = shiftOption.split(" ");
+       String query = 
+               "SELECT COUNT(*) AS emplCount FROM " 
+               + employee 
+               + "Shifts WHERE date = " 
+               + LocalDate.parse(shiftStr[1]) 
+               + " AND shift = " + shiftStr[0] + ";"; 
+       
+       dbcon.execQuery(query);
+       }
+       catch (SQLException se) {
+           se.printStackTrace();
+       }
+       
+       return true;
+   }
+   
    private void pushWeekToDatabase(ArrayList<Shift> week) {
       try {
          DBConnection connection = new DBConnection();
