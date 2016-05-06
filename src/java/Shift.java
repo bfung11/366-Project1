@@ -10,7 +10,7 @@ public class Shift {
    public final static String SUNDAY = "Sunday Shift";
    public final static String SURGERY = "Surgery";
 
-   private final static int NO_ID = -1;
+   private final static int NOT_SET = -1;
 
    private String shift;
    private Calendar date;
@@ -20,10 +20,10 @@ public class Shift {
    private int secondTechnician;
 
    public Shift() {
-      firstDoctor = NO_ID;
-      secondDoctor = NO_ID;
-      firstTechnician = NO_ID;
-      secondTechnician = NO_ID;
+      firstDoctor = NOT_SET;
+      secondDoctor = NOT_SET;
+      firstTechnician = NOT_SET;
+      secondTechnician = NOT_SET;
    }
 
    public Shift(String shift, java.sql.Date date, int firstD, int secondD, int firstT, int secondT) {
@@ -67,7 +67,7 @@ public class Shift {
    }
 
    public boolean hasFirstDoctor() {
-      return firstDoctor != NO_ID;
+      return firstDoctor != NOT_SET;
    }
 
    public void setSecondDoctor(int doctor) {
@@ -79,7 +79,7 @@ public class Shift {
    }
 
    public boolean hasSecondDoctor() {
-      return secondDoctor != NO_ID;
+      return secondDoctor != NOT_SET;
    }
 
    public void setFirstTechnician(int technician) {
@@ -91,7 +91,7 @@ public class Shift {
    }
 
    public boolean hasFirstTechnician() {
-      return firstTechnician != NO_ID;
+      return firstTechnician != NOT_SET;
    }
 
    public void setSecondTechnician(int technician) {
@@ -103,7 +103,7 @@ public class Shift {
    }
 
    public boolean hasSecondTechnician() {
-      return secondTechnician != NO_ID;
+      return secondTechnician != NOT_SET;
    }
 
    public boolean equals(java.sql.Date date, String shift) {
