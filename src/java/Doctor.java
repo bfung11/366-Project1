@@ -58,12 +58,14 @@ public class Doctor extends Employee {
       return super.getOption();
    }
    
-   public boolean canGetSDays(int id, String date) {
-      return super.canGetSickDays(id, date);
+   public boolean canGetSDays(int id) {
+      System.out.println("Sick id: " + id);
+      return super.canGetSickDays(id);
    }
 
-   public boolean canGetVacDays(int id, String date) {
-      return super.canGetVacationDays(id, date);
+   public boolean canGetVacDays(int id) {
+      System.out.println("Vac id: " + id);
+      return super.canGetVacationDays(id);
    }
 
    public List<Employee> getDoctorList() {
