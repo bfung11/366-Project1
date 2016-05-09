@@ -9,35 +9,35 @@
     </h:head>
 
     <h:body>
-        <h:dataTable value="#{admin.getDoctorList()}" var="a" border="1">
+        <h:dataTable value="#{doctor.viewDoctorList()}" var="d" border="1">
             <h:column>
                 <f:facet name="header"> Doctor ID </f:facet>
-                    #{a.id}
+                    #{d.id}
             </h:column>
 
             <h:column>
                 <f:facet name="header"> Last Name </f:facet>
-                    #{a.lastName}
+                    #{d.lastName}
             </h:column>
 
             <h:column>
                 <f:facet name="header"> Email </f:facet>
-                    #{a.email}
+                    #{d.email}
             </h:column>
             
             <h:column>
                 <f:facet name="header"> Username </f:facet>
-                    #{a.username}
+                    #{d.username}
             </h:column>
             
             <h:column>
                 <f:facet name="header"> Password </f:facet>
-                    #{a.password}
+                    #{d.password}
             </h:column>
 
             <h:column>
                 <f:facet name="header"> Phone Number </f:facet>
-                    #{a.phoneNumber}
+                    #{d.phoneNumber}
             </h:column>
         </h:dataTable>
     </h:body>
