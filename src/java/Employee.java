@@ -285,18 +285,6 @@ public class Employee {
       }
    }
 
-   public void deleteEmployee(String tablename) {
-      try {
-         String query = "DELETE from " + tablename + " " +
-                        "WHERE id = " + id;
-         DBConnection con = new DBConnection();
-         con.execUpdate(query);
-      }
-      catch (Exception e) {
-         e.printStackTrace();
-      }
-   }
-
    public void changeEmplPassword(String tablename) {
        try {
          // String query = "UPDATE " + tablename + " SET password = '" + this.password + "' " +
@@ -310,43 +298,6 @@ public class Employee {
       catch (Exception e) {
          e.printStackTrace();
       }
-   }
-   
-   public List<Employee> getEmployeeList(String tablename) {
-      List<Employee> list = new ArrayList<Employee>();
-
-      try {
-         String query = "SELECT * from " + tablename;
-         DBConnection con = new DBConnection();
-         ResultSet result = con.execQuery(query);
-
-         int type = Table.getTypeByTablename(tablename);
-
-         while (result.next()) {
-            Employee emp = EmployeeFactory.createEmployee(type);
-
-            String email = result.getString(Table.EMAIL);
-            emp.setId(result.getInt(Table.ID));
-            emp.setEmail(email);
-            emp.setLastName(result.getString(Table.LASTNAME));
-            emp.setPhoneNumber(result.getString(Table.PHONE_NUMBER));
-
-            String passwordQuery = "select * from Login where email = '" + email + "'";
-            ResultSet passwordResult = con.execQuery(passwordQuery);
-
-            if (passwordResult.next()) {
-               emp.setUsername(passwordResult.getString(Table.USERNAME));
-               emp.setPassword(passwordResult.getString(Table.PASSWORD));
-            }
-
-            list.add(emp);
-         }
-      }
-      catch(Exception e) {
-         e.printStackTrace();
-      }
-
-      return list;
    }
 
    public ArrayList<Shift> viewSchedule(String tablename) {

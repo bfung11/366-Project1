@@ -43,8 +43,4 @@ public class Technician extends Employee {
       super.deleteEmployee("Technicians");
       return "mainAdministrator";
    }
-
-   public List<Employee> getTechnicianList() {
-      return super.getEmployeeList("Technicians");
-   }
 }
