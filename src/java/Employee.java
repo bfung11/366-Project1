@@ -108,22 +108,6 @@ public class Employee {
    public String getOption() {
       return this.option;
    }
-   
-   public boolean doesIdExist(String tablename) {
-      try {
-         DBConnection con = new DBConnection();
-         String query = "select * from " + tablename + " " +
-                        "where id = " + id;
-         ResultSet result = con.execQuery(query);
-
-         return result.next();
-      }
-      catch (Exception e) {
-         e.printStackTrace();
-      }
-
-      return false;
-   }
 
    public void setEmail(String email) {
       this.email = email;
@@ -131,22 +115,6 @@ public class Employee {
 
    public String getEmail() {
       return email;
-   }
-   
-   public boolean doesEmailExist(String tablename) {
-      try {
-         DBConnection con = new DBConnection();
-         String query = "select * from " + tablename + " " +
-                        "where email = '" + email + "'";
-         ResultSet result = con.execQuery(query);
-
-         return result.next();
-      }
-      catch (Exception e) {
-         e.printStackTrace();
-      }
-
-      return false;
    }
 
    public void setUsername(String username) {
@@ -345,10 +313,14 @@ public class Employee {
    }
 
    public void deleteEmployee(int employeeType) {
+      deleteEmployee();
+      deleteLogin();
+   }
+
+   private void deleteEmployee() {
       try {
-         String tablename = Table.getTableNameFromType(employeeType) + "s";
-         String query = "DELETE from " + tablename + " " +
-                        "WHERE id = " + id;
+         String query = "DELETE FROM Doctors " +
+                        "WHERE email = '" + email + "'";
          DBConnection con = new DBConnection();
          con.execUpdate(query);
       }
@@ -356,6 +328,52 @@ public class Employee {
          e.printStackTrace();
       }
    }
+
+   private void deleteLogin() {
+      try {
+         String query = "DELETE FROM Login " +
+                        "WHERE email = '" + email + "'";
+         DBConnection con = new DBConnection();
+         con.execUpdate(query);
+      }
+      catch (Exception e) {
+         e.printStackTrace();
+      }
+   }
+
+   public boolean doesEmailExist() {
+      try {
+         DBConnection con = new DBConnection();
+         String query = "select * from Login " +
+                        "where email = '" + email + "'";
+         ResultSet result = con.execQuery(query);
+
+         return result.next();
+      }
+      catch (Exception e) {
+         e.printStackTrace();
+      }
+
+      return false;
+   }
+
+   public boolean doesIdExist(String tablename) {
+      try {
+         DBConnection con = new DBConnection();
+         String query = "select * from " + tablename + " " +
+                        "where id = " + id;
+         ResultSet result = con.execQuery(query);
+
+         return result.next();
+      }
+      catch (Exception e) {
+         e.printStackTrace();
+      }
+
+      return false;
+   }
+
+
 
    public void changeEmplPassword(String tablename) {
        try {
