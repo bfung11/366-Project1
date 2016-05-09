@@ -11,7 +11,7 @@
         <ui:composition template="./template.xhtml">
 
             <ui:define name="title">
-                Technician Time Off for #{user}
+                Technician Time Off
             </ui:define>
 
             <ui:define name="header">
@@ -20,22 +20,23 @@
 
             <ui:define name="box">
                 <h:form>
-                    What do you want to do?
-                    <h:selectOneMenu value="#{selector.choiceTech}">
-                        <f:selectItems value="#{selector.TChoices}"/>
+                    Choose Vacation Day:
+                    <h:selectOneMenu value="#{technician.vacOption}">
+                        <f:selectItems value="#{technician.allDates}"/>
                     </h:selectOneMenu>
-                    <h:commandButton value = "Go" action="#{selector.techList()}"/>
+                    <h:commandButton value = "Go" action="#{technician.canGetVacDays(userId)}"/>
+                </h:form>
+                
+                <h:form>
+                    Choose Sick Day:
+                    <h:selectOneMenu value="#{technician.sickOption}">
+                        <f:selectItems value="#{technician.allDates}"/>
+                    </h:selectOneMenu>
+                    <h:commandButton value = "Go" action="#{technician.canGetSDays(userId)}"/>
                 </h:form>
             </ui:define>
 
         </ui:composition>
-
-
-
-
-
-
-
     </h:body>
 </html>
 

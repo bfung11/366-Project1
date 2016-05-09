@@ -33,6 +33,8 @@ public class Employee {
 
    private final static int MAX_NUM_VACATION_DAYS = 8;
    private final static int MAX_NUM_SICK_DAYS = 4;
+   private final static int NUM_SHIFTS = 38;
+   private final static int NUM_DATES = 28;
 
    private int id;
    private String email;
@@ -50,18 +52,13 @@ public class Employee {
    
    private Scheduler schedule;
 
-   public Employee() {
-
+   public static String getCurrentUser() {
+      ELContext elContext = FacesContext.getCurrentInstance().getELContext();
+      Login login = (Login) elContext.getELResolver().getValue(elContext, null, "login");
+      return login.getLogin();
    }
 
-   public Employee(int type) {
-      this.type = type;
-   }
-
-   public Employee(String username) {
-   }
-
-   public static int getIDFromUsername() {
+   public static int getIDFromCurrentUser() {
       ELContext elContext = FacesContext.getCurrentInstance().getELContext();
       Login login = (Login) elContext.getELResolver().getValue(elContext, null, "login");
       String username = login.getLogin();
@@ -373,12 +370,8 @@ public class Employee {
       return false;
    }
 
-
-
    public void changeEmplPassword(String tablename) {
        try {
-         // String query = "UPDATE " + tablename + " SET password = '" + this.password + "' " +
-         //                "WHERE id = " + this.id;
          String query = "UPDATE Login SET password = '" + this.password + "' " +
                         "WHERE email = '" + email + "'";
          System.out.println("WHOA: " + query);
@@ -393,57 +386,48 @@ public class Employee {
    public ArrayList<Shift> viewSchedule(String tablename) {
       ArrayList<Shift> mySchedule = new ArrayList<>();
       Scheduler scheduler = new Scheduler();
-      /* try {
-         DBConnection dbconn = new DBConnection();
-         String query = "";
-         ResultSet rs = dbconn.execQuery(query);
-         Shift shift;
-         while (rs.next()) {
-             //shift = new Shift(rs.getString("name"), rs.getDate("date"), rs.get);
-            //mySchedule.add(rs.getDate("date").toString());
-         }
-     }
-     catch (SQLException sqe) {
-         sqe.printStackTrace();
-     }
-     */
+
       mySchedule.addAll(scheduler.getWeekOne());
       mySchedule.addAll(scheduler.getWeekTwo());
       mySchedule.addAll(scheduler.getWeekThree());
       mySchedule.addAll(scheduler.getWeekFour());
+
       return mySchedule;
    }
 
-   public ArrayList<String> getShiftDates() {
-      ArrayList<Shift> shifts = new ArrayList<>();
+   public ArrayList<String> getAllPossibleShifts() {
       ArrayList<String> options = new ArrayList<>();
-      Scheduler scheduler = new Scheduler();
-      shifts.addAll(scheduler.getWeekOne());
-      shifts.addAll(scheduler.getWeekTwo());
-      shifts.addAll(scheduler.getWeekThree());
-      shifts.addAll(scheduler.getWeekFour());
-      for (int i = 0; i < shifts.size(); i++) {
-         if (!options.contains(shifts.get(i).getDateAsString()))
-            options.add(shifts.get(i).getDateAsString());
+
+      LocalDate startDate = (new Scheduler()).getStartDate();
+      for (int i = 0; i < NUM_SHIFTS; i++) {
+         if (startDate.getDayOfWeek().equals(DayOfWeek.SUNDAY)) {
+            options.add(startDate.toString() + ", Sunday");
+         }
+         else {
+            options.add(startDate.toString() + ", Early Morning");
+            options.add(startDate.toString() + ", Morning");
+            options.add(startDate.toString() + ", Late Morning");
+            options.add(startDate.toString() + ", Surgery");
+         }
+         options.add(startDate.toString() + ", Overnight");
+         startDate = startDate.plusDays(1);
       }
+
       return options;
    }
-      
-   
-   
-   public ArrayList<String> getWeekShifts() {
-      ArrayList<Shift> shifts = new ArrayList<>();
+
+   public ArrayList<String> getAllPossibleDates() {
       ArrayList<String> options = new ArrayList<>();
-      Scheduler scheduler = new Scheduler();
-      shifts.addAll(scheduler.getWeekOne());
-      shifts.addAll(scheduler.getWeekTwo());
-      shifts.addAll(scheduler.getWeekThree());
-      shifts.addAll(scheduler.getWeekFour());
-      for (int i = 0; i < shifts.size(); i++) {
-         options.add(shifts.get(i).getShift() + " " + shifts.get(i).getDateAsString() + " " + "");
+
+      LocalDate date = (new Scheduler()).getStartDate();
+      for (int i = 0; i < NUM_DATES; ++i) {
+         options.add(date.toString());
+         date = date.plusDays(1);
       }
+
       return options;
    }
+
 
    public boolean canGetPreferredShifts(String employee, String shiftOption){
        try {

@@ -38,6 +38,18 @@ public class Doctor extends Employee {
        return "mainAdministrator";
    }
 
+   public List<Shift> viewDoctorSchedule() {
+       return super.viewSchedule("Doctors");
+   }
+
+   public List<String> getAllShifts() {
+       return super.getAllPossibleShifts();
+   }
+
+   public List<String> getAllDates() {
+      return super.getAllPossibleDates();
+   }
+
    public void setVacOption(String option) {
       super.setOption(option);
    }
@@ -64,20 +76,7 @@ public class Doctor extends Employee {
       return super.canGetVacationDays(id);
    }
    
-   public List<Shift> getDoctorSchedule() {
-       return super.viewSchedule("Doctors");
-   }
-   
-   public List<String> getAllShifts() {
-       return super.getWeekShifts();
-   }
-   
-   public List<String> getAllDates() {
-      return super.getShiftDates();
-   }
-   
    public String getUsr() {
-      System.out.println("BLAH " + super.getUsername());
       return super.getUsername();
    }
 }

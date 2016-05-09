@@ -22,7 +22,6 @@ public class Scheduler {
    private final static int TYPICAL_SHIFTS_PER_DAY = 5;
    private final static int NUM_SHIFTS_PER_WEEK = 32;
 
-   
    //Indexing constants
    private final static int SUNDAY = 0;
    private final static int MONDAY = 1;
@@ -69,11 +68,6 @@ public class Scheduler {
       initCalendar();
       initDayIndices();
    }
-   
-   public Scheduler(LocalDate startingDate) {
-      initCalendar();
-      initDayIndices();
-   }
 
    private void initCalendar() {
       weekOne = new ArrayList<Shift>(NUM_SHIFTS_PER_WEEK);
@@ -88,6 +82,10 @@ public class Scheduler {
       initWeek(weekTwo, aDate);
       initWeek(weekThree, aDate);
       initWeek(weekFour, aDate);
+   }
+
+   public LocalDate getStartDate() {
+      return startDate;
    }
 
    private void initStartdate() {
@@ -111,9 +109,9 @@ public class Scheduler {
          String earliest = aDate.toString();
          aDate = aDate.plusDays(7);
          String latest = aDate.toString();
-         String query = "select * from doctorShifts " + 
-                        "where date >= '" + earliest + "' and date < '" + latest + "' " + 
-                        "order by date ASC";
+         String query = "SELECT * FROM doctorShifts " + 
+                        "WHERE date >= '" + earliest + "' and date < '" + latest + "' " + 
+                        "ORDER BY DATE ASC";
          ResultSet result = connection.execQuery(query);
 
          while (result.next()) {
@@ -140,6 +138,10 @@ public class Scheduler {
             }
          }
 
+         if (week == weekOne) {
+            printWeek(weekOne);
+         }
+
          // get technicians
          query = "SELECT * FROM TechnicianShifts ORDER BY date ASC";
          result = connection.execQuery(query);
@@ -162,6 +164,14 @@ public class Scheduler {
       catch (Exception e) {
          e.printStackTrace();
       }
+   }
+
+   private void printWeek(ArrayList<Shift> week) {
+      for (int i = 0; i < week.size(); ++i) {
+         week.get(i).print();
+      }
+
+      System.out.println();
    }
 
    private void initRequests() {
@@ -790,13 +800,5 @@ public class Scheduler {
       // printWeek(weekOne);
       weekOne.get(0).setFirstDoctor(9);
       pushCalendarToDatabase();
-   }
-
-   private void printWeek(ArrayList<Shift> week) {
-         System.out.println("Size: " + week.size());
-
-      for (int i = 0; i < week.size(); ++i) {
-         week.get(i).print();
-      }
    }
 }
