@@ -21,6 +21,7 @@ import java.util.*;
 import java.text.*;
 import java.sql.*;
 import java.time.*;
+import javax.el.*;
 
 @Named(value = "employee")
 @SessionScoped
@@ -60,16 +61,31 @@ public class Employee {
    public Employee(String username) {
    }
 
-   public static String getIDFromUsername() {
+   public static int getIDFromUsername() {
       ELContext elContext = FacesContext.getCurrentInstance().getELContext();
       Login login = (Login) elContext.getELResolver().getValue(elContext, null, "login");
-      String username = getLogin();
+      String username = login.getLogin();
 
-      String query = "SELECT * " + 
-                     "FROM Login, Technicians, Doctors " + 
-                     "WHERE Login.email = Doctors.email and " + 
-                     "Login.email = Technicians.email and " + 
-                     "username = '" + username + "'";
+      int id = -1;
+
+      try {
+         String query = "SELECT * " + 
+                        "FROM Login, Technicians, Doctors " + 
+                        "WHERE Login.email = Doctors.email and " + 
+                        "Login.email = Technicians.email and " + 
+                        "username = '" + username + "'";
+
+         DBConnection connection = new DBConnection();
+         ResultSet result = connection.execQuery(query);
+         if (result.next()) {
+            id = result.getInt(Table.ID);
+         }
+      }
+      catch (Exception e) {
+         e.printStackTrace();
+      }
+
+      return id;
    }
 
    public int getType() {
@@ -270,6 +286,42 @@ public class Employee {
       return sickDays;
    }
 
+   public List<Employee> viewEmployeeList(int employeeType) {
+      List<Employee> list = new ArrayList<Employee>();
+
+      try {
+         String tablename = Table.getTableNameFromType(employeeType) + "s";
+         String query = "SELECT * from " + tablename;
+         DBConnection con = new DBConnection();
+         ResultSet result = con.execQuery(query);
+
+         while (result.next()) {
+            Employee emp = EmployeeFactory.createEmployee(employeeType);
+
+            String email = result.getString(Table.EMAIL);
+            emp.setId(result.getInt(Table.ID));
+            emp.setEmail(email);
+            emp.setLastName(result.getString(Table.LASTNAME));
+            emp.setPhoneNumber(result.getString(Table.PHONE_NUMBER));
+
+            String passwordQuery = "select * from Login where email = '" + email + "'";
+            ResultSet passwordResult = con.execQuery(passwordQuery);
+
+            if (passwordResult.next()) {
+               emp.setUsername(passwordResult.getString(Table.USERNAME));
+               emp.setPassword(passwordResult.getString(Table.PASSWORD));
+            }
+
+            list.add(emp);
+         }
+      }
+      catch(Exception e) {
+         e.printStackTrace();
+      }
+
+      return list;
+   }
+
    public void createEmployee(String tablename) {
       try {
          DBConnection con = new DBConnection();
@@ -285,6 +337,21 @@ public class Employee {
                             + "'" + lastname + "', "
                             + "'" + phonenumber + "')";
 
+         con.execUpdate(query);
+      }
+      catch (Exception e) {
+         e.printStackTrace();
+      }
+   }
+
+   public void deleteEmployee(int employeeType) {
+      try {
+         int id = Employee.getIDFromUsername();
+
+         String tablename = Table.getTableNameFromType(employeeType) + "s";
+         String query = "DELETE from " + tablename + " " +
+                        "WHERE id = " + id;
+         DBConnection con = new DBConnection();
          con.execUpdate(query);
       }
       catch (Exception e) {
