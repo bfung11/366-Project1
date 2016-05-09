@@ -45,6 +45,10 @@ public class Login implements Serializable {
         this.loginUI = loginUI;
     }
 
+    public String getLogin() {
+        return username;
+    }
+
     // Changing getUsername to getBlah will make XHTML from login.username to login.blah
     public String getUsername() {
         return username;
@@ -80,21 +84,25 @@ public class Login implements Serializable {
         //Get password from DB
         
         try {
-            String query = "select password from login where username = '" 
-                   + this.username + "'";
+            String query = "SELECT password FROM LOGIN " + 
+                           "WHERE username = '" + this.username + "'";
             DBConnection con = new DBConnection();
             int userId = -1;
             
             result = con.execQuery(query);
-            result.next();
-            
-            storedPassword = result.getString(1);
-            
-            query = "select id from Doctors d, Login l where d.email = l.email and l.username = " + this.username;
-            result = con.execQuery(query);
-            userId = result.getInt("id");
-            session.setAttribute("userId", userId);
-            result.close();
+            if (result.next()) {
+                storedPassword = result.getString(Table.PASSWORD);
+                
+                query = "SELECT id from Doctors D, Login L " + 
+                        "WHERE D.email = L.email and " + 
+                        "L.username = '" + this.username + "'";
+                result = con.execQuery(query);
+                if (result.next()) {
+                    userId = result.getInt(Table.ID);
+                    session.setAttribute("userId", userId);
+                    result.close();
+                }
+            }
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -107,7 +115,7 @@ public class Login implements Serializable {
     }
 
     public String go() {
-        //this.invalidateUserSession();
+        this.invalidateUserSession();
         System.out.println("username " + this.username);
         Employee empl = EmployeeFactory.createEmployee(this.username);
         switch(EmployeeFactory.getType(this.username)) {

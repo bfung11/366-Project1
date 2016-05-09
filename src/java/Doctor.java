@@ -9,26 +9,23 @@ import javax.inject.Named;
 @SessionScoped
 @ManagedBean
 public class Doctor extends Employee {
-   public Doctor() {
-      super(Employee.DOCTOR);
+   public List<Employee> viewDoctorList() {
+      System.out.println("viewDoctorList()");
+      return super.viewEmployeeList(Employee.DOCTOR);
    }
-
-   public Doctor(String username) {
-      super(username);
-   }
-
+   
    public String createDoctor() {
       super.createEmployee("Doctors");
       return "mainAdministrator";
    }
 
-   public String doesIdExist() {
-      super.doesIdExist("Doctors");
-      return "mainAdministrator";
+   public String deleteDoctor() {
+      super.deleteEmployee(Employee.DOCTOR);
+      return Admin.MAIN_ADMINISTRATOR_PAGE;
    }
 
-   public String deleteDoctor() {
-      super.deleteEmployee("Doctors");
+   public String doesIdExist() {
+      super.doesIdExist("Doctors");
       return "mainAdministrator";
    }
 
@@ -66,10 +63,6 @@ public class Doctor extends Employee {
    public boolean canGetVacDays(int id) {
       System.out.println("Vac id: " + id);
       return super.canGetVacationDays(id);
-   }
-
-   public List<Employee> getDoctorList() {
-      return super.getEmployeeList("Doctors");
    }
    
    public List<Shift> getDoctorSchedule() {

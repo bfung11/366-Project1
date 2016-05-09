@@ -15,6 +15,26 @@ public class Table {
 
    private static int emplType;
 
+   public static String getTableNameFromType(int type) {
+      String tablename = "";
+
+      switch(type) {
+         case Employee.DOCTOR:
+            tablename = "Doctor";
+            break;
+         case Employee.TECHNICIAN:
+            tablename = "Technician";
+            break;
+         case Employee.ADMINISTRATOR:
+            tablename = "Administrator";
+            break;
+         default:
+            break;
+      }
+
+      return tablename;
+   }
+
    public static String getTableName(String secondPart) {
       String tablename = "";
 

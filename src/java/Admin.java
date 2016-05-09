@@ -1,9 +1,6 @@
-public class Admin extends Employee {
-   public Admin() {
-      super(Employee.ADMINISTRATOR);
-   }
+import java.util.*;
+import java.sql.*;
 
-   public Admin(String username) {
-      super(username);
-   }
+public class Admin extends Employee {
+   public final static String MAIN_ADMINISTRATOR_PAGE = "mainAdministrator";
 }

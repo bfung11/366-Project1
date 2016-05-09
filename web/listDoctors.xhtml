@@ -9,7 +9,7 @@
     </h:head>
 
     <h:body>
-        <h:dataTable value="#{doctor.getDoctorList()}" var="d" border="1">
+        <h:dataTable value="#{doctor.viewDoctorList()}" var="d" border="1">
             <h:column>
                 <f:facet name="header"> Doctor ID </f:facet>
                     #{d.id}

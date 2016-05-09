@@ -11,9 +11,18 @@ public class Technician extends Employee {
       super(username);
    }
 
+   public List<Employee> viewTechnicianList() {
+      return super.viewEmployeeList(Employee.TECHNICIAN);
+   }
+
    public String createTechnician() {
       super.createEmployee("Technicians");
       return "mainAdministrator";
+   }
+
+   public String deleteTechnician() {
+      super.deleteEmployee(Employee.TECHNICIAN);
+      return Admin.MAIN_ADMINISTRATOR_PAGE;
    }
 
    public String doesIdExist() {
@@ -37,14 +46,5 @@ public class Technician extends Employee {
 
    public boolean canGetVacDays(int id) {
       return super.canGetVacationDays(id);
-   }
-
-   public String deleteTechnician() {
-      super.deleteEmployee("Technicians");
-      return "mainAdministrator";
-   }
-
-   public List<Employee> getTechnicianList() {
-      return super.getEmployeeList("Technicians");
    }
 }

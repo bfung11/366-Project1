@@ -21,6 +21,7 @@ import java.util.*;
 import java.text.*;
 import java.sql.*;
 import java.time.*;
+import javax.el.*;
 
 @Named(value = "employee")
 @SessionScoped
@@ -49,20 +50,42 @@ public class Employee {
    
    private Scheduler schedule;
 
+   public Employee() {
+
+   }
+
    public Employee(int type) {
       this.type = type;
    }
 
    public Employee(String username) {
-      // try {
-      //    DBConnection connection = new DBConnection();
-      //    Connection con = connection.getConnection();
+   }
 
-      //    con.close();
-      // } 
-      // catch (Exception e) {
-      //    e.printStackTrace();
-      // }
+   public static int getIDFromUsername() {
+      ELContext elContext = FacesContext.getCurrentInstance().getELContext();
+      Login login = (Login) elContext.getELResolver().getValue(elContext, null, "login");
+      String username = login.getLogin();
+
+      int id = -1;
+
+      try {
+         String query = "SELECT * " + 
+                        "FROM Login, Technicians, Doctors " + 
+                        "WHERE Login.email = Doctors.email and " + 
+                        "Login.email = Technicians.email and " + 
+                        "username = '" + username + "'";
+
+         DBConnection connection = new DBConnection();
+         ResultSet result = connection.execQuery(query);
+         if (result.next()) {
+            id = result.getInt(Table.ID);
+         }
+      }
+      catch (Exception e) {
+         e.printStackTrace();
+      }
+
+      return id;
    }
 
    public int getType() {
@@ -263,67 +286,17 @@ public class Employee {
       return sickDays;
    }
 
-   public void createEmployee(String tablename) {
-      try {
-         DBConnection con = new DBConnection();
-         String query = "INSERT INTO Login " +
-                        "VALUES (" + "'" + email + "', "
-                                   + "'" + username + "', "
-                                   + "'" + password + "')";
-         con.execUpdate(query);
-         query = "INSERT INTO " + tablename +
-                 "(email, firstname, lastname, phonenumber) " +
-                 "VALUES (" + "'" + email + "', "
-                            + "'" + firstname + "', "
-                            + "'" + lastname + "', "
-                            + "'" + phonenumber + "')";
-
-         con.execUpdate(query);
-      }
-      catch (Exception e) {
-         e.printStackTrace();
-      }
-   }
-
-   public void deleteEmployee(String tablename) {
-      try {
-         String query = "DELETE from " + tablename + " " +
-                        "WHERE id = " + id;
-         DBConnection con = new DBConnection();
-         con.execUpdate(query);
-      }
-      catch (Exception e) {
-         e.printStackTrace();
-      }
-   }
-
-   public void changeEmplPassword(String tablename) {
-       try {
-         // String query = "UPDATE " + tablename + " SET password = '" + this.password + "' " +
-         //                "WHERE id = " + this.id;
-         String query = "UPDATE Login SET password = '" + this.password + "' " +
-                        "WHERE email = '" + email + "'";
-         System.out.println("WHOA: " + query);
-         DBConnection con = new DBConnection();
-         con.execUpdate(query);
-      }
-      catch (Exception e) {
-         e.printStackTrace();
-      }
-   }
-   
-   public List<Employee> getEmployeeList(String tablename) {
+   public List<Employee> viewEmployeeList(int employeeType) {
       List<Employee> list = new ArrayList<Employee>();
 
       try {
+         String tablename = Table.getTableNameFromType(employeeType) + "s";
          String query = "SELECT * from " + tablename;
          DBConnection con = new DBConnection();
          ResultSet result = con.execQuery(query);
 
-         int type = Table.getTypeByTablename(tablename);
-
          while (result.next()) {
-            Employee emp = EmployeeFactory.createEmployee(type);
+            Employee emp = EmployeeFactory.createEmployee(employeeType);
 
             String email = result.getString(Table.EMAIL);
             emp.setId(result.getInt(Table.ID));
@@ -347,6 +320,56 @@ public class Employee {
       }
 
       return list;
+   }
+
+   public void createEmployee(String tablename) {
+      try {
+         DBConnection con = new DBConnection();
+         String query = "INSERT INTO Login " +
+                        "VALUES (" + "'" + email + "', "
+                                   + "'" + username + "', "
+                                   + "'" + password + "')";
+         con.execUpdate(query);
+         query = "INSERT INTO " + tablename +
+                 "(email, firstname, lastname, phonenumber) " +
+                 "VALUES (" + "'" + email + "', "
+                            + "'" + firstname + "', "
+                            + "'" + lastname + "', "
+                            + "'" + phonenumber + "')";
+
+         con.execUpdate(query);
+      }
+      catch (Exception e) {
+         e.printStackTrace();
+      }
+   }
+
+   public void deleteEmployee(int employeeType) {
+      try {
+         String tablename = Table.getTableNameFromType(employeeType) + "s";
+         String query = "DELETE from " + tablename + " " +
+                        "WHERE id = " + id;
+         DBConnection con = new DBConnection();
+         con.execUpdate(query);
+      }
+      catch (Exception e) {
+         e.printStackTrace();
+      }
+   }
+
+   public void changeEmplPassword(String tablename) {
+       try {
+         // String query = "UPDATE " + tablename + " SET password = '" + this.password + "' " +
+         //                "WHERE id = " + this.id;
+         String query = "UPDATE Login SET password = '" + this.password + "' " +
+                        "WHERE email = '" + email + "'";
+         System.out.println("WHOA: " + query);
+         DBConnection con = new DBConnection();
+         con.execUpdate(query);
+      }
+      catch (Exception e) {
+         e.printStackTrace();
+      }
    }
 
    public ArrayList<Shift> viewSchedule(String tablename) {
