@@ -3,14 +3,6 @@ import java.text.ParseException;
 import java.util.*;
 
 public class Technician extends Employee {
-   public Technician() {
-      super(Employee.DOCTOR);
-   }
-
-   public Technician(String username) {
-      super(username);
-   }
-
    public List<Employee> viewTechnicianList() {
       return super.viewEmployeeList(Employee.TECHNICIAN);
    }
@@ -39,11 +31,11 @@ public class Technician extends Employee {
        return "mainAdministrator";
    }
 
-   public boolean canGetSDays(int id) {
-      return super.canGetSickDays(id);
+   public List<String> getAllShifts() {
+       return super.getAllPossibleShifts();
    }
-
-   public boolean canGetVacDays(int id) {
-      return super.canGetVacationDays(id);
+      
+   public List<String> getAllDates() {
+      return super.getAllPossibleDates();
    }
 }

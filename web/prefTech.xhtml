@@ -22,9 +22,9 @@
                 <h:form>
                     What do you want to do?
                     <h:selectOneMenu value="#{selector.choiceTech}">
-                        <f:selectItems value="#{selector.TChoices}"/>
+                        <f:selectItems value="#{technician.allShifts}"/>
                     </h:selectOneMenu>
-                    <h:commandButton value = "Go" action="#{selector.techList()}"/>
+                    <h:commandButton value = "Go" action="#{selector.technicianList()}"/>
                 </h:form>
             </ui:define>
 
