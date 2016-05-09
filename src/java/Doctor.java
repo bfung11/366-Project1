@@ -24,13 +24,12 @@ public class Doctor extends Employee {
       return Admin.MAIN_ADMINISTRATOR_PAGE;
    }
 
-   public String doesIdExist() {
-      super.doesIdExist("Doctors");
-      return "mainAdministrator";
+   public boolean doesEmailExist() {
+      return super.doesEmailExist();
    }
 
-   public String doesEmailExist() {
-      super.doesEmailExist("Doctors");
+   public String doesIdExist() {
+      super.doesIdExist("Doctors");
       return "mainAdministrator";
    }
    

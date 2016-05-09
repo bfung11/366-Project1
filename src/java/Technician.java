@@ -25,13 +25,12 @@ public class Technician extends Employee {
       return Admin.MAIN_ADMINISTRATOR_PAGE;
    }
 
+   public boolean doesEmailExist() {
+      return super.doesEmailExist();
+   }
+   
    public String doesIdExist() {
       super.doesIdExist("Technicians");
-      return "mainAdministrator";
-   }
-
-   public String doesEmailExist() {
-      super.doesEmailExist("Technicians");
       return "mainAdministrator";
    }
 
