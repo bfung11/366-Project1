@@ -49,20 +49,27 @@ public class Employee {
    
    private Scheduler schedule;
 
+   public Employee() {
+
+   }
+
    public Employee(int type) {
       this.type = type;
    }
 
    public Employee(String username) {
-      // try {
-      //    DBConnection connection = new DBConnection();
-      //    Connection con = connection.getConnection();
+   }
 
-      //    con.close();
-      // } 
-      // catch (Exception e) {
-      //    e.printStackTrace();
-      // }
+   public static String getIDFromUsername() {
+      ELContext elContext = FacesContext.getCurrentInstance().getELContext();
+      Login login = (Login) elContext.getELResolver().getValue(elContext, null, "login");
+      String username = getLogin();
+
+      String query = "SELECT * " + 
+                     "FROM Login, Technicians, Doctors " + 
+                     "WHERE Login.email = Doctors.email and " + 
+                     "Login.email = Technicians.email and " + 
+                     "username = '" + username + "'";
    }
 
    public int getType() {
