@@ -346,8 +346,6 @@ public class Employee {
 
    public void deleteEmployee(int employeeType) {
       try {
-         int id = Employee.getIDFromUsername();
-
          String tablename = Table.getTableNameFromType(employeeType) + "s";
          String query = "DELETE from " + tablename + " " +
                         "WHERE id = " + id;
