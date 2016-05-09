@@ -24,7 +24,7 @@
                     <h:selectOneMenu value="#{technician.vacOption}">
                         <f:selectItems value="#{technician.allDates}"/>
                     </h:selectOneMenu>
-                    <h:commandButton value = "Go" action="#{technician.canGetVacDays(userId)}"/>
+                    <h:commandButton value = "Go" action="#{technician.canGetVacationDays()}"/>
                 </h:form>
                 
                 <h:form>
@@ -32,7 +32,7 @@
                     <h:selectOneMenu value="#{technician.sickOption}">
                         <f:selectItems value="#{technician.allDates}"/>
                     </h:selectOneMenu>
-                    <h:commandButton value = "Go" action="#{technician.canGetSDays(userId)}"/>
+                    <h:commandButton value = "Go" action="#{technician.canGetSickDays()}"/>
                 </h:form>
             </ui:define>
 
