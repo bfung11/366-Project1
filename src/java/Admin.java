@@ -77,4 +77,22 @@ public class Admin {
       }
    }
 
+   public void deleteStaff() {
+      try {
+         String query = 
+            "DELETE FROM authentications " + 
+            "WHERE username = '" + username + "'";
+         DBConnection connection = new DBConnection();
+         connection.executeUpdate(query);
+
+         query = 
+            "DELETE FROM staff " +
+            "WHERE username = '" + username + "'";
+         connection.executeUpdate(query);
+      }
+      catch (Exception e) {
+         e.printStackTrace();
+      }
+   }
+
 }
