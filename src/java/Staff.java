@@ -1,4 +1,12 @@
-public class Admin {
+/**
+ * Staff class holds the personal information of the doctor not including 
+ * dates. This is meant to be a class with only getters and setters for
+ * printing purposes.
+ *
+ * @author Brian Fung
+ */
+
+public class Staff {
    private String username;
    private String password;
    private String firstName;
