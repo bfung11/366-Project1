@@ -1,3 +1,7 @@
+/*****************
+ * Admin Queries *
+ *****************/
+
 -- listStaff()
 SELECT *
 FROM authentications A, staff S
@@ -22,3 +26,19 @@ WHERE username = 'username';
 UPDATE authentications
 SET password = 'password'
 WHERE username = 'username';
+
+
+/*****************
+ * Staff Queries *
+ *****************/
+-- viewSchedule()
+SELECT *
+FROM authentications A, 
+
+-- choosePreferredShift()
+INSERT INTO preferred_shifts
+VALUES (DEFAULT, 'username', 'date', 'shiftName');
+
+-- chooseTimeOff()
+INSERT INTO time_off
+VALUES (DEFAULT, 'username', 'date');
