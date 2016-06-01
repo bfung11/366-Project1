@@ -13,7 +13,7 @@ public class Staff {
    private String lastName;
    private String phoneNumber;
    private String email;
-   private String userType
+   private String userType;
 
    public void setUsername(String username) { this.username = username; }
    public String getUsername() { return username; }

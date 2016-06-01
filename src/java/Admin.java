@@ -1,3 +1,12 @@
+/**
+ * Admin class reflects all the necessary functions on the Admin page
+ *
+ * @author Brian Fung
+ */
+
+import java.util.*;
+import java.sql.*;
+
 public class Admin {
    private String username;
    private String password;
@@ -5,7 +14,7 @@ public class Admin {
    private String lastName;
    private String phoneNumber;
    private String email;
-   private String userType
+   private String userType;
 
    public void setUsername(String username) { this.username = username; }
    public String getUsername() { return username; }
@@ -29,7 +38,7 @@ public class Admin {
          String query = 
             "SELECT * " +
             "FROM authentications A, staff S " +
-            "WHERE A.username = S.username"
+            "WHERE A.username = S.username";
          DBConnection connection = new DBConnection();
          ResultSet result = connection.executeQuery(query);
 
@@ -57,7 +66,7 @@ public class Admin {
       try {
          String query = 
             "INSERT INTO authentications " +
-            "VALUES ('" + username + ', '
+            "VALUES ('" + username + "', '"
                         + password + "', '"
                         + userType + "')";
          DBConnection connection = new DBConnection();
@@ -68,7 +77,7 @@ public class Admin {
             "VALUES ('" + username + "', '"
                         + email + "', '" 
                         + firstName + "', '" 
-                        + lastName + "', '" + 
+                        + lastName + "', '"
                         + phoneNumber + "')";
          connection.executeUpdate(query);
       }
@@ -99,7 +108,7 @@ public class Admin {
       try {
          String query = 
             "UPDATE authentications " + 
-            "SET password = '" + password "' " +
+            "SET password = '" + password + "' " +
             "WHERE username = '" + username + "'";
          DBConnection connection = new DBConnection();
          connection.executeUpdate(query);
