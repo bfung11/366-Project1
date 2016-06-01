@@ -17,6 +17,7 @@ import javax.faces.bean.SessionScoped;
 @ManagedBean
 @SessionScoped
 public class Selector implements Serializable {
+    private String[] adminChoices = {"List Staff", "Add Staff", "Delete Staff", "Change Staff Password"}
     private String[] adminDocChoices = {"List Doctors", "Create New Doctor", "Delete Doctor", "Change Doctor Password"};
     private String[] adminTechChoices = {"List Technicians", "Create New Technician", "Delete Technician", "Change Technician Password"};
     
