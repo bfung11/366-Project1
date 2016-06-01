@@ -47,7 +47,7 @@ public class DBConnection {
     
     
     // Executes query string and returns the result.
-    public ResultSet execQuery(String query) throws SQLException {
+    public ResultSet executeQuery(String query) throws SQLException {
         Connection con = this.getConnection();
 
         if (con == null) {
@@ -63,7 +63,7 @@ public class DBConnection {
     }
     
     // Executes an update on the DB. This can be for deletes and changing data.
-    public void execUpdate(String query) throws SQLException{
+    public void executeUpdate(String query) throws SQLException{
         Connection con = this.getConnection();
 
         if (con == null) {
