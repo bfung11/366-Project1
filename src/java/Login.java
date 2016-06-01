@@ -77,31 +77,21 @@ public class Login implements Serializable {
       ResultSet result;
       
       HttpSession session = (HttpSession) context.getExternalContext().getSession(true);
-      session.setAttribute("user", this.username);
       //System.out.println(session.);
 
       // TODO: check if user and password matches input
       //Get password from DB
       
       try {
-         String query = "SELECT password FROM LOGIN " + 
-                     "WHERE username = '" + this.username + "'";
+         String query = 
+            "SELECT password " +
+            "FROM authentications " + 
+            "WHERE username = '" + this.username + "'";
          DBConnection con = new DBConnection();
-         int userId = -1;
-         
          result = con.executeQuery(query);
+         
          if (result.next()) {
             storedPassword = result.getString(Table.PASSWORD);
-            
-            query = "SELECT id from Doctors D, Login L " + 
-                  "WHERE D.email = L.email and " + 
-                  "L.username = '" + this.username + "'";
-            result = con.executeQuery(query);
-            if (result.next()) {
-               // userId = result.getInt(Table.ID);
-               // session.setAttribute("userId", userId);
-               result.close();
-            }
          }
       }
       catch(Exception e) {
