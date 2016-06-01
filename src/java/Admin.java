@@ -53,10 +53,28 @@ public class Admin {
       return list;
    }
 
+   public void addStaff() {
+      try {
+         String query = 
+            "INSERT INTO authentications " +
+            "VALUES ('" + username + ', '
+                        + password + "', '"
+                        + userType + "')";
+         DBConnection connection = new DBConnection();
+         connection.executeUpdate(query);
 
-
-
-
-
+         query = 
+            "INSERT INTO staff " + 
+            "VALUES ('" + username + "', '"
+                        + email + "', '" 
+                        + firstName + "', '" 
+                        + lastName + "', '" + 
+                        + phoneNumber + "')";
+         connection.executeUpdate(query);
+      }
+      catch (Exception e) {
+         e.printStackTrace();
+      }
+   }
 
 }
