@@ -95,4 +95,18 @@ public class Admin {
       }
    }
 
+   public void changeStaffPassword() {
+      try {
+         String query = 
+            "UPDATE authentications " + 
+            "SET password = '" + password "' " +
+            "WHERE username = '" + username + "'";
+         DBConnection connection = new DBConnection();
+         connection.executeUpdate(query);
+      }
+      catch (Exception e) {
+         e.printStackTrace();
+      }
+   }
+
 }
