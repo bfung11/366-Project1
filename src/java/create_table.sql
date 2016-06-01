@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS vacation_days;
+DROP TABLE IF EXISTS time_off;
 DROP TABLE IF EXISTS preferred_shifts;
 DROP TABLE IF EXISTS schedule;
 DROP TABLE IF EXISTS staff;
@@ -51,12 +51,13 @@ CREATE TABLE preferred_shifts (
               FOREIGN KEY shift_name REFERENCES shifts(shift_name)
 );
 
-CREATE TABLE vacation_days (
+CREATE TABLE time_off (
    PRIMARY KEY (id),
-   id       SERIAL,
-   username TEXT,
-   date_off DATE NOT NULL,
-            FOREIGN KEY username REFERENCES authentications(username)
+   id            SERIAL,
+   username      TEXT,
+   date_off      DATE NOT NULL,
+   vacation_type TEXT NOT NULL,
+                 FOREIGN KEY username REFERENCES authentications(username)
 );
 
 INSERT INTO authentications
