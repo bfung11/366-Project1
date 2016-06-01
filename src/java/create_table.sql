@@ -21,10 +21,10 @@ CREATE TABLE shifts (
 CREATE TABLE staff (
    PRIMARY KEY (username),
    username      TEXT,
-   email         TEXT UNIQUE NOT NULL,
    first_name    TEXT NOT NULL,
    last_name     TEXT NOT NULL,
    phone_number  TEXT NOT NULL,
+   email         TEXT UNIQUE NOT NULL,
    vacation_days INTEGER DEFAULT 8,
    sick_days     INTEGER DEFAULT 4,
                  FOREIGN KEY (username) REFERENCES authentications(username),
